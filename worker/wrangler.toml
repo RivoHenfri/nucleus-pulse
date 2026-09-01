@@ -1,0 +1,11 @@
+name = "nucleus-pulse-signal"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+# Origins allowed to call the oracle. Add your GitHub Pages origin here.
+# Local dev origins are included so `npm run dev` keeps working.
+[vars]
+ALLOWED_ORIGINS = "https://rivohenfri.github.io,http://localhost:3001,http://127.0.0.1:3001"
+
+# The API key is NOT here on purpose. Set it as an encrypted secret:
+#   npx wrangler secret put OPENROUTER_API_KEY

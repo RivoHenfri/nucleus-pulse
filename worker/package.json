@@ -1,0 +1,15 @@
+{
+  "name": "nucleus-pulse-oracle",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "secret": "wrangler secret put OPENROUTER_API_KEY"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "typescript": "~5.8.2",
+    "wrangler": "^3.99.0"
+  }
+}
