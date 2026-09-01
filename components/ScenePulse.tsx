@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FEED_ITEMS } from '../data';
 import type { FeedItem } from '../types';
 import { ping, pingLoud, tap, buzz } from '../utils/sound';
+import { setUrgency, startFocusBed, stopFocusBed } from '../utils/ambience';
+import { speak, silence } from '../utils/voice';
 
 export type PulseMode = 'loud' | 'clear';
 
@@ -50,8 +52,25 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
   const finish = (finalPicks: string[]) => {
     if (doneRef.current) return;
     doneRef.current = true;
+    stopFocusBed();
+    silence();
     onComplete(finalPicks);
   };
+
+  // The focus bed runs for the whole round and dies with it.
+  useEffect(() => {
+    startFocusBed();
+    speak(
+      loud
+        ? 'Three. Choose three. Everything else will still be here when you are done.'
+        : 'The same eight. Nothing was added. Nothing was taken away. Choose three.',
+      { delay: 900, rate: 0.72, pitch: 0.6 },
+    );
+    return () => {
+      stopFocusBed();
+      silence();
+    };
+  }, [loud]);
 
   // Mail lands one message at a time — banner, sound, buzz, then the row.
   useEffect(() => {
@@ -77,6 +96,7 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
     const interval = setInterval(() => {
       setElapsed(e => e + 1);
       setTimeLeft(t => {
+        setUrgency(1 - (t - 1) / seconds);
         if (t <= 1) {
           clearInterval(interval);
           finish(picksRef.current);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { speakSequence, silence } from '../utils/voice';
 
 interface SceneHumanProps {
   onContinue: () => void;
@@ -12,6 +13,11 @@ const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
   const [pauseLeft, setPauseLeft] = useState(PAUSE_SECONDS);
 
   useEffect(() => {
+    // Nothing is spoken over the five seconds of silence. That is the point.
+    speakSequence([
+      { text: 'Every one of these reaches the same place. You.', delay: 4200 },
+      { text: 'One human, with one morning, and one attention.', delay: 6400 },
+    ]);
     const timers = [
       setTimeout(() => setStep(1), 600),   // sources appear
       setTimeout(() => setStep(2), 2200),  // converge to YOU
@@ -19,7 +25,7 @@ const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
       setTimeout(() => setStep(4), 6000),  // line 2
       setTimeout(() => setStep(5), 8000),  // the question + pause starts
     ];
-    return () => timers.forEach(clearTimeout);
+    return () => { timers.forEach(clearTimeout); silence(); };
   }, []);
 
   // 5 seconds of deliberate silence after the question

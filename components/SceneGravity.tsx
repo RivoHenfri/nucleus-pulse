@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { drone } from '../utils/sound';
+import { speakSequence, silence } from '../utils/voice';
 
 interface SceneGravityProps {
   onContinue: () => void;
@@ -12,6 +13,10 @@ const SceneGravity: React.FC<SceneGravityProps> = ({ onContinue }) => {
 
   useEffect(() => {
     drone();
+    speakSequence([
+      { text: 'Loud information pulls attention the way mass pulls light.', delay: 5800 },
+      { text: 'It does not ask. It bends you toward it.', delay: 9600 },
+    ]);
     const timers = [
       setTimeout(() => setStep(1), 1200),  // big red notification
       setTimeout(() => setStep(2), 2600),  // title
@@ -21,7 +26,7 @@ const SceneGravity: React.FC<SceneGravityProps> = ({ onContinue }) => {
       setTimeout(() => setStep(6), 9400),  // YOUR ATTENTION
       setTimeout(() => setStep(7), 11000), // button
     ];
-    return () => timers.forEach(clearTimeout);
+    return () => { timers.forEach(clearTimeout); silence(); };
   }, []);
 
   return (

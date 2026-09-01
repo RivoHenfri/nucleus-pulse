@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { itemById } from '../data';
 import { generateSummons, generateToughComment } from '../utils/oracle';
 import { pulseConfirm, shimmer, tap } from '../utils/sound';
+import { guessLang, speak, silence } from '../utils/voice';
 import { TOTAL_SIGNALS, cohortStats, loadRuns, recordRun, splitPicks } from '../utils/stats';
 
 interface ScenePulsebackProps {
@@ -31,17 +32,22 @@ const ScenePulseback: React.FC<ScenePulsebackProps> = ({ round1, round2, onResta
   const submit = async () => {
     if (!signal.trim()) return;
     shimmer();
+    silence();
     setPhase('loading');
+    speak('The Pulse is reading your signal.', { rate: 0.7, pitch: 0.6 });
     recordRun(round1, round2);
     const toughComment = await generateToughComment(signal.trim());
     setComment(toughComment);
     pulseConfirm();
     setPhase('received');
+    // The answer is spoken in whatever language they wrote in.
+    speak(toughComment, { delay: 1200, lang: guessLang(toughComment), rate: 0.76, pitch: 0.62 });
     setTimeout(() => setPhase('reflect'), 4200);
   };
 
   const goShare = async () => {
     tap();
+    silence();
     setPhase('share');
     if (!summons) {
       const line = await generateSummons(name.trim() || 'A Pulse Seeker', r1.signals, TOTAL_SIGNALS);

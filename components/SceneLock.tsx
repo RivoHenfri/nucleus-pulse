@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { lockThunk } from '../utils/sound';
+import { speakSequence, silence } from '../utils/voice';
 
 interface SceneLockProps {
   onContinue: () => void;
@@ -10,12 +11,17 @@ const SceneLock: React.FC<SceneLockProps> = ({ onContinue }) => {
 
   useEffect(() => {
     lockThunk();
+    speakSequence([
+      { text: 'Locked.', delay: 400 },
+      { text: 'You chose what to look at.', delay: 2000 },
+      { text: 'But what chose you?', delay: 4000 },
+    ]);
     const timers = [
       setTimeout(() => setStep(1), 1600),
       setTimeout(() => setStep(2), 3400),
       setTimeout(() => setStep(3), 5600),
     ];
-    return () => timers.forEach(clearTimeout);
+    return () => { timers.forEach(clearTimeout); silence(); };
   }, []);
 
   return (

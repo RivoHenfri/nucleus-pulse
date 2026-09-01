@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { itemById } from '../data';
+import { speakSequence, silence } from '../utils/voice';
 
 interface SceneRevealProps {
   round1: string[];
@@ -29,6 +30,12 @@ const SceneReveal: React.FC<SceneRevealProps> = ({ round1, round2, onContinue })
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    speakSequence([
+      { text: 'Something changed between the two rounds.', delay: 1000 },
+      { text: 'But it was not the information.', delay: 4800 },
+      { text: 'Nothing was ever hidden from you.', delay: 11400 },
+      { text: 'We only changed what was easier to notice.', delay: 14200 },
+    ]);
     const timers = [
       setTimeout(() => setStep(1), 800),   // Something changed.
       setTimeout(() => setStep(2), 2400),  // But it wasn't the information.
@@ -38,7 +45,7 @@ const SceneReveal: React.FC<SceneRevealProps> = ({ round1, round2, onContinue })
       setTimeout(() => setStep(6), 11000), // the twist
       setTimeout(() => setStep(7), 13000), // button
     ];
-    return () => timers.forEach(clearTimeout);
+    return () => { timers.forEach(clearTimeout); silence(); };
   }, []);
 
   return (

@@ -2,6 +2,9 @@
 
 let audioCtx: AudioContext | null = null;
 
+/** One shared context for blips, the focus bed, everything. */
+export const audioContext = (): AudioContext | null => ctx();
+
 const ctx = (): AudioContext | null => {
   try {
     if (!audioCtx) {
