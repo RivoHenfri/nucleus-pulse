@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { FEED_ITEMS, itemById } from '../data';
+import { FEED_ITEMS, itemById, localized } from '../data';
+import { COPY, type Lang } from '../i18n';
 import { tap, shimmer } from '../utils/sound';
 
 interface ScenePeelProps {
+  lang: Lang;
   picks: string[];
   onContinue: () => void;
 }
 
-const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
+const ScenePeel: React.FC<ScenePeelProps> = ({ lang, picks, onContinue }) => {
+  const c = COPY[lang].peel;
   const [peeled, setPeeled] = useState<string[]>([]);
-  const chosen = picks.map(itemById);
-  const buried = FEED_ITEMS.filter(i => i.signal && !picks.includes(i.id));
+  const chosen = picks.map(id => localized(itemById(id), lang));
+  const buried = FEED_ITEMS.filter(i => i.signal && !picks.includes(i.id)).map(i => localized(i, lang));
   const allPeeled = chosen.length === 0 || peeled.length >= chosen.length;
 
   const peel = (id: string) => {
@@ -21,13 +24,13 @@ const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
 
   return (
     <div className="min-h-screen flex flex-col px-4 pt-10 pb-10 max-w-md mx-auto w-full animate-fadeIn">
-      <h2 className="font-cinzel text-2xl text-amber-200 text-center mb-2">PEEL THE NOISE</h2>
-      <p className="text-center text-gray-500 text-sm mb-8">Tap what you chose. Look underneath.</p>
+      <h2 className="font-cinzel text-2xl text-amber-200 text-center mb-2">{c.title}</h2>
+      <p className="text-center text-gray-500 text-sm mb-8">{c.subtitle}</p>
 
       <div className="space-y-4">
         {chosen.length === 0 && (
           <p className="text-center text-gray-400 italic py-6">
-            You chose nothing. The noise won by default.
+            {c.nothing}
           </p>
         )}
         {chosen.map(item => {
@@ -50,7 +53,7 @@ const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
                   <span className="text-[10px] font-extrabold tracking-widest text-gray-500">{item.source}</span>
                   <p className="text-gray-100 font-semibold text-sm">{item.headline}</p>
                 </div>
-                {!isPeeled && <span className="text-gray-500 text-xs tracking-widest">TAP</span>}
+                {!isPeeled && <span className="text-gray-500 text-xs tracking-widest">{c.tap}</span>}
               </div>
               {isPeeled && (
                 <div className="mt-3 pt-3 border-t border-gray-700/60 space-y-1 animate-fadeInUp">
@@ -69,7 +72,7 @@ const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
 
       {allPeeled && buried.length > 0 && (
         <div className="mt-10 animate-fadeIn">
-          <p className="text-center text-gray-500 text-xs tracking-widest mb-4">MEANWHILE, BURIED IN THE FEED —</p>
+          <p className="text-center text-gray-500 text-xs tracking-widest mb-4">{c.meanwhile}</p>
           <div className="space-y-3">
             {buried.map(item => (
               <div key={item.id} className="rounded-xl border border-amber-400/30 bg-[#100c06] px-4 py-3 opacity-90">
@@ -85,7 +88,7 @@ const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
             ))}
           </div>
           <p className="text-center text-gray-500 text-sm mt-6 italic">
-            No alarms. No red badges. Just consequences.
+            {c.noAlarms}
           </p>
         </div>
       )}
@@ -95,7 +98,7 @@ const ScenePeel: React.FC<ScenePeelProps> = ({ picks, onContinue }) => {
           onClick={() => { tap(); onContinue(); }}
           className="px-10 py-3 border border-gray-600 text-gray-300 rounded-full tracking-widest text-sm hover:border-amber-300 hover:text-amber-200 transition-all"
         >
-          WHY DID THIS HAPPEN?
+          {c.cta}
         </button>
       </div>
     </div>

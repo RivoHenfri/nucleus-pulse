@@ -18,6 +18,41 @@ A 5–7 minute mobile-first experiential simulation. No quiz, no scoring, no AI 
 8. **HUMAN MOMENT** — WhatsApp · Email · Meetings · AI → YOU. 5 seconds of silence.
 9. **PULSEBACK** — One sentence reflection → The Pulse answers (AI) → **REFLEKSI** (signal vs noise stats) → **SUMMONS** (spoiler-free WhatsApp dare) → teaser: **PULSE 02 ◉ TRUTH**.
 
+## Languages
+
+English and Bahasa Indonesia, chosen on the first screen and honoured everywhere
+after: scene copy, the mailbox contents, the recorded narration, the Pulse's
+spoken answer, and the WhatsApp summons. The Indonesian is written, not machine
+translated. Copy lives in `i18n.ts`; the switch is hidden once the run starts, so
+nobody has the voice changed under them mid-experience.
+
+## The Voice
+
+Every fixed line is pre-rendered by `openai/gpt-audio-mini` (voice: ballad) into
+`public/narration/<lang>/<id>.wav` — instant, free at runtime, and it works
+offline. Re-render with:
+
+```bash
+python narration/generate.py              # only what is missing
+python narration/generate.py --force      # everything
+python narration/generate.py --lang id    # one language
+python narration/generate.py --voice sage # a different voice
+```
+
+The generator verifies each take: it compares the returned transcript to the
+script and rejects anything padded or improvised, retrying up to five times. This
+matters — the model will otherwise answer an Indonesian question instead of
+reading it, or open with "Tentu, saya akan membacakan…".
+
+The one line that cannot be pre-rendered is the Pulse's answer in Scene 09, since
+it is different for every participant. The Worker speaks that one live and
+streams it back as raw PCM.
+
+Under the two choosing rounds runs a generated focus bed (`utils/ambience.ts`):
+a 42 Hz sub drone, two tones eight cycles apart, filtered room tone, and a
+heartbeat that climbs from 52 to 108 bpm as the timer drains. One control in the
+corner mutes voice and bed together.
+
 ## The Oracle (AI)
 
 Two lines are written live by `google/gemini-2.5-flash`: the Pulse's tough comment on the

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { drone } from '../utils/sound';
-import { speakSequence, silence } from '../utils/voice';
+import { hush, narrateSequence } from '../utils/narration';
+import { COPY, type Lang } from '../i18n';
 
 interface SceneGravityProps {
+  lang: Lang;
   onContinue: () => void;
 }
 
 const ORBITERS = ['💬', '📅', '👤', '📊', '📧'];
 
-const SceneGravity: React.FC<SceneGravityProps> = ({ onContinue }) => {
+const SceneGravity: React.FC<SceneGravityProps> = ({ lang, onContinue }) => {
+  const c = COPY[lang].gravity;
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     drone();
-    speakSequence([
-      { text: 'Loud information pulls attention the way mass pulls light.', delay: 5800 },
-      { text: 'It does not ask. It bends you toward it.', delay: 9600 },
+    narrateSequence([
+      { id: 'gravity-1', delay: 5600 },
+      { id: 'gravity-2', delay: 11400 },
     ]);
     const timers = [
       setTimeout(() => setStep(1), 1200),  // big red notification
@@ -26,7 +29,7 @@ const SceneGravity: React.FC<SceneGravityProps> = ({ onContinue }) => {
       setTimeout(() => setStep(6), 9400),  // YOUR ATTENTION
       setTimeout(() => setStep(7), 11000), // button
     ];
-    return () => { timers.forEach(clearTimeout); silence(); };
+    return () => { timers.forEach(clearTimeout); hush(); };
   }, []);
 
   return (
@@ -69,27 +72,27 @@ const SceneGravity: React.FC<SceneGravityProps> = ({ onContinue }) => {
       </div>
 
       <h2 className={`font-cinzel text-3xl md:text-4xl font-bold text-red-400 tracking-[0.15em] transition-opacity duration-1000 ${step >= 2 ? 'opacity-100' : 'opacity-0'}`}>
-        NOISE GRAVITY
+        {c.title}
       </h2>
 
       <p className={`mt-8 max-w-md text-gray-300 leading-relaxed transition-opacity duration-1000 ${step >= 4 ? 'opacity-100' : 'opacity-0'}`}>
-        Some information pulls attention because it is <span className="text-red-300 font-semibold">loud</span>, not because it is <span className="text-amber-200 font-semibold">important</span>.
+        {c.loudNotImportant[0]}<span className="text-red-300 font-semibold">{c.loudNotImportant[1]}</span>{c.loudNotImportant[2]}
       </p>
       <p className={`mt-6 text-gray-400 transition-opacity duration-1000 ${step >= 5 ? 'opacity-100' : 'opacity-0'}`}>
-        Urgency. Volume. Position. People.
+        {c.forces}
       </p>
       <p className={`mt-2 text-gray-400 transition-opacity duration-1000 ${step >= 5 ? 'opacity-100' : 'opacity-0'}`}>
-        They all compete for the same thing:
+        {c.compete}
       </p>
       <p className={`mt-4 font-cinzel text-2xl text-amber-200 tracking-[0.2em] transition-opacity duration-1000 animate-slowGlow ${step >= 6 ? 'opacity-100' : 'opacity-0'}`}>
-        YOUR ATTENTION.
+        {c.attention}
       </p>
 
       <button
         onClick={onContinue}
         className={`mt-12 px-10 py-3 border border-gray-600 text-gray-300 rounded-full tracking-widest text-sm hover:border-amber-300 hover:text-amber-200 transition-all duration-700 ${step >= 7 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        AGAIN?
+        {c.cta}
       </button>
     </div>
   );

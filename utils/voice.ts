@@ -1,6 +1,10 @@
 // THE PULSE SPEAKS — narration through the browser's own speech engine.
-// No audio files, no TTS bill, works offline. Pitched down and slowed so the
-// voice sits somewhere between a mentor and something older than the room.
+// No audio files, no TTS bill, works offline.
+//
+// The voice is a calm human reading you a line, not a horror trailer: natural
+// pitch, just under conversational speed. Modern browsers ship neural voices
+// ("Natural", "Neural", the Google ones) that sound like a person — we hunt for
+// those first and only fall back to the old robotic system voices.
 
 let enabled = true;
 let cachedVoices: SpeechSynthesisVoice[] = [];
@@ -36,23 +40,44 @@ export const guessLang = (text: string): 'id-ID' | 'en-US' => {
   return markers.some(m => t.includes(m)) ? 'id-ID' : 'en-US';
 };
 
-/** Prefer a deep voice; fall back to whatever the device has for that language. */
+/**
+ * Best available voice for a language, ranked by how human it sounds.
+ * The old offline system voices (David, Zira, Microsoft SAPI) are last resort —
+ * they are the ones that make narration sound like a haunted GPS.
+ */
+const NATURAL_PATTERNS = [
+  /natural/i,        // "Microsoft Aria Online (Natural)"
+  /neural/i,         // Edge/Chrome neural voices
+  /google/i,         // "Google US English", "Google Bahasa Indonesia"
+  /online/i,         // cloud voices, generally the good ones
+  /siri|samantha|karen|moira|daniel \(enhanced\)/i, // Apple's better voices
+];
+
+const ROBOTIC = /david|zira|mark|hazel|sapi|espeak|microsoft (david|zira|mark)/i;
+
 const voiceFor = (lang: string): SpeechSynthesisVoice | null => {
   const s = synth();
   if (!s) return null;
   if (cachedVoices.length === 0) cachedVoices = s.getVoices();
-  const forLang = cachedVoices.filter(v => v.lang?.toLowerCase().startsWith(lang.slice(0, 2)));
+
+  const prefix = lang.slice(0, 2).toLowerCase();
+  const forLang = cachedVoices.filter(v => v.lang?.toLowerCase().startsWith(prefix));
   const pool = forLang.length ? forLang : cachedVoices;
-  const deep = pool.find(v => /male|david|daniel|arthur|google.*(uk|us)/i.test(v.name));
-  return deep ?? pool[0] ?? null;
+
+  for (const pattern of NATURAL_PATTERNS) {
+    const hit = pool.find(v => pattern.test(v.name) && !ROBOTIC.test(v.name));
+    if (hit) return hit;
+  }
+  // Anything at all, as long as it is not a known robotic one.
+  return pool.find(v => !ROBOTIC.test(v.name)) ?? pool[0] ?? null;
 };
 
 export interface SpeakOptions {
   /** Stop whatever is being said first. Default true — scenes should not overlap. */
   interrupt?: boolean;
-  /** Slower than life. Default 0.78. */
+  /** Just under conversational pace. Default 0.95. */
   rate?: number;
-  /** Below natural. Default 0.7. */
+  /** Natural. Default 1. Do not go below ~0.9 — that is where it turns creepy. */
   pitch?: number;
   /** Override the language guess. */
   lang?: string;
@@ -74,8 +99,8 @@ export const speak = (text: string, opts: SpeakOptions = {}): void => {
       u.lang = opts.lang ?? guessLang(text);
       const v = voiceFor(u.lang);
       if (v) u.voice = v;
-      u.rate = opts.rate ?? 0.78;
-      u.pitch = opts.pitch ?? 0.7;
+      u.rate = opts.rate ?? 0.95;
+      u.pitch = opts.pitch ?? 1;
       u.volume = 1;
       s.speak(u);
     } catch {

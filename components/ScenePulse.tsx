@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FEED_ITEMS } from '../data';
+import { FEED_ITEMS, localized } from '../data';
+import { COPY, type Lang } from '../i18n';
 import type { FeedItem } from '../types';
 import { ping, pingLoud, tap, buzz } from '../utils/sound';
 import { setUrgency, startFocusBed, stopFocusBed } from '../utils/ambience';
-import { speak, silence } from '../utils/voice';
+import { hush, narrate } from '../utils/narration';
 
 export type PulseMode = 'loud' | 'clear';
 
 interface ScenePulseProps {
+  lang: Lang;
   mode: PulseMode;
   seconds: number;
   onComplete: (picks: string[]) => void;
@@ -28,15 +30,17 @@ const clockLabel = (minsFromMidnight: number): string => {
 };
 
 /** Real mail clients age their timestamps while you look at them. */
-const stampFor = (item: FeedItem, elapsedSec: number): string => {
+const stampFor = (item: FeedItem, elapsedSec: number, lang: Lang): string => {
+  const c = COPY[lang].pulse;
   const totalSec = item.minsAgo * 60 + elapsedSec;
-  if (totalSec < 45) return 'Just now';
+  if (totalSec < 45) return c.justNow;
   const mins = Math.floor(totalSec / 60);
-  if (mins < 60) return `${mins} min ago`;
+  if (mins < 60) return c.minAgo(mins);
   return clockLabel(CLOCK_START_MIN - mins);
 };
 
-const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) => {
+const ScenePulse: React.FC<ScenePulseProps> = ({ lang, mode, seconds, onComplete }) => {
+  const c = COPY[lang].pulse;
   const [entered, setEntered] = useState(0);
   const [picks, setPicks] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(seconds);
@@ -53,22 +57,17 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
     if (doneRef.current) return;
     doneRef.current = true;
     stopFocusBed();
-    silence();
+    hush();
     onComplete(finalPicks);
   };
 
   // The focus bed runs for the whole round and dies with it.
   useEffect(() => {
     startFocusBed();
-    speak(
-      loud
-        ? 'Three. Choose three. Everything else will still be here when you are done.'
-        : 'The same eight. Nothing was added. Nothing was taken away. Choose three.',
-      { delay: 900, rate: 0.72, pitch: 0.6 },
-    );
+    narrate(loud ? 'round1' : 'round2', 900);
     return () => {
       stopFocusBed();
-      silence();
+      hush();
     };
   }, [loud]);
 
@@ -123,7 +122,7 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
     });
   };
 
-  const shown = FEED_ITEMS.slice(0, entered);
+  const shown = FEED_ITEMS.slice(0, entered).map(i => localized(i, lang));
   /** Presented loudly this round: the noise in R1, the signals in R2 */
   const isPromoted = (item: FeedItem) => (loud ? item.loud : item.signal);
   const unreadCount = shown.reduce((n, i) => n + (isPromoted(i) ? (i.unread ?? 1) : 0), 0);
@@ -173,11 +172,11 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
             )}
             {!loud && item.signal && (
               <span className="shrink-0 text-[9px] font-bold bg-amber-400 text-gray-900 rounded px-1.5 py-px tracking-wide">
-                DECISION REQUIRED
+                {c.decisionChip}
               </span>
             )}
             <span className={`ml-auto shrink-0 text-[10px] ${promoted ? 'text-gray-400' : 'text-gray-600'}`}>
-              {stampFor(item, elapsed)}
+              {stampFor(item, elapsed, lang)}
             </span>
           </span>
 
@@ -203,7 +202,7 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
               <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-typing1" />
               <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-typing2" />
               <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-typing3" />
-              <span className="text-[10px] text-gray-500 ml-1">typing…</span>
+              <span className="text-[10px] text-gray-500 ml-1">{c.typing}</span>
             </span>
           )}
         </span>
@@ -237,10 +236,10 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
             <span className="flex-1 min-w-0">
               <span className="flex items-center gap-2">
                 <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-                  {toast.kind === 'chat' ? 'Message' : toast.kind === 'calendar' ? 'Reminder' : 'Mail'}
+                  {toast.kind === 'chat' ? c.message : toast.kind === 'calendar' ? c.reminder : c.mail}
                 </span>
                 {toast.important && <span className="text-red-500 font-black text-[11px]">!</span>}
-                <span className="ml-auto text-[10px] text-gray-500">now</span>
+                <span className="ml-auto text-[10px] text-gray-500">{c.now}</span>
               </span>
               <span className="block text-[12px] text-gray-100 font-semibold truncate">{toast.headline}</span>
               <span className="block text-[11px] text-gray-500 truncate">{toast.preview}</span>
@@ -255,7 +254,7 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
           <span className="text-gray-400 text-lg leading-none">☰</span>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-bold text-gray-100 leading-tight flex items-center gap-2">
-              Inbox
+              {c.inbox}
               {loud && unreadCount > 0 && (
                 <span key={unreadCount} className="text-[11px] font-bold text-red-400 animate-countPop">
                   {unreadCount}
@@ -266,7 +265,7 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
               )}
             </p>
             <p className="text-[10px] text-gray-600 truncate">
-              {syncing ? 'Updating…' : 'Updated just now'} · you@company.co.id
+              {syncing ? c.updating : c.updated} · you@company.co.id
             </p>
           </div>
           <span className="w-8 h-8 rounded-full bg-slate-700 text-gray-200 text-[11px] font-bold flex items-center justify-center">
@@ -277,17 +276,17 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
         {/* Search field */}
         <div className="mt-3 flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-gray-600 text-[12px]">
           <span>🔍</span>
-          <span>Search mail</span>
+          <span>{c.search}</span>
         </div>
 
         {/* Focused / Other pivot */}
         <div className="mt-3 flex gap-6 text-[12px]">
           <span className="pb-1.5 border-b-2 border-sky-400 text-gray-100 font-semibold">
-            {loud ? 'Focused' : 'All mail'}
+            {loud ? c.focused : c.allMail}
           </span>
-          <span className="pb-1.5 text-gray-600">{loud ? 'Other' : 'Archive'}</span>
+          <span className="pb-1.5 text-gray-600">{loud ? c.other : c.archive}</span>
           {!loud && (
-            <span className="ml-auto text-[10px] text-gray-600 self-center">sorted by: decision needed</span>
+            <span className="ml-auto text-[10px] text-gray-600 self-center">{c.sortedBy}</span>
           )}
         </div>
       </div>
@@ -320,10 +319,10 @@ const ScenePulse: React.FC<ScenePulseProps> = ({ mode, seconds, onComplete }) =>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-[12px] text-gray-300 leading-snug">
-            Open the <span className="text-amber-300 font-bold">THREE</span> you would check first.
+            {c.instruction[0]}<span className="text-amber-300 font-bold">{c.instruction[1]}</span>{c.instruction[2]}
           </p>
           <span className="flex items-center gap-3 shrink-0">
-            <span className="text-[11px] text-gray-500">{picks.length}/{MAX_PICKS}</span>
+            <span className="text-[11px] text-gray-500">{c.selected(picks.length, MAX_PICKS)}</span>
             <span
               className={`font-mono text-base font-bold ${
                 timeLeft <= 10 ? 'text-red-400 animate-badgeBlink' : 'text-gray-300'

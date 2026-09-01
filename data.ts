@@ -1,4 +1,5 @@
 import type { FeedItem } from './types';
+import { ITEM_COPY, type Lang } from './i18n';
 
 export const FEED_ITEMS: FeedItem[] = [
   {
@@ -137,4 +138,14 @@ export const itemById = (id: string): FeedItem => {
   const item = FEED_ITEMS.find(i => i.id === id);
   if (!item) throw new Error(`Unknown feed item: ${id}`);
   return item;
+};
+
+/**
+ * The same item, spoken in the participant's language.
+ * English lives on the item itself; other languages come from ITEM_COPY.
+ */
+export const localized = (item: FeedItem, lang: Lang): FeedItem => {
+  if (lang === 'en') return item;
+  const copy = ITEM_COPY[lang]?.[item.id];
+  return copy ? { ...item, ...copy } : item;
 };

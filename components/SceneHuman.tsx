@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { speakSequence, silence } from '../utils/voice';
+import { hush, narrateSequence } from '../utils/narration';
+import { COPY, type Lang } from '../i18n';
 
 interface SceneHumanProps {
+  lang: Lang;
   onContinue: () => void;
 }
 
 const SOURCES = ['WhatsApp', 'Email', 'Meetings', 'Dashboards', 'Reports', 'People', 'AI'];
 const PAUSE_SECONDS = 5;
 
-const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
+const SceneHuman: React.FC<SceneHumanProps> = ({ lang, onContinue }) => {
+  const c = COPY[lang].human;
   const [step, setStep] = useState(0);
   const [pauseLeft, setPauseLeft] = useState(PAUSE_SECONDS);
 
   useEffect(() => {
     // Nothing is spoken over the five seconds of silence. That is the point.
-    speakSequence([
-      { text: 'Every one of these reaches the same place. You.', delay: 4200 },
-      { text: 'One human, with one morning, and one attention.', delay: 6400 },
+    narrateSequence([
+      { id: 'human-1', delay: 4200 },
+      { id: 'human-2', delay: 9600 },
     ]);
     const timers = [
       setTimeout(() => setStep(1), 600),   // sources appear
@@ -25,7 +28,7 @@ const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
       setTimeout(() => setStep(4), 6000),  // line 2
       setTimeout(() => setStep(5), 8000),  // the question + pause starts
     ];
-    return () => { timers.forEach(clearTimeout); silence(); };
+    return () => { timers.forEach(clearTimeout); hush(); };
   }, []);
 
   // 5 seconds of deliberate silence after the question
@@ -74,19 +77,19 @@ const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
         <div
           className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center font-cinzel font-bold text-gray-900 text-sm transition-all duration-1000 animate-nucleusPulse ${step >= 2 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
         >
-          YOU
+          {c.you}
         </div>
       </div>
 
       <p className={`max-w-md text-gray-300 leading-relaxed transition-opacity duration-1000 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}>
-        Every day, hundreds of things compete for your attention.
+        {c.compete}
       </p>
       <p className={`mt-3 max-w-md text-gray-300 leading-relaxed transition-opacity duration-1000 ${step >= 4 ? 'opacity-100' : 'opacity-0'}`}>
-        Not everything deserves the same amount of it.
+        {c.notEqual}
       </p>
 
       <p className={`mt-10 max-w-md text-xl text-amber-200 font-semibold leading-relaxed transition-opacity duration-1000 ${step >= 5 ? 'opacity-100' : 'opacity-0'}`}>
-        Before reacting, what makes something <span className="italic">worth</span> your attention?
+        {c.question[0]}<span className="italic">{c.question[1]}</span>{c.question[2]}
       </p>
 
       {step === 5 && (
@@ -104,7 +107,7 @@ const SceneHuman: React.FC<SceneHumanProps> = ({ onContinue }) => {
         onClick={onContinue}
         className={`mt-10 px-10 py-3 border border-gray-600 text-gray-300 rounded-full tracking-widest text-sm hover:border-amber-300 hover:text-amber-200 transition-all duration-700 ${step >= 6 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        SEND YOUR PULSEBACK
+        {c.cta}
       </button>
     </div>
   );

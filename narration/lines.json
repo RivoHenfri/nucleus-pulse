@@ -1,0 +1,43 @@
+{
+  "voice": "ballad",
+  "languages": {
+    "en": {
+      "enter-1": "Nine oh seven. Your day has already started without you.",
+      "enter-2": "Things are moving.",
+      "enter-3": "And you have only so much attention to give.",
+      "round1": "Three. Choose three. Everything else will still be here when you are done.",
+      "lock-1": "Locked.",
+      "lock-2": "You chose what to look at.",
+      "lock-3": "But what chose you?",
+      "gravity-1": "Loud information pulls attention the way mass pulls light.",
+      "gravity-2": "It does not ask. It bends you toward it.",
+      "round2": "The same eight. Nothing was added. Nothing was taken away. Choose three.",
+      "reveal-1": "Something changed between the two rounds.",
+      "reveal-2": "But it was not the information.",
+      "reveal-3": "Nothing was ever hidden from you.",
+      "reveal-4": "We only changed what was easier to notice.",
+      "human-1": "Every one of these reaches the same place. You.",
+      "human-2": "One human, with one morning, and one attention.",
+      "pulseback-reading": "The Pulse is reading your signal."
+    },
+    "id": {
+      "enter-1": "Pukul sembilan lewat tujuh. Harimu sudah dimulai tanpa kamu.",
+      "enter-2": "Semuanya sudah bergerak.",
+      "enter-3": "Dan perhatian yang bisa kamu berikan cuma sebanyak itu.",
+      "round1": "Tiga. Pilih tiga. Sisanya tetap ada di sana setelah kamu selesai.",
+      "lock-1": "Terkunci.",
+      "lock-2": "Kamu memilih apa yang kamu lihat.",
+      "lock-3": "Tapi apa yang memilihmu?",
+      "gravity-1": "Informasi yang berisik menarik perhatian seperti massa menarik cahaya.",
+      "gravity-2": "Ia tidak meminta. Ia membengkokkanmu ke arahnya.",
+      "round2": "Delapan yang sama. Tidak ada yang ditambah. Tidak ada yang dikurangi. Pilih tiga.",
+      "reveal-1": "Ada yang berubah di antara dua ronde itu.",
+      "reveal-2": "Tapi bukan informasinya.",
+      "reveal-3": "Tidak pernah ada yang disembunyikan darimu.",
+      "reveal-4": "Yang kami ubah hanya satu: mana yang lebih mudah terlihat.",
+      "human-1": "Semuanya bermuara ke tempat yang sama. Kamu.",
+      "human-2": "Satu manusia, dengan satu pagi, dan satu perhatian.",
+      "pulseback-reading": "The Pulse sedang membaca sinyalmu."
+    }
+  }
+}

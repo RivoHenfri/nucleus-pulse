@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { pingLoud, shimmer } from '../utils/sound';
-import { speak, speakSequence, silence } from '../utils/voice';
+import { hush, narrateSequence, unlockAudio } from '../utils/narration';
+import { COPY, type Lang } from '../i18n';
 
 interface SceneEnterProps {
+  lang: Lang;
   onEnter: () => void;
 }
 
-const LINES = ['09:07 AM', 'Your day has started.', 'Things are already moving.', 'You have limited attention.'];
-
-const SceneEnter: React.FC<SceneEnterProps> = ({ onEnter }) => {
+const SceneEnter: React.FC<SceneEnterProps> = ({ lang, onEnter }) => {
+  const c = COPY[lang].enter;
+  const LINES = c.lines;
   const [visibleLines, setVisibleLines] = useState(0);
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     LINES.forEach((_, i) => {
       timers.push(setTimeout(() => setVisibleLines(i + 1), 1400 + i * 1600));
     });
@@ -21,16 +24,17 @@ const SceneEnter: React.FC<SceneEnterProps> = ({ onEnter }) => {
       setShowButton(true);
       shimmer();
     }, 1400 + LINES.length * 1600 + 600));
-    return () => { timers.forEach(clearTimeout); silence(); };
+    return () => { timers.forEach(clearTimeout); hush(); };
   }, []);
 
   // The Pulse introduces itself over the materializing nucleus.
   useEffect(() => {
-    speakSequence([
-      { text: 'Nine oh seven. Your day has already started without you.', delay: 1600 },
-      { text: 'Things are moving.', delay: 4600 },
-      { text: 'And you have only so much attention to give.', delay: 6400 },
+    narrateSequence([
+      { id: 'enter-1', delay: 1600 },
+      { id: 'enter-2', delay: 7600 },
+      { id: 'enter-3', delay: 9800 },
     ]);
+    return () => hush();
   }, []);
 
   return (
@@ -53,12 +57,12 @@ const SceneEnter: React.FC<SceneEnterProps> = ({ onEnter }) => {
       </div>
 
       <div className={`mt-10 transition-all duration-1000 ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <p className="text-gray-500 text-sm mb-6 tracking-widest">Ready?</p>
+        <p className="text-gray-500 text-sm mb-6 tracking-widest">{c.ready}</p>
         <button
-          onClick={() => { silence(); pingLoud(); onEnter(); }}
+          onClick={() => { hush(); unlockAudio(); pingLoud(); onEnter(); }}
           className="px-12 py-4 bg-amber-400 text-gray-900 font-extrabold tracking-widest rounded-full shadow-lg shadow-amber-400/30 hover:bg-amber-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
         >
-          ENTER THE SIGNAL
+          {c.cta}
         </button>
       </div>
     </div>
