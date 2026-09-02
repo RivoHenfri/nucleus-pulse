@@ -225,6 +225,8 @@ const CALM_VOLUME = 0.055;
 const BREATH_HZ = 0.1;
 /** The gap between the two carriers, in hertz. Theta. */
 const BEAT_HZ = 4;
+/** How far the bed drops while the Pulse is speaking. */
+const DUCK = 0.42;
 
 export const startCalmBed = (): void => {
   if (calm || !enabled) return;
@@ -285,6 +287,36 @@ export const startCalmBed = (): void => {
     calm = { master, nodes };
   } catch {
     // Sound is part of the experience, never a precondition for it.
+  }
+};
+
+/**
+ * Pull the bed back under the voice, and let it rise again in the silence.
+ *
+ * Without this the bed and the narration are two things happening at once in
+ * the same room. Ducking puts them in a relationship: the words step forward
+ * and the room recedes to make space, then the room comes back — slowly, over
+ * a second and a half — into the pause after the sentence.
+ *
+ * The asymmetry is the whole trick. Ducking fast is a technical necessity;
+ * releasing slowly is what makes a silence feel like it was left on purpose
+ * rather than like nothing is happening. The swell arrives just as the
+ * participant finishes taking the line in.
+ */
+export const duckCalmBed = (under: boolean): void => {
+  if (!calm) return;
+  const ac = audioContext();
+  if (!ac) return;
+  try {
+    const g = calm.master.gain;
+    const target = under ? CALM_VOLUME * DUCK : CALM_VOLUME;
+    g.cancelScheduledValues(ac.currentTime);
+    g.setValueAtTime(Math.max(g.value, 0.0001), ac.currentTime);
+    // Down quickly so the first word is never fought; back up slowly so the
+    // return is felt rather than heard.
+    g.exponentialRampToValueAtTime(target, ac.currentTime + (under ? 0.35 : 1.5));
+  } catch {
+    // ignore
   }
 };
 

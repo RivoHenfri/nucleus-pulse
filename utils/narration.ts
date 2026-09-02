@@ -31,6 +31,7 @@
 // speaking finishes, then the next line starts. The visuals keep their own
 // timing, and the voice stays a voice.
 
+import { duckCalmBed } from './ambience';
 import { speak, silence as silenceSynth } from './voice';
 import type { Lang } from '../i18n';
 import LINES from '../narration/lines.json';
@@ -111,11 +112,16 @@ const pump = () => {
     // Anything from a clip we have already moved past is not our business.
     if (mine !== generation) return;
     speaking = false;
+    // Let the room back in. If another line follows immediately it will duck
+    // again before this has risen far, which is what makes a run of short
+    // lines breathe instead of sitting on a flat bed.
+    duckCalmBed(false);
     pending.push(setTimeout(pump, GAP_MS));
   };
 
   try {
     speaking = true;
+    duckCalmBed(true);
     // Detach before swapping the source, so the teardown of the old clip
     // cannot advance the queue.
     audio.onended = null;
@@ -175,6 +181,7 @@ export const hush = (): void => {
   speaking = false;
   waiting = [];
   lastCueAt = -1;
+  duckCalmBed(false);
   if (voice) {
     try {
       voice.onended = null;
