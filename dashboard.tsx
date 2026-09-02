@@ -39,6 +39,9 @@ const T = {
     closeB: 'That is not the problem.',
     next: 'next  →',
     open: 'Open a room',
+    opening: 'Opening…',
+    unreachable: 'The room server cannot be reached.',
+    unreachableWhy: 'nucleus-api.rivohenfri.cloud is not answering — usually the VPS ports 80/443 are still closed in the Tencent Cloud security group.',
     people: 'people',
   },
   id: {
@@ -54,6 +57,9 @@ const T = {
     closeB: 'Dan itu bukan masalahnya.',
     next: 'lanjut  →',
     open: 'Buka ruang',
+    opening: 'Membuka…',
+    unreachable: 'Server ruangan tidak bisa dihubungi.',
+    unreachableWhy: 'nucleus-api.rivohenfri.cloud tidak menjawab — biasanya port 80/443 VPS masih tertutup di Security Group Tencent Cloud.',
     people: 'orang',
   },
 };
@@ -173,6 +179,8 @@ const Room: React.FC = () => {
   const [key, setKey] = useState(q.get('key') ?? '');
   const [s, setS] = useState<RoomSummary | null>(null);
   const [stage, setStage] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   // The room is polled, not pushed: forty phones over an evening is nothing,
   // and a screen that refreshes every few seconds is one fewer thing to break.
@@ -203,8 +211,16 @@ const Room: React.FC = () => {
   }, []);
 
   const open = async () => {
+    setBusy(true);
+    setFailed(false);
     const r = await openRoom();
-    if (!r) return;
+    setBusy(false);
+    // A button that does nothing is the worst kind of failure — the person
+    // standing at the front of a room needs to know *why* nothing happened.
+    if (!r) {
+      setFailed(true);
+      return;
+    }
     setCode(r.code);
     setKey(r.key);
     const u = new URL(window.location.href);
@@ -215,13 +231,22 @@ const Room: React.FC = () => {
 
   if (!code || !key) {
     return (
-      <main className="grid min-h-[100dvh] place-items-center">
-        <button
-          onClick={open}
-          className="rounded-full bg-[#EDE7DA] px-10 py-4 text-[12px] font-bold tracking-[0.28em] text-[#07090C]"
-        >
-          {t.open}
-        </button>
+      <main className="grid min-h-[100dvh] place-items-center px-8 text-center">
+        <div>
+          <button
+            onClick={open}
+            disabled={busy}
+            className="rounded-full bg-[#EDE7DA] px-10 py-4 text-[12px] font-bold tracking-[0.28em] text-[#07090C] disabled:opacity-50"
+          >
+            {busy ? t.opening : t.open}
+          </button>
+          {failed && (
+            <div className="mx-auto mt-8 max-w-md rounded-xl border border-amber-300/25 bg-[#12171d] px-5 py-4 text-left">
+              <p className="text-[14px] text-amber-100">{t.unreachable}</p>
+              <p className="mt-2 text-[12px] leading-relaxed text-gray-400">{t.unreachableWhy}</p>
+            </div>
+          )}
+        </div>
       </main>
     );
   }
