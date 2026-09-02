@@ -180,6 +180,133 @@ export const stopFocusBed = (): void => {
 };
 
 export const setAmbienceEnabled = (on: boolean): void => {
+  if (!on) stopCalmBed();
   enabled = on;
   if (!on) stopFocusBed();
+};
+
+// ---------------------------------------------------------------------------
+// THE CALM BED — the sound under everything that is not a choosing round.
+// ---------------------------------------------------------------------------
+//
+// The focus bed above narrows the room while someone decides. This one does
+// the opposite job, and it runs almost everywhere else: it holds the quiet
+// open so the silences read as space to think rather than as the app having
+// stopped, and it makes the reflective screens feel like one continuous place
+// instead of seventeen separate ones.
+//
+// What is in it, and why:
+//
+//   * A 55 Hz root with a fifth above it. Low, consonant, no melody — nothing
+//     to follow, so it never asks for attention of its own.
+//   * Two oscillators at 110 and 114 Hz. The 4 Hz difference between them
+//     beats slowly in the air; that rate sits in the theta band people
+//     associate with a settled, receptive state. This is a mood device, not a
+//     medical one, and it is doing openly what a film score does.
+//   * Room noise under a low-pass, barely there — silence with no floor at
+//     all reads as a dropped connection.
+//   * The whole thing swells and falls once every ten seconds: six cycles a
+//     minute, the rate used to pace slow breathing. People tend to fall in
+//     with it without noticing, which is most of the effect.
+//
+// It sits at a third of the focus bed's level so it never competes with the
+// narration, and the participant is told about it: the sound is one of the
+// fragments replayed in Scene 13, where the screen admits what it was doing.
+
+interface Calm {
+  master: GainNode;
+  nodes: { stop: () => void }[];
+}
+
+let calm: Calm | null = null;
+
+const CALM_VOLUME = 0.055;
+/** Six swells a minute — the pace used to slow breathing down. */
+const BREATH_HZ = 0.1;
+/** The gap between the two carriers, in hertz. Theta. */
+const BEAT_HZ = 4;
+
+export const startCalmBed = (): void => {
+  if (calm || !enabled) return;
+  const ac = audioContext();
+  if (!ac) return;
+
+  try {
+    const master = ac.createGain();
+    master.gain.setValueAtTime(0.0001, ac.currentTime);
+    // A long fade in, so it is never audible as a thing that started.
+    master.gain.exponentialRampToValueAtTime(CALM_VOLUME, ac.currentTime + 6);
+    master.connect(ac.destination);
+
+    const nodes: { stop: () => void }[] = [];
+
+    const drone = (freq: number, level: number, type: OscillatorType = 'sine') => {
+      const osc = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.value = level;
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start();
+      nodes.push({ stop: () => osc.stop() });
+    };
+
+    drone(55, 0.5);              // root
+    drone(82.5, 0.22);           // a fifth above it
+    drone(110, 0.16);            // carrier
+    drone(110 + BEAT_HZ, 0.16);  // and its slow beat
+
+    // Room tone, filtered down to almost nothing.
+    const noise = ac.createBufferSource();
+    noise.buffer = noiseBuffer(ac);
+    noise.loop = true;
+    const filter = ac.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 380;
+    const noiseGain = ac.createGain();
+    noiseGain.gain.value = 0.05;
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(master);
+    noise.start();
+    nodes.push({ stop: () => noise.stop() });
+
+    // The breath: one slow swell every ten seconds, across the whole bed.
+    const lfo = ac.createOscillator();
+    const lfoDepth = ac.createGain();
+    lfo.frequency.value = BREATH_HZ;
+    lfoDepth.gain.value = CALM_VOLUME * 0.45;
+    lfo.connect(lfoDepth);
+    lfoDepth.connect(master.gain);
+    lfo.start();
+    nodes.push({ stop: () => lfo.stop() });
+
+    calm = { master, nodes };
+  } catch {
+    // Sound is part of the experience, never a precondition for it.
+  }
+};
+
+export const stopCalmBed = (): void => {
+  if (!calm) return;
+  const ac = audioContext();
+  const { master, nodes } = calm;
+  calm = null;
+  try {
+    if (ac) {
+      master.gain.cancelScheduledValues(ac.currentTime);
+      master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), ac.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 1.6);
+    }
+    setTimeout(() => nodes.forEach(n => {
+      try {
+        n.stop();
+      } catch {
+        // already stopped
+      }
+    }), 1800);
+  } catch {
+    // ignore
+  }
 };

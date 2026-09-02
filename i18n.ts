@@ -138,7 +138,7 @@ const EN = {
     oneMore: 'One more thing.',
     fragments: {
       urgent: 'URGENT',
-      sound: 'a sound',
+      sound: 'a sound, and one underneath it',
       unread: '4 unread',
       countdown: '00:07',
       order: 'arrived first',
@@ -320,7 +320,7 @@ const ID: Copy = {
     oneMore: 'Satu hal lagi.',
     fragments: {
       urgent: 'URGENT',
-      sound: 'sebuah bunyi',
+      sound: 'sebuah bunyi, dan satu lagi di bawahnya',
       unread: '4 belum dibaca',
       countdown: '00:07',
       order: 'muncul lebih dulu',

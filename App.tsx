@@ -14,7 +14,12 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, type Lang } from './i18n';
 import type { InfluenceId, SceneId, SituationId } from './types';
-import { setAmbienceEnabled, stopFocusBed } from './utils/ambience';
+import {
+  setAmbienceEnabled,
+  startCalmBed,
+  stopCalmBed,
+  stopFocusBed,
+} from './utils/ambience';
 import { hush, setNarrationEnabled, setNarrationLang } from './utils/narration';
 import { setVoiceEnabled, silence } from './utils/voice';
 
@@ -98,6 +103,22 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   }, [scene]);
 
+  /**
+   * One room, one sound.
+   *
+   * The calm bed runs under everything except the two choosing rounds, which
+   * bring their own: a bed that narrows the room while someone decides. Held
+   * here rather than inside the scenes so it never restarts between them —
+   * the point of it is that the quiet is continuous, and a bed that faded out
+   * and back in at every cut would announce each screen instead of joining
+   * them.
+   */
+  const inRound = scene === 'morning' || scene === 'second';
+  useEffect(() => {
+    if (inRound) stopCalmBed();
+    else startCalmBed();
+  }, [inRound]);
+
   useEffect(() => {
     save({ lang, firstLook, influences, secondLook });
   }, [lang, firstLook, influences, secondLook]);
@@ -107,6 +128,7 @@ const App: React.FC = () => {
       hush();
       silence();
       stopFocusBed();
+      stopCalmBed();
     },
     [],
   );
@@ -118,12 +140,14 @@ const App: React.FC = () => {
     setVoiceEnabled(next);
     setNarrationEnabled(next);
     setAmbienceEnabled(next);
+    if (next && !inRound) startCalmBed();
   };
 
   const restart = () => {
     hush();
     silence();
     stopFocusBed();
+    stopCalmBed();
     setFirstLook([]);
     setInfluences([]);
     setSecondLook([]);
