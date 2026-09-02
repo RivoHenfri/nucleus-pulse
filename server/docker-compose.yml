@@ -15,6 +15,10 @@ services:
     environment:
       PORT: "3000"
       DB_PATH: /data/nucleus.sqlite
+      # The model key for the room reading. Lives in ./.env on the host, which
+      # is never committed; the browser never sees it.
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      READING_MODEL: ${READING_MODEL:-anthropic/claude-sonnet-4.5}
     volumes:
       - nucleus-data:/data
     networks: [nucleus]

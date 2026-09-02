@@ -97,3 +97,22 @@ export const openRoom = async (title?: string): Promise<{ code: string; key: str
     return null;
   }
 };
+
+/**
+ * The AI's reading of a room: a short, mindful paragraph and three lessons,
+ * written from the aggregate and nothing else. Generated on the server, where
+ * the model key lives; the browser only ever sees the text. Null if the room
+ * is empty or the model is unavailable, and the screen copes with either.
+ */
+export const fetchReading = async (code: string, key: string, lang: 'en' | 'id'): Promise<string | null> => {
+  try {
+    const res = await fetch(`${ROOM_API}/rooms/${encodeURIComponent(code)}/reading?lang=${lang}`, {
+      headers: { 'x-facilitator-key': key },
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { text?: string };
+    return body.text ?? null;
+  } catch {
+    return null;
+  }
+};

@@ -208,8 +208,141 @@ Bun.serve({
       return json({ code, title: room.title, created_at: room.created_at, ...summarise(code) }, 200, origin);
     }
 
+    // -- the AI reads the room -------------------------------------------------
+    //
+    // Facilitator-only, aggregate-only. The model sees counts, never a row, and
+    // it is briefed to notice rather than to judge: nobody in the room was
+    // right or wrong, and the reading must not imply otherwise. Cached per
+    // (room, n, lang) so the screen can poll without paying twice for the
+    // same room.
+    const r = url.pathname.match(/^\/rooms\/([A-Z0-9]{4,8})\/reading$/i);
+    if (r && req.method === 'GET') {
+      const code = r[1].toUpperCase();
+      const room = db.query<{ key: string }, [string]>('SELECT key FROM rooms WHERE code = ?').get(code);
+      if (!room) return json({ error: 'no such room' }, 404, origin);
+      if (req.headers.get('x-facilitator-key') !== room.key) return json({ error: 'not yours' }, 403, origin);
+      const lang = url.searchParams.get('lang') === 'en' ? 'en' : 'id';
+      const summary = summarise(code);
+      if (summary.n === 0) return json({ text: null }, 200, origin);
+      const cacheKey = `${code}:${summary.n}:${lang}`;
+      const hit = readings.get(cacheKey);
+      if (hit) return json({ text: hit }, 200, origin);
+      const text = await readRoom(summary, lang);
+      if (text) readings.set(cacheKey, text);
+      return json({ text }, 200, origin);
+    }
+
     return json({ error: 'not found' }, 404, origin);
   },
 });
+
+// ---------------------------------------------------------------------------
+// the reading
+// ---------------------------------------------------------------------------
+
+const readings = new Map<string, string>();
+const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY ?? '';
+const READING_MODEL = process.env.READING_MODEL ?? 'anthropic/claude-sonnet-4.5';
+
+const NAMES: Record<string, string> = {
+  client: 'Client (villa owner, URGENT, already acknowledged)',
+  finance: 'Payment (contractor batch, approval needed by 14:00)',
+  people: 'Candidate (final candidate, People team coordinating)',
+  engineering: 'Engineering (MEP Rev.07, confirmation needed today)',
+  operations: 'Operations (site access issue, already handled)',
+  hospitality: 'Hospitality (guest arrival tonight, action needed)',
+  governance: 'Governance (permit renewal, already underway)',
+  ai: 'AI (assistant recommendation, made from 6 of 8 sources)',
+};
+
+/**
+ * The brief is the facilitator's own framing, given to the model as the
+ * lens it must read through. It is asked for one short paragraph and three
+ * lessons, in the room's language, and told what it may not do.
+ */
+const BRIEF = `You are writing a short, mindful reading of a workplace experiment called NUCLEUS PULSE 01 — SIGNAL, for a facilitator to show a room of colleagues.
+
+What happened: everyone saw the same eight workplace messages arriving over thirty seconds and chose two to deal with first. Then they saw the same eight with the hidden context (owner, decision, deadline, consequence) and chose two again. Some messages were loud but already handled; some were quiet but carried a real deadline. An AI card recommended one item with high confidence, having read six of eight sources.
+
+The facilitator's framing, which you must read through:
+- Same information does not create the same experience. Nobody enters a morning as a blank slate: attention is shaped by role, past experience, responsibility, familiarity, perceived risk, current context, assumptions, and the information environment — including how fast information arrives and how little time there is to judge it.
+- This matters in a growing organisation where processes are still forming, new joiners bring useful but different habits from previous companies, and AI can raise confidence faster than organisational context is acquired.
+- Noise never goes away; the question is how much of it we can filter. One person's signal today may be tomorrow's noise. There is no single right signal, only the one each person could see from where they stood.
+- Bring your experience. Do not mistake it for the whole picture. Confidence is not context. Reality is always larger than the lens we use to see it.
+
+Rules you must follow:
+- You are given aggregate counts only. Never invent individuals, quotes, names, departments, or percentages that are not derivable from the numbers.
+- Do not say anyone was right, wrong, correct, biased, or should have chosen differently. Do not score, rank, or diagnose. Every choice in the room was a valid choice from where that person stood.
+- Notice, do not lecture. Warm, plain, unhurried. No jargon, no bullet-point corporate tone in the paragraph.
+- Output exactly this shape, nothing else:
+  One paragraph of 60–90 words reading what this particular room did.
+  A blank line.
+  Three lines, each starting with "• ", each one lesson this room can take from its own numbers, at most 18 words each.`;
+
+const readRoom = async (s: ReturnType<typeof summarise>, lang: 'en' | 'id'): Promise<string | null> => {
+  if (!OPENROUTER_KEY) return null;
+  const list = (m: Record<string, number>) =>
+    Object.entries(m)
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `${NAMES[k] ?? k}: ${v}`)
+      .join('\n');
+  const flows = Object.entries(s.flows)
+    .filter(([k]) => k.split('>')[0] !== k.split('>')[1])
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([k, v]) => {
+      const [a, b] = k.split('>');
+      return `${a} → ${b}: ${v}`;
+    })
+    .join('\n');
+  const data = `Room size: ${s.n} people.
+
+First look (chosen in the first 30 seconds, with only the surface visible):
+${list(s.first)}
+
+With more context (chosen again once owner, deadline and consequence were visible):
+${list(s.second)}
+
+Strongest movements, first look → with context:
+${flows || '(none)'}
+
+How many of each person's two choices changed: both=${s.changed['2'] ?? 0}, one=${s.changed['1'] ?? 0}, none=${s.changed['0'] ?? 0}.
+
+What people said mattered to them (self-reported, up to two each):
+${list(s.influences)}
+
+Write in ${lang === 'id' ? 'Bahasa Indonesia, conversational and warm, the way a thoughtful colleague speaks — not formal register' : 'English'}.`;
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${OPENROUTER_KEY}`,
+        'content-type': 'application/json',
+        'http-referer': 'https://rivohenfri.github.io/nucleus-pulse/',
+        'x-title': 'Nucleus Pulse room reading',
+      },
+      body: JSON.stringify({
+        model: READING_MODEL,
+        temperature: 0.6,
+        max_tokens: 500,
+        messages: [
+          { role: 'system', content: BRIEF },
+          { role: 'user', content: data },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      console.error('reading failed', res.status, await res.text().catch(() => ''));
+      return null;
+    }
+    const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+    const text = body.choices?.[0]?.message?.content?.trim();
+    return text || null;
+  } catch (e) {
+    console.error('reading error', e);
+    return null;
+  }
+};
 
 console.log(`nucleus room api on :${PORT}, db at ${DB_PATH}`);

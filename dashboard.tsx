@@ -18,7 +18,7 @@ import ReactDOM from 'react-dom/client';
 import { INFLUENCES, SITUATION_IDS } from './data';
 import { COPY, SHORT_NAME, type Lang } from './i18n';
 import type { InfluenceId, SituationId } from './types';
-import { fetchSummary, openRoom, type RoomSummary } from './utils/room';
+import { fetchReading, fetchSummary, openRoom, type RoomSummary } from './utils/room';
 
 // Validated for the dark surface (OKLCH L 0.48–0.67, CVD ΔE 26.8): orange for
 // the first look — the pull — and blue for the look with context.
@@ -29,7 +29,7 @@ const T = {
   en: {
     waiting: 'Scan, or open',
     joined: (n: number) => `${n} in the room`,
-    stage: ['', 'FIRST LOOK', 'WITH MORE CONTEXT', 'WHERE ATTENTION MOVED', 'WHAT MATTERED', ''],
+    stage: ['', 'FIRST LOOK', 'WITH MORE CONTEXT', 'WHERE ATTENTION MOVED', 'WHAT MATTERED', '', 'CONCLUSION'],
     first: 'First look',
     second: 'With more context',
     both: 'Both changed',
@@ -37,6 +37,38 @@ const T = {
     none: 'Neither changed',
     close: "We don't all notice the same things.",
     closeB: 'That is not the problem.',
+    reading: [
+      '',
+      'Same 30 seconds. Same 8 messages. Attention did not go to the same places.',
+      'Nothing was added. Only what was visible changed. And with it, what deserved attention.',
+      'The loud ones pulled first. Context pulled back. That distance is Noise Gravity.',
+      'Urgency, instinct, role. Every reason here is valid. Same room, different lenses.',
+      '',
+      '',
+    ],
+    conclusion: [
+      'Same information does not create the same experience.',
+      'Nobody enters a morning as a blank slate. Attention is shaped by role, experience, responsibility, familiarity, perceived risk, and the information environment, including how fast it arrives and how little time there is to judge it.',
+      'Noise never goes away. The question is never whether it exists, but how much of it we can filter. And one person’s signal today may be tomorrow’s noise. There is no single right signal, only the one each of us could see from where we stood.',
+      'Bring your experience. Do not mistake it for the whole picture.',
+    ],
+    heroA: 'Confidence ≠ Context.',
+    heroB: 'Reality is always larger than the lens we use to see it.',
+    aiTitle: 'A READING OF THIS ROOM',
+    aiWait: 'Reading the room…',
+    share: 'Share the conclusion',
+    shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
+      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+${n} people · 30 seconds · 8 messages · 2 choices
+
+First look: ${top1} pulled ${c1} of us.
+With context: ${top2} — ${c2}.
+${pct}% changed at least one choice.
+
+Same information ≠ same experience.
+Confidence ≠ Context.
+Reality is larger than any one lens.
+`,
     next: 'next  →',
     open: 'Open a room',
     opening: 'Opening…',
@@ -47,7 +79,7 @@ const T = {
   id: {
     waiting: 'Scan, atau buka',
     joined: (n: number) => `${n} orang di ruangan`,
-    stage: ['', 'PILIHAN PERTAMA', 'SETELAH ADA KONTEKS', 'KE MANA PERHATIAN PINDAH', 'YANG DIPERTIMBANGKAN', ''],
+    stage: ['', 'PILIHAN PERTAMA', 'SETELAH ADA KONTEKS', 'KE MANA PERHATIAN PINDAH', 'YANG DIPERTIMBANGKAN', '', 'KESIMPULAN'],
     first: 'Pilihan pertama',
     second: 'Setelah ada konteks',
     both: 'Dua-duanya berubah',
@@ -55,6 +87,38 @@ const T = {
     none: 'Tidak ada yang berubah',
     close: 'Kita memang tidak selalu memperhatikan hal yang sama.',
     closeB: 'Dan itu bukan masalahnya.',
+    reading: [
+      '',
+      '30 detik yang sama. 8 pesan yang sama. Perhatian tidak jatuh ke tempat yang sama.',
+      'Tidak ada yang ditambahkan. Yang berubah cuma apa yang terlihat. Dan apa yang layak diperhatikan ikut berubah.',
+      'Yang berisik menarik duluan. Konteks menariknya kembali. Jarak itulah Noise Gravity.',
+      'Urgensi, insting, peran. Semua alasan di sini sah. Ruangan yang sama, lensa yang berbeda.',
+      '',
+      '',
+    ],
+    conclusion: [
+      'Informasi yang sama tidak menghasilkan pengalaman yang sama.',
+      'Tidak ada yang masuk ke sebuah pagi sebagai kertas kosong. Perhatian dibentuk oleh peran, pengalaman, tanggung jawab, keakraban, risiko yang dirasa, dan lingkungan informasinya, termasuk seberapa cepat informasi itu datang dan seberapa sedikit waktu untuk menimbangnya.',
+      'Noise tidak pernah hilang. Pertanyaannya bukan apakah dia ada, tapi seberapa banyak yang bisa kita saring. Signal seseorang hari ini bisa jadi noise besok. Tidak ada satu signal yang paling benar, yang ada cuma signal yang bisa dilihat masing-masing dari tempatnya berdiri.',
+      'Bawa pengalamanmu. Tapi jangan kira itu seluruh gambarannya.',
+    ],
+    heroA: 'Keyakinan ≠ Konteks.',
+    heroB: 'Realitas selalu lebih besar dari lensa yang kita pakai untuk melihatnya.',
+    aiTitle: 'PEMBACAAN RUANGAN INI',
+    aiWait: 'Membaca ruangan…',
+    share: 'Bagikan kesimpulannya',
+    shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
+      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+${n} orang · 30 detik · 8 pesan · 2 pilihan
+
+Pilihan pertama: ${top1} menarik ${c1} dari kita.
+Setelah ada konteks: ${top2} — ${c2}.
+${pct}% mengubah setidaknya satu pilihan.
+
+Informasi yang sama ≠ pengalaman yang sama.
+Keyakinan ≠ Konteks.
+Realitas lebih besar dari satu sudut pandang.
+`,
     next: 'lanjut  →',
     open: 'Buka ruang',
     opening: 'Membuka…',
@@ -227,7 +291,7 @@ const Room: React.FC = () => {
   // clicker and never touch the laptop.
   useEffect(() => {
     const on = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') setStage(v => Math.min(5, v + 1));
+      if (e.key === 'ArrowRight' || e.key === ' ') setStage(v => Math.min(6, v + 1));
       if (e.key === 'ArrowLeft') setStage(v => Math.max(0, v - 1));
     };
     window.addEventListener('keydown', on);
@@ -280,6 +344,43 @@ const Room: React.FC = () => {
   const n = s?.n ?? 0;
   const changed = (k: string) => s?.changed[k] ?? 0;
 
+  // The room's own headline numbers, for the reading under each chart and
+  // for what goes to the group. Aggregates only, the same guarantee as
+  // everything else on this screen.
+  const topOf = (m: Record<string, number> | undefined): [SituationId, number] => {
+    const e = Object.entries(m ?? {}).sort((a, b) => b[1] - a[1])[0];
+    return e ? [e[0] as SituationId, e[1]] : ['client', 0];
+  };
+  const [top1, c1] = topOf(s?.first);
+  const [top2, c2] = topOf(s?.second);
+  const pctChanged = n ? Math.round(((changed('1') + changed('2')) / n) * 100) : 0;
+  const shareHref = `https://wa.me/?text=${encodeURIComponent(
+    t.shareText(n, SHORT_NAME[top1], c1, SHORT_NAME[top2], c2, pctChanged),
+  )}`;
+
+  const Reading: React.FC<{ i: number }> = ({ i }) =>
+    t.reading[i] ? (
+      <p className="mt-10 border-l-2 border-white/10 pl-5 text-[16px] leading-relaxed text-gray-400">
+        {t.reading[i]}
+      </p>
+    ) : null;
+
+  // The AI's reading of this room, asked for once when the conclusion is
+  // reached. It sees the aggregate and nothing else, and it is written to
+  // notice rather than to judge: no one in the room is right or wrong.
+  const [ai, setAi] = useState<string | null>(null);
+  useEffect(() => {
+    if (stage !== 6 || ai || !code || !key) return;
+    let live = true;
+    void fetchReading(code, key, lang).then(r => {
+      if (live && r) setAi(r);
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, lang]);
+
   return (
     <main className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-10 py-12">
       <header className="flex items-baseline justify-between">
@@ -321,6 +422,7 @@ const Room: React.FC = () => {
               <>
                 <p className="mb-8 text-[12px] tracking-[0.3em] text-gray-500">{t.stage[stage]}</p>
                 <Compare s={s} lang={lang} showSecond={stage === 2} />
+                <Reading i={stage} />
               </>
             )}
 
@@ -328,6 +430,7 @@ const Room: React.FC = () => {
               <>
                 <p className="mb-8 text-[12px] tracking-[0.3em] text-gray-500">{t.stage[3]}</p>
                 <Flows s={s} />
+                <Reading i={3} />
               </>
             )}
 
@@ -352,6 +455,7 @@ const Room: React.FC = () => {
                       />
                     ))}
                 </div>
+                <Reading i={4} />
               </>
             )}
 
@@ -361,13 +465,44 @@ const Room: React.FC = () => {
                 <p className="mt-4 text-[18px] text-gray-500">{t.closeB}</p>
               </div>
             )}
+
+            {stage === 6 && (
+              <div className="mx-auto max-w-2xl">
+                <p className="mb-8 text-[12px] tracking-[0.3em] text-gray-500">{t.stage[6]}</p>
+                <div className="space-y-5">
+                  <p className="font-display text-[30px] leading-tight text-[#EDE7DA]">{t.conclusion[0]}</p>
+                  <p className="text-[16px] leading-relaxed text-gray-400">{t.conclusion[1]}</p>
+                  <p className="text-[16px] leading-relaxed text-gray-400">{t.conclusion[2]}</p>
+                  <p className="text-[16px] leading-relaxed text-gray-300">{t.conclusion[3]}</p>
+                </div>
+                <div className="mt-10 space-y-2">
+                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroA}</p>
+                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroB}</p>
+                </div>
+
+                <div className="mt-12 rounded-2xl border border-sky-300/15 bg-sky-400/[0.03] px-6 py-5">
+                  <p className="text-[10px] tracking-[0.3em] text-sky-200/70">✦ {t.aiTitle}</p>
+                  <p className="mt-3 text-[15px] leading-relaxed text-gray-300">{ai ?? t.aiWait}</p>
+                </div>
+
+                <a
+                  href={shareHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15]"
+                >
+                  <span className="text-[15px]">💬</span>
+                  {t.share}
+                </a>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </section>
 
       <footer className="flex justify-between text-[11px] tracking-[0.24em] text-gray-600">
-        <span>{stage} / 5</span>
-        <button onClick={() => setStage(v => Math.min(5, v + 1))} className="hover:text-gray-300">
+        <span>{stage} / 6</span>
+        <button onClick={() => setStage(v => Math.min(6, v + 1))} className="hover:text-gray-300">
           {t.next}
         </button>
       </footer>
