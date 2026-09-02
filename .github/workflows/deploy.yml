@@ -24,10 +24,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      # Only a URL — the OpenRouter key lives in the Cloudflare Worker, never here.
+      # Nothing to inject: there is no backend and no runtime API. The
+      # narration is rendered at author time and committed as audio.
       - run: npm run build
-        env:
-          ORACLE_URL: https://nucleus-pulse-signal.rivohenfri.cloud
       # enablement turns Pages on for the repo on the first run, so nobody has
       # to flip it by hand in Settings before the first deploy.
       - uses: actions/configure-pages@v5
