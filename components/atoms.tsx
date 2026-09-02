@@ -12,6 +12,7 @@
 
 import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
+import { whenQuiet } from '../utils/narration';
 import { buzz, tap as tapSound } from '../utils/sound';
 
 /**
@@ -83,13 +84,27 @@ export const useBeats = (gaps: number[]): number => {
  * cuts; the button is kept for the screens where the participant has produced
  * something and deserves to sit with it for as long as they like.
  *
- * `hold` is how long the finished screen stands before it moves.
+ * It waits for the voice as well as for the beats. Beat timings are scaled by
+ * PACE and the narration is not, so at a tight tempo a screen's visuals finish
+ * long before its last sentence has been said — and a scene that left on the
+ * visuals alone talked over itself and lost the line. Waiting for the voice
+ * makes the pause adapt to how much there actually is to say, which is the
+ * only version that stays right when the tempo changes again.
+ *
+ * `hold` is how long the finished screen stands after the last word.
  */
 export const useAutoAdvance = (ready: boolean, hold: number, onDone: () => void): void => {
   useEffect(() => {
     if (!ready) return;
-    const t = setTimeout(onDone, hold);
-    return () => clearTimeout(t);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let gone = false;
+    whenQuiet(() => {
+      if (!gone) timer = setTimeout(onDone, hold);
+    });
+    return () => {
+      gone = true;
+      if (timer) clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, hold]);
 };

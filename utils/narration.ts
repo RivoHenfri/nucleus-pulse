@@ -60,6 +60,18 @@ let speaking = false;
 let generation = 0;
 /** Callers waiting for the voice to finish everything it was given. */
 let waiting: (() => void)[] = [];
+
+/**
+ * Lines promised but not yet handed to the queue.
+ *
+ * A cue is a timer. Counting only the queue and what is speaking means the
+ * voice looks idle in the gap between one line ending and the next timer
+ * firing — so a scene gated on "is it quiet" would leave during that gap and
+ * cut off a line that had not started yet. The AI reveal did exactly this: it
+ * moved on at eight seconds while its second sentence was cued for seven and
+ * a half, and the line was lost every single run.
+ */
+let owed = 0;
 /** A breath between one line and the next, so they do not run together. */
 const GAP_MS = 220;
 
@@ -93,10 +105,12 @@ const pump = () => {
   if (!enabled || speaking) return;
   const id = queue.shift();
   if (!id) {
-    // Nothing left to say. Anyone gated on the voice can move.
-    const due = waiting;
-    waiting = [];
-    due.forEach(cb => cb());
+    // Only truly finished when nothing is queued and nothing is still owed.
+    if (owed === 0) {
+      const due = waiting;
+      waiting = [];
+      due.forEach(cb => cb());
+    }
     return;
   }
 
@@ -208,7 +222,13 @@ export const narrate = (id: LineId | string, delay = 0): void => {
   if (delay > 0) {
     const at = delay <= lastCueAt ? lastCueAt + 5 : delay;
     lastCueAt = at;
-    pending.push(setTimeout(() => enqueue(id), at));
+    owed += 1;
+    pending.push(
+      setTimeout(() => {
+        owed -= 1;
+        enqueue(id);
+      }, at),
+    );
   } else {
     enqueue(id);
   }
@@ -222,6 +242,7 @@ export const hush = (): void => {
   speaking = false;
   waiting = [];
   lastCueAt = -1;
+  owed = 0;
   duckCalmBed(false);
   if (voice) {
     try {
@@ -246,7 +267,7 @@ export const hush = (): void => {
  * Fires immediately when nothing is speaking, and is dropped by hush().
  */
 export const whenQuiet = (cb: () => void): void => {
-  if (!enabled || (!speaking && queue.length === 0)) {
+  if (!enabled || (!speaking && queue.length === 0 && owed === 0)) {
     cb();
     return;
   }
@@ -255,7 +276,15 @@ export const whenQuiet = (cb: () => void): void => {
 
 export const setNarrationEnabled = (on: boolean): void => {
   enabled = on;
-  if (!on) hush();
+  if (!on) {
+    // Scenes that wait for the voice would wait forever once there is no
+    // voice left to wait for. Muting mid-scene has to release them, or the
+    // participant is stranded on a screen that will never move — which in a
+    // room full of people is the worst moment for it to happen.
+    const due = waiting;
+    hush();
+    due.forEach(cb => cb());
+  }
 };
 
 /**
