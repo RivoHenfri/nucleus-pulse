@@ -14,7 +14,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, LANGUAGES, type Lang } from '../i18n';
-import { hush, narrate, setNarrationLang, unlockAudio } from '../utils/narration';
+import { hush, narrate, setNarrationLang, unlockAudio, whenQuiet } from '../utils/narration';
 import { unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
@@ -35,6 +35,8 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
   const c = COPY[lang].enter;
   const [lit, setLit] = useState(false);
   const [started, setStarted] = useState(false);
+  /** The five opening lines have all been spoken. */
+  const [spoken, setSpoken] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setLit(true), IGNITION_MS);
@@ -66,6 +68,9 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
       ['enter-5', cue(13600)],
     ];
     lines.forEach(([id, delay]) => narrate(id, delay));
+    // "Pulse One. Signal." is the last thing said and the whole scene turns on
+    // it, so the way in does not appear until it has actually been said.
+    whenQuiet(() => setSpoken(true));
     return () => hush();
   }, [started]);
 
@@ -123,7 +128,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
             </div>
 
             <Continue
-              show={shown >= 3}
+              show={shown >= 3 && spoken}
               label={c.cta}
               tone="solid"
               onClick={() => {

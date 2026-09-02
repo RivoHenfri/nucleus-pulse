@@ -1,21 +1,25 @@
 // SCENE 05 — TRANSITION
 //
-// Two sentences and the pause between them. No button: the participant has just
-// answered something about themselves, and being asked to press CONTINUE here
-// would turn a breath into a task. LENS LOCK is not mentioned yet.
+// Two sentences and the pause between them.
+//
+// This used to advance itself, on the argument that a button here turns a
+// breath into a task. In a room that is wrong: it is the one screen where a
+// facilitator cannot hold the group, and a participant who looks up from their
+// phone finds the moment already gone. Every scene now waits to be told to
+// move on. LENS LOCK is still not mentioned yet.
 
 import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { Beat, Stage, beats, cue, useBeats } from './atoms';
+import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 
 interface Props {
   lang: Lang;
   onDone: () => void;
 }
 
-const GAPS = beats(1600, 4200);
-const HOLD_AFTER = cue(4600);
+// two lines, then the way on
+const GAPS = beats(1600, 4200, 3200);
 
 const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
   const c = COPY[lang].transition;
@@ -24,12 +28,7 @@ const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
   useEffect(() => {
     narrate('transition-1', cue(1300));
     narrate('transition-2', cue(6000));
-    const timer = setTimeout(onDone, GAPS[0] + GAPS[1] + HOLD_AFTER);
-    return () => {
-      clearTimeout(timer);
-      hush();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => hush();
   }, []);
 
   return (
@@ -42,6 +41,15 @@ const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
           <p className="text-[18px] leading-relaxed text-[#EDE7DA]">{c.second}</p>
         </Beat>
       </div>
+
+      <Continue
+        show={shown >= 3}
+        label={COPY[lang].context.cta}
+        onClick={() => {
+          hush();
+          onDone();
+        }}
+      />
     </Stage>
   );
 };

@@ -174,12 +174,15 @@ export const SCENE_TRANSITION = {
  * number moves the entire experience: 1 is the pace the scenes were written
  * at, lower is tighter, higher gives a room more silence.
  *
- * Written out longhand the run lands near five minutes, which is past what
- * anyone will sit through in a workshop before the first round. At 0.8 it
- * comes in under four with the pauses still doing their work. Change this,
- * not the individual numbers — they are already balanced against each other.
+ * Written out longhand the run lands near five minutes. 0.8 brought it to
+ * 3:56, and in the room that still read as slow — the reveals lost their
+ * snap because the pause before each one had time to go slack. 0.62 keeps
+ * every beat and every silence, just tighter, and lands around 3:05.
+ *
+ * Change this, not the individual numbers — they are already balanced against
+ * each other, and the ratios are what make the rhythm work.
  */
-export const PACE = 0.8;
+export const PACE = 0.62;
 
 /** A scene's beat timeline, at the run's tempo. */
 export const beats = (...gaps: number[]): number[] => gaps.map(g => Math.round(g * PACE));

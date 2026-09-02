@@ -23,57 +23,102 @@ interface Props {
   onSelect?: () => void;
 }
 
-export const SurfaceCard: React.FC<Props> = ({ id, lang, selected, muted, onSelect }) => {
+/**
+ * How a situation looks when it lands in Round 1: a row in a mail client, on a
+ * phone, on a Tuesday.
+ *
+ * All of this chrome — the avatar, the sender, the red importance flag, the
+ * unread pill, the ageing timestamp, the paperclip, the typing dots — is the
+ * room, not the experiment. Stripped back to plain cards the eight situations
+ * read as a quiz, and a participant who feels quizzed starts looking for the
+ * right answer instead of behaving like themselves.
+ *
+ * The loud ones get the full treatment. The quiet ones get a smaller avatar
+ * and greyer type, exactly the way a real client de-emphasises anything it has
+ * decided is not urgent.
+ */
+export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
+  id,
+  lang,
+  selected,
+  muted,
+  onSelect,
+  stamp,
+}) => {
   const s = situationById(id);
   const c = SITUATION_COPY[lang][id];
+  const m = COPY[lang].morning;
   const isAI = id === 'ai';
-  const style = isAI ? AI_STYLE : LOUD_STYLE[s.loudness];
-  const loud = s.loudness === 'loud' && !selected;
+  const loud = s.loudness === 'loud';
+  const quiet = s.loudness === 'quiet';
 
   return (
     <motion.button
       onClick={onSelect}
       disabled={muted && !selected}
-      whileTap={{ scale: 0.985 }}
-      // The loud ones do not sit still. Nothing else on the card moves.
-      animate={loud ? { opacity: [1, 0.82, 1] } : { opacity: muted && !selected ? 0.35 : 1 }}
-      transition={loud ? { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.4 }}
-      className={`w-full text-left rounded-2xl border px-4 py-3.5 transition-colors duration-300 ${
-        selected
-          ? 'border-[#EDE7DA]/70 bg-[#EDE7DA]/[0.08] shadow-[0_0_30px_-14px_rgba(237,231,218,0.7)]'
-          : style.row
+      whileTap={{ scale: 0.99 }}
+      animate={{ opacity: muted && !selected ? 0.35 : 1 }}
+      transition={{ duration: 0.4 }}
+      className={`flex w-full items-start gap-3 border-b border-white/[0.04] px-4 py-3 text-left transition-colors duration-300 ${
+        selected ? 'bg-[#EDE7DA]/[0.07]' : loud ? 'bg-white/[0.02]' : ''
       }`}
     >
-      <div className="flex items-center gap-2">
-        <span className="text-[13px] leading-none">{s.glyph}</span>
-        <span
-          className={`text-[10px] font-bold tracking-[0.22em] ${
-            selected ? 'text-[#EDE7DA]' : style.label
-          }`}
-        >
-          {c.label}
-        </span>
-        {s.unread && !selected ? (
-          <motion.span
-            initial={{ scale: 0.6 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-            className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-rose-500/85 px-1.5 text-[10px] font-bold text-white"
-          >
-            {s.unread}
-          </motion.span>
-        ) : null}
-        {selected && <span className="ml-auto text-[11px] text-[#EDE7DA]">✓</span>}
-      </div>
+      {/* Unread bar, the way Outlook marks a row you have not opened */}
+      <span
+        className={`mt-1 h-9 w-[3px] shrink-0 rounded-full ${
+          selected ? 'bg-[#EDE7DA]' : loud ? 'bg-sky-400' : quiet ? 'bg-transparent' : 'bg-sky-400/40'
+        }`}
+      />
 
-      <p
-        className={`mt-2 text-[15px] leading-snug ${
-          selected ? 'text-[#EDE7DA]' : s.loudness === 'quiet' ? 'text-gray-400' : 'text-gray-200'
-        } ${isAI ? 'font-semibold' : ''}`}
+      <span
+        className={`flex shrink-0 items-center justify-center rounded-full font-bold text-white ${
+          quiet ? 'h-8 w-8 text-[10px] opacity-60' : 'h-10 w-10 text-[11px]'
+        } ${selected ? 'bg-[#EDE7DA] text-[#07090C]' : s.avatar}`}
       >
-        {c.headline}
-      </p>
-      <p className={`mt-1 text-[13px] ${isAI ? 'text-sky-200/70' : 'text-gray-500'}`}>{c.line}</p>
+        {selected ? '✓' : s.initials}
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-1.5">
+          <span
+            className={`truncate ${
+              quiet ? 'text-[12px] font-normal text-gray-500' : 'text-[13px] font-bold text-gray-100'
+            }`}
+          >
+            {c.sender}
+          </span>
+          {s.important && <span className="shrink-0 text-[11px] font-black text-rose-500">!</span>}
+          {!!s.unread && (
+            <span className="shrink-0 rounded-full bg-rose-500 px-1.5 py-px text-[10px] font-bold text-white">
+              {s.unread}
+            </span>
+          )}
+          <span className="ml-auto shrink-0 text-[10px] text-gray-500">{stamp}</span>
+        </span>
+
+        <span
+          className={`block truncate ${
+            quiet ? 'text-[12px] text-gray-500' : 'text-[13px] font-semibold text-gray-100'
+          } ${isAI ? 'text-sky-100' : ''}`}
+        >
+          {c.headline}
+        </span>
+
+        <span className="mt-0.5 flex items-center gap-1.5">
+          {s.attachment && <span className="shrink-0 text-[10px] text-gray-600">📎</span>}
+          <span className="truncate text-[11px] text-gray-500">{c.preview}</span>
+        </span>
+
+        {/* Someone is typing in the group, right now. Nothing is being said. */}
+        {loud && s.app === 'chat' && (
+          <span className="mt-1.5 flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-gray-500 animate-typing1" />
+            <span className="h-1.5 w-1.5 rounded-full bg-gray-500 animate-typing2" />
+            <span className="h-1.5 w-1.5 rounded-full bg-gray-500 animate-typing3" />
+            <span className="ml-1 text-[10px] text-gray-500">{m.typing}</span>
+          </span>
+        )}
+      </span>
     </motion.button>
   );
 };

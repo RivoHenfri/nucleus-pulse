@@ -13,14 +13,24 @@ import type { InfluenceId, Loudness, Situation, SituationId } from './types';
  * by learning "the quiet ones matter".
  */
 export const SITUATIONS: Situation[] = [
-  { id: 'client', glyph: '🔴', contextGlyph: '🤝', loudness: 'loud', unread: 4 },
-  { id: 'ai', glyph: '✦', loudness: 'loud' },
-  { id: 'hospitality', glyph: '🛎️', loudness: 'loud', unread: 2 },
-  { id: 'finance', glyph: '💳', loudness: 'medium' },
-  { id: 'people', glyph: '👥', loudness: 'medium', unread: 1 },
-  { id: 'operations', glyph: '🏗️', loudness: 'medium', unread: 6 },
-  { id: 'engineering', glyph: '📐', loudness: 'quiet' },
-  { id: 'governance', glyph: '⚖️', loudness: 'quiet' },
+  // Ages are as deliberate as the loudness: the things nobody shouted about
+  // have been sitting there for the better part of an hour.
+  { id: 'client', glyph: '🔴', contextGlyph: '🤝', loudness: 'loud', unread: 4,
+    app: 'mail', initials: 'DP', avatar: 'bg-rose-600', minsAgo: 2, important: true },
+  { id: 'ai', glyph: '✦', loudness: 'loud',
+    app: 'assistant', initials: '✦', avatar: 'bg-sky-600', minsAgo: 0 },
+  { id: 'hospitality', glyph: '🛎️', loudness: 'loud', unread: 2,
+    app: 'chat', initials: 'FO', avatar: 'bg-amber-600', minsAgo: 4, important: true },
+  { id: 'finance', glyph: '💳', loudness: 'medium',
+    app: 'mail', initials: 'FA', avatar: 'bg-emerald-700', minsAgo: 11, attachment: true },
+  { id: 'people', glyph: '👥', loudness: 'medium', unread: 1,
+    app: 'chat', initials: 'PT', avatar: 'bg-violet-600', minsAgo: 6 },
+  { id: 'operations', glyph: '🏗️', loudness: 'medium', unread: 6,
+    app: 'chat', initials: 'ZB', avatar: 'bg-teal-600', minsAgo: 1 },
+  { id: 'engineering', glyph: '📐', loudness: 'quiet',
+    app: 'mail', initials: 'AW', avatar: 'bg-slate-600', minsAgo: 38, attachment: true },
+  { id: 'governance', glyph: '⚖️', loudness: 'quiet',
+    app: 'mail', initials: 'CA', avatar: 'bg-slate-600', minsAgo: 52, attachment: true },
 ];
 
 export const SITUATION_IDS: SituationId[] = SITUATIONS.map(s => s.id);

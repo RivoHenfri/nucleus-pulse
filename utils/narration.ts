@@ -20,6 +20,16 @@
 //
 // So there is exactly one element for the whole run. The language choice on
 // the first screen unlocks it, and every line after that swaps its `src`.
+//
+// AND IT IS A QUEUE.
+//
+// Scene beats are scaled by PACE; the audio files are not, and cannot be. Cue
+// a line while the previous one is still speaking and the element simply cuts
+// the first one off mid-sentence — which is what "the voice doesn't match the
+// screen" actually sounds like, and it gets worse every time the tempo is
+// tightened. So a cue does not play a line, it joins a queue: whatever is
+// speaking finishes, then the next line starts. The visuals keep their own
+// timing, and the voice stays a voice.
 
 import { speak, silence as silenceSynth } from './voice';
 import type { Lang } from '../i18n';
@@ -32,6 +42,14 @@ const TEXT = LINES.languages as Record<string, Record<string, string>>;
 let enabled = true;
 let lang: Lang = 'en';
 let pending: ReturnType<typeof setTimeout>[] = [];
+
+/** Lines cued but not yet spoken, in the order they were asked for. */
+let queue: string[] = [];
+let speaking = false;
+/** Callers waiting for the voice to finish everything it was given. */
+let waiting: (() => void)[] = [];
+/** A breath between one line and the next, so they do not run together. */
+const GAP_MS = 220;
 
 /** The single element the whole run speaks through. */
 let voice: HTMLAudioElement | null = null;
@@ -58,8 +76,18 @@ export const setNarrationLang = (next: Lang): void => {
   lang = next;
 };
 
-const play = (id: string) => {
-  if (!enabled) return;
+/** Take the next line off the queue, or fall idle. */
+const pump = () => {
+  if (!enabled || speaking) return;
+  const id = queue.shift();
+  if (!id) {
+    // Nothing left to say. Anyone gated on the voice can move.
+    const due = waiting;
+    waiting = [];
+    due.forEach(cb => cb());
+    return;
+  }
+
   const text = TEXT[lang]?.[id];
   const audio = element();
   if (!audio) {
@@ -67,27 +95,42 @@ const play = (id: string) => {
     return;
   }
 
+  const next = () => {
+    speaking = false;
+    pending.push(setTimeout(pump, GAP_MS));
+  };
+
   try {
-    audio.pause();
+    speaking = true;
+    audio.onended = next;
     audio.src = url(id);
     audio.currentTime = 0;
     audio.volume = 1;
     audio.play().catch(() => {
-      // Autoplay refused, or the file is missing — say it the plain way.
+      // Autoplay refused, or the file is missing — say it the plain way and
+      // keep the queue moving rather than stalling every line behind it.
       if (text) speak(text);
+      next();
     });
   } catch {
     if (text) speak(text);
+    next();
   }
+};
+
+const enqueue = (id: string) => {
+  if (!enabled) return;
+  queue.push(id);
+  pump();
 };
 
 /** Speak one recorded line, optionally after a delay so it lands with its animation. */
 export const narrate = (id: LineId | string, delay = 0): void => {
   if (!enabled) return;
   if (delay > 0) {
-    pending.push(setTimeout(() => play(id), delay));
+    pending.push(setTimeout(() => enqueue(id), delay));
   } else {
-    play(id);
+    enqueue(id);
   }
 };
 
@@ -95,8 +138,12 @@ export const narrate = (id: LineId | string, delay = 0): void => {
 export const hush = (): void => {
   pending.forEach(clearTimeout);
   pending = [];
+  queue = [];
+  speaking = false;
+  waiting = [];
   if (voice) {
     try {
+      voice.onended = null;
       voice.pause();
       voice.currentTime = 0;
     } catch {
@@ -104,6 +151,24 @@ export const hush = (): void => {
     }
   }
   silenceSynth();
+};
+
+/**
+ * Run something once the voice has said everything cued so far.
+ *
+ * A scene's beats are scaled by PACE and its narration is not, so at a tight
+ * tempo the way out of a scene can appear while the voice is still three lines
+ * from finishing — and taking it cuts the Pulse off mid-sentence. Scenes that
+ * end on a spoken line wait for this instead of for a timer.
+ *
+ * Fires immediately when nothing is speaking, and is dropped by hush().
+ */
+export const whenQuiet = (cb: () => void): void => {
+  if (!enabled || (!speaking && queue.length === 0)) {
+    cb();
+    return;
+  }
+  waiting.push(cb);
 };
 
 export const setNarrationEnabled = (on: boolean): void => {

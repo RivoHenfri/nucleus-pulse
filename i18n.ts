@@ -28,7 +28,23 @@ const EN = {
     instruction: 'Choose the 2 things you would deal with first.',
     selected: (n: number) => `${n} of 2 chosen`,
     locked: 'Locked in.',
+    // The mail client around the morning. None of this is the experiment —
+    // it is the room the experiment happens in, and without it the eight
+    // situations read as a quiz instead of a Tuesday.
     inbox: 'Inbox',
+    account: 'you@company.co.id',
+    updating: 'Updating…',
+    updated: 'Updated just now',
+    search: 'Search mail',
+    focused: 'Focused',
+    other: 'Other',
+    typing: 'typing…',
+    justNow: 'just now',
+    minAgo: (n: number) => `${n}m ago`,
+    mail: 'MAIL',
+    message: 'MESSAGE',
+    assistant: 'ASSISTANT',
+    now: 'now',
   },
   freeze: {
     stats: ['30 seconds', '8 pieces of information', '2 choices'],
@@ -198,6 +214,19 @@ const ID: Copy = {
     selected: (n: number) => `${n} dari 2 dipilih`,
     locked: 'Terkunci.',
     inbox: 'Kotak Masuk',
+    account: 'kamu@company.co.id',
+    updating: 'Memperbarui…',
+    updated: 'Baru diperbarui',
+    search: 'Cari email',
+    focused: 'Utama',
+    other: 'Lainnya',
+    typing: 'sedang mengetik…',
+    justNow: 'baru saja',
+    minAgo: (n: number) => `${n} mnt lalu`,
+    mail: 'EMAIL',
+    message: 'PESAN',
+    assistant: 'ASSISTANT',
+    now: 'sekarang',
   },
   freeze: {
     stats: ['30 detik', '8 informasi', '2 pilihan'],
@@ -365,6 +394,9 @@ export const COPY: Record<Lang, Copy> = { en: EN, id: ID };
 const SIT_EN: Record<SituationId, SituationCopy> = {
   client: {
     label: 'URGENT',
+    sender: 'Daniel Prasetyo',
+    preview:
+      'RE: RE: FW: Owner is asking again — can someone confirm before the call?',
     contextLabel: 'CLIENT',
     headline: 'Villa owner requesting confirmation',
     line: '"Can we confirm this ASAP?"',
@@ -374,6 +406,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   finance: {
     label: 'PAYMENT',
+    sender: 'Finance — Approvals',
+    preview:
+      'Batch VP-114 · 6 invoices · your approval needed before the bank cut-off.',
     headline: 'Contractor payment awaiting approval',
     line: '"Payment batch pending."',
     owner: 'Finance',
@@ -383,6 +418,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   people: {
     label: 'PEOPLE',
+    sender: 'People Team',
+    preview:
+      'She asked for an update this morning. Let us know when you can.',
     headline: 'Final candidate awaiting confirmation',
     line: '"Candidate waiting for feedback."',
     owner: 'People',
@@ -391,6 +429,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   engineering: {
     label: 'ENGINEERING',
+    sender: 'Ari Wibowo — Studio',
+    preview:
+      'Rev.07 attached. We hold installation until you confirm. No rush from us.',
     headline: 'MEP Rev.07 awaiting confirmation',
     line: '"Latest revision received."',
     owner: 'Engineering',
@@ -400,6 +441,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   operations: {
     label: 'OPERATIONS',
+    sender: 'Site Team — Zone B',
+    preview:
+      'Budi: sudah kami cek · Rina: nanti saya kirim fotonya · Budi: 👍',
     headline: 'Access issue reported — Zone B',
     line: '"Site team requesting update."',
     owner: 'Operations / Civil',
@@ -408,6 +452,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   hospitality: {
     label: 'HOSPITALITY',
+    sender: 'Front Office',
+    preview:
+      'Villa 7 arrival 19:30 tonight — preparation still not closed.',
     headline: 'Guest arrival issue tonight',
     line: '"Arrival preparation needs attention."',
     owner: 'Hospitality / Operations',
@@ -417,6 +464,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   governance: {
     label: 'GOVERNANCE',
+    sender: 'Corporate Affairs',
+    preview:
+      'Permit 447/IMB — renewal file is with the notary, tracking attached.',
     headline: 'Permit approaching expiry',
     line: '"Renewal status pending."',
     owner: 'Corporate Affairs / Governance',
@@ -425,6 +475,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   ai: {
     label: 'AI PRIORITY',
+    sender: 'Nucleus Assistant',
+    preview:
+      'Based on 6 signals from your morning.',
     contextLabel: 'AI',
     headline: 'Recommended Priority: Candidate Decision',
     line: '94% confidence',
@@ -437,6 +490,9 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
 const SIT_ID: Record<SituationId, SituationCopy> = {
   client: {
     label: 'URGENT',
+    sender: 'Daniel Prasetyo',
+    preview:
+      'RE: RE: FW: Pemiliknya menanyakan lagi — ada yang bisa konfirmasi sebelum call?',
     contextLabel: 'CLIENT',
     headline: 'Pemilik villa meminta konfirmasi',
     line: '"Bisa dikonfirmasi secepatnya?"',
@@ -446,6 +502,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   finance: {
     label: 'PAYMENT',
+    sender: 'Finance — Approvals',
+    preview:
+      'Batch VP-114 · 6 invoice · menunggu persetujuanmu sebelum batas waktu bank.',
     headline: 'Pembayaran kontraktor menunggu persetujuan',
     line: '"Batch pembayaran tertunda."',
     owner: 'Finance',
@@ -455,6 +514,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   people: {
     label: 'PEOPLE',
+    sender: 'Tim People',
+    preview:
+      'Dia menanyakan kabarnya pagi ini. Tolong kabari kalau sudah ada keputusan.',
     headline: 'Kandidat final menunggu konfirmasi',
     line: '"Kandidat menunggu kabar."',
     owner: 'People',
@@ -463,6 +525,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   engineering: {
     label: 'ENGINEERING',
+    sender: 'Ari Wibowo — Studio',
+    preview:
+      'Rev.07 terlampir. Instalasi kami tahan sampai ada konfirmasi. Tidak buru-buru.',
     headline: 'MEP Rev.07 menunggu konfirmasi',
     line: '"Revisi terbaru sudah diterima."',
     owner: 'Engineering',
@@ -472,6 +537,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   operations: {
     label: 'OPERATIONS',
+    sender: 'Tim Lapangan — Zona B',
+    preview:
+      'Budi: sudah kami cek · Rina: nanti saya kirim fotonya · Budi: 👍',
     headline: 'Kendala akses dilaporkan — Zona B',
     line: '"Tim lapangan menunggu kabar."',
     owner: 'Operations / Civil',
@@ -480,6 +548,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   hospitality: {
     label: 'HOSPITALITY',
+    sender: 'Front Office',
+    preview:
+      'Villa 7 tamu tiba 19:30 nanti malam — persiapannya belum selesai.',
     headline: 'Kendala kedatangan tamu malam ini',
     line: '"Persiapan kedatangan perlu perhatian."',
     owner: 'Hospitality / Operations',
@@ -489,6 +560,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   governance: {
     label: 'GOVERNANCE',
+    sender: 'Corporate Affairs',
+    preview:
+      'Izin 447/IMB — berkas perpanjangan ada di notaris, bukti terimanya terlampir.',
     headline: 'Izin mendekati masa berakhir',
     line: '"Status perpanjangan menunggu."',
     owner: 'Corporate Affairs / Governance',
@@ -497,6 +571,9 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
   },
   ai: {
     label: 'AI PRIORITY',
+    sender: 'Nucleus Assistant',
+    preview:
+      'Berdasarkan 6 sinyal pagi ini.',
     contextLabel: 'AI',
     headline: 'Prioritas yang Direkomendasikan: Keputusan Kandidat',
     line: 'keyakinan 94%',

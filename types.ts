@@ -18,8 +18,19 @@ export type SituationId =
  *  loud does not mean important, quiet does not mean safe. */
 export type Loudness = 'loud' | 'medium' | 'quiet';
 
+/** Which app the notification came from. Drives the icon and the chrome. */
+export type AppKind = 'mail' | 'chat' | 'calendar' | 'assistant';
+
 export interface Situation {
   id: SituationId;
+  /** The app this arrived from — a morning is never one surface. */
+  app: AppKind;
+  /** Two letters for the avatar disc. */
+  initials: string;
+  /** Tailwind class for the avatar disc. */
+  avatar: string;
+  /** Minutes ago it landed, for the timestamp. Counts up live. */
+  minsAgo: number;
   /** The mark on the surface card — emoji, kept small and flat. */
   glyph: string;
   /** The mark once the hierarchy is stripped. A red dot is a volume setting,
@@ -29,12 +40,20 @@ export interface Situation {
   loudness: Loudness;
   /** Round 1 shows this as an unread count; part of the replay in Scene 13. */
   unread?: number;
+  /** Outlook's red high-importance flag. */
+  important?: boolean;
+  /** Paperclip on the row. */
+  attachment?: boolean;
 }
 
 /** Everything a situation says, in one language. */
 export interface SituationCopy {
   /** Small caps label on the surface card: URGENT, PAYMENT, ENGINEERING… */
   label: string;
+  /** Who it is from, as a phone would show it. */
+  sender: string;
+  /** The greyed second line, the way a real client truncates one. */
+  preview: string;
   /**
    * The label once the hierarchy is stripped in Scene 06. Only the two
    * situations whose surface label was a volume setting rather than a name
