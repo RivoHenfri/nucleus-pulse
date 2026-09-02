@@ -1,0 +1,41 @@
+# The room, on the VPS.
+#
+# Two containers: Caddy on 80/443 doing TLS for nucleus-api.rivohenfri.cloud,
+# and the API behind it on a private network. The API is never exposed on a
+# host port — the only way in is through Caddy over HTTPS, which is also the
+# only way a page served from GitHub Pages is allowed to talk to it.
+#
+# Lives alongside the aiops stack on the same host and shares nothing with it:
+# its own compose project, its own network, its own volumes.
+
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: "3000"
+      DB_PATH: /data/nucleus.sqlite
+    volumes:
+      - nucleus-data:/data
+    networks: [nucleus]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [nucleus]
+    depends_on: [api]
+
+volumes:
+  nucleus-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  nucleus:

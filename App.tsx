@@ -28,6 +28,7 @@ import {
 } from './utils/narration';
 import { setVoiceEnabled, silence } from './utils/voice';
 import { unlockWebAudio } from './utils/sound';
+import { submitToRoom } from './utils/room';
 
 import SceneEnter from './components/SceneEnter';
 import SceneRound from './components/SceneRound';
@@ -179,6 +180,12 @@ const App: React.FC = () => {
     setScene(next);
   };
 
+  useEffect(() => {
+    if (scene !== 'pulseback') return;
+    void submitToRoom({ lang, first: firstLook, second: secondLook, influences });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene]);
+
   return (
     <main className="min-h-[100dvh] bg-[#06080B] text-gray-200 select-none">
       {/* The one control on screen, and it stays out of the way. Sound is part
@@ -319,6 +326,9 @@ const App: React.FC = () => {
             <ScenePhenomena lang={lang} onContinue={go('pulseback')} />
           )}
 
+          {/* Everything the run will ever know is known by now. If this
+              phone is in a room, the room hears about it here — once, in the
+              background, and without any effect on what the participant sees. */}
           {scene === 'pulseback' && (
             <ScenePulseback
               lang={lang}

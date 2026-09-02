@@ -18,6 +18,7 @@ import { hush, narrate, setNarrationLang, unlockAudio, whenQuiet } from '../util
 import { buzz, unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
+import { roomCode } from '../utils/room';
 
 interface Props {
   lang: Lang;
@@ -34,6 +35,7 @@ const GAPS = beats(1800, 2200, 1350);
 const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
   const c = COPY[lang].enter;
   const [lit, setLit] = useState(false);
+  const room = roomCode();
   const [started, setStarted] = useState(false);
   /** The five opening lines have all been spoken. */
   const [spoken, setSpoken] = useState(false);
@@ -101,6 +103,11 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
             <p className="mb-4 px-6 text-[12px] leading-relaxed text-gray-600">
               {COPY[lang].common.soundHint}
             </p>
+            {room && (
+              <p className="mx-auto mb-5 w-fit rounded-full border border-white/10 px-3 py-1 text-[10px] tracking-[0.3em] text-gray-500">
+                {room}
+              </p>
+            )}
             {LANGUAGES.map(l => (
               <button
                 key={l.code}
