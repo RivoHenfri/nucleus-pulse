@@ -482,7 +482,30 @@ const Room: React.FC = () => {
 
                 <div className="mt-12 rounded-2xl border border-sky-300/15 bg-sky-400/[0.03] px-6 py-5">
                   <p className="text-[10px] tracking-[0.3em] text-sky-200/70">✦ {t.aiTitle}</p>
-                  <p className="mt-3 text-[15px] leading-relaxed text-gray-300">{ai ?? t.aiWait}</p>
+                  {/* One paragraph, then three lessons on their own lines. The
+                      model returns them newline-separated; rendered as one
+                      block the bullets ran together into a wall. */}
+                  {ai ? (
+                    <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-gray-300">
+                      {ai
+                        .split(/
++/)
+                        .map(l => l.trim())
+                        .filter(Boolean)
+                        .map((l, i) =>
+                          l.startsWith('â¢') ? (
+                            <p key={i} className="flex gap-3 text-gray-200">
+                              <span className="text-sky-200/70">â¢</span>
+                              <span>{l.replace(/^â¢\s*/, '')}</span>
+                            </p>
+                          ) : (
+                            <p key={i}>{l}</p>
+                          ),
+                        )}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-[15px] text-gray-500">{t.aiWait}</p>
+                  )}
                 </div>
 
                 <a
