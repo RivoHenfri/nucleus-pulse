@@ -216,9 +216,9 @@ const ID: Copy = {
   },
   morning: {
     clock: '09:07',
-    title: 'Pagi harimu sudah mulai berjalan.',
+    title: 'Pagimu sudah jalan duluan.',
     seconds: (n: number) => `Kamu punya ${n} detik.`,
-    instruction: 'Pilih 2 hal yang akan kamu tangani lebih dulu.',
+    instruction: 'Pilih 2 yang mau kamu tangani duluan.',
     selected: (n: number) => `${n} dari 2 dipilih`,
     locked: 'Terkunci.',
     inbox: 'Kotak Masuk',
@@ -238,20 +238,20 @@ const ID: Copy = {
   },
   freeze: {
     stats: ['30 detik', '8 informasi', '2 pilihan'],
-    question: 'Ke mana perhatianmu tertuju?',
+    question: 'Tadi perhatianmu ke mana?',
     yours: 'Yang kamu pilih',
     cta: 'LANJUT',
   },
   reflection: {
-    title: 'Apa yang paling kamu pertimbangkan?',
-    hint: 'Pilih maksimal 2.',
+    title: 'Tadi kamu paling mikirin apa?',
+    hint: 'Pilih paling banyak 2.',
     options: {
       role: 'Peran saya',
-      experience: 'Pengalaman sebelumnya',
+      experience: 'Pengalaman saya',
       urgency: 'Urgensi',
-      impact: 'Potensi dampak',
-      needed: 'Seseorang membutuhkan saya',
-      information: 'Informasi yang tersedia',
+      impact: 'Dampaknya nanti',
+      needed: 'Ada yang butuh saya',
+      information: 'Informasi yang ada',
       instinct: 'Insting',
     },
     cta: 'LANJUT',
@@ -262,7 +262,7 @@ const ID: Copy = {
   },
   context: {
     eyebrow: 'PAGI YANG SAMA',
-    title: 'Informasi yang sama, dengan apa yang ada di baliknya.',
+    title: 'Informasi yang sama, plus apa yang ada di baliknya.',
     owner: 'PEMILIK',
     decision: 'KEPUTUSAN',
     status: 'STATUS',
@@ -285,7 +285,7 @@ const ID: Copy = {
   },
   second: {
     same: 'Pagi yang sama.',
-    more: 'Konteks yang lebih lengkap.',
+    more: 'Konteksnya lebih lengkap.',
     instruction: 'Pilih 2 lagi.',
   },
   mirror: {
@@ -300,7 +300,7 @@ const ID: Copy = {
   },
   signal: {
     word: 'SIGNAL',
-    definition: 'Informasi yang mengubah apa yang harus terjadi berikutnya.',
+    definition: 'Informasi yang mengubah apa yang harus kamu lakukan berikutnya.',
     concepts: ['KEPUTUSAN', 'TINDAKAN', 'RISIKO', 'HASIL'],
     closing: 'Sesuatu bisa saja penting, tanpa harus kamu urus sekarang.',
     cta: 'LANJUT',
@@ -312,13 +312,13 @@ const ID: Copy = {
   },
   lens: {
     yours: 'YANG KAMU PERTIMBANGKAN',
-    helps: 'Sebuah sudut pandang membantu kita melihat.',
+    helps: 'Sudut pandang bikin kita bisa melihat.',
     boundary: 'Tapi setiap sudut pandang punya batasnya.',
     lenses: ['PERAN', 'PENGALAMAN', 'KEAHLIAN', 'AI'],
     lockTitle: 'LENS LOCK',
-    lockLine: 'Saat satu sudut pandang yang berguna berubah jadi satu-satunya.',
+    lockLine: 'Waktu satu sudut pandang yang berguna berubah jadi satu-satunya yang kamu pakai.',
     heroA: 'BAWA PENGALAMANMU.',
-    heroB: 'JANGAN ANGGAP ITU SEBAGAI SELURUH GAMBARAN.',
+    heroB: 'TAPI JANGAN KIRA ITU SELURUH GAMBARANNYA.',
     cta: 'LANJUT',
   },
   system: {
@@ -345,9 +345,9 @@ const ID: Copy = {
   },
   phenomena: {
     gravityTitle: 'NOISE GRAVITY',
-    gravityLine: 'Saat yang paling "berisik" menarik perhatian.',
+    gravityLine: 'Waktu yang paling berisik yang menarik perhatian.',
     fallTitle: 'SIGNALFALL',
-    fallLine: 'Saat yang penting tenggelam di antara yang lain.',
+    fallLine: 'Waktu yang penting tenggelam di antara yang lain.',
     hero: 'SETIAP SISTEM PUNYA GRAVITASI.',
     closingA: 'Desain menentukan apa yang lebih gampang terlihat.',
     closingB: 'Manusia yang menentukan apa yang layak diperhatikan.',
@@ -374,7 +374,7 @@ const ID: Copy = {
     small: 'Tidak perlu dijawab. Cukup disadari.',
     nucleus: 'NUCLEUS',
     experiment:
-      'Sebuah eksperimen tentang bagaimana kita melihat, berpikir, dan mengambil keputusan dalam pekerjaan.',
+      'Eksperimen tentang cara kita melihat, berpikir, dan mengambil keputusan di tempat kerja.',
     cta: 'LANJUT',
   },
   end: {
@@ -389,7 +389,7 @@ const ID: Copy = {
   common: {
     soundOn: 'Suara hidup',
     soundOff: 'Suara mati',
-    soundHint: 'Pengalaman ini dibawa oleh suara. Pakai headphone kalau ada.',
+    soundHint: 'Pengalaman ini pakai suara. Kalau ada headphone, pakai ya.',
     soundBlocked: 'Suara belum menyala. Ketuk untuk menyalakan.',
     soundSilent: 'Suara tidak terdengar. Cek tombol senyap atau volume perangkatmu.',
   },
@@ -405,7 +405,7 @@ export const COPY: Record<Lang, Copy> = { en: EN, id: ID };
 const SIT_EN: Record<SituationId, SituationCopy> = {
   client: {
     label: 'URGENT',
-    sender: 'Daniel Prasetyo',
+    sender: 'Villa Owner',
     preview:
       'RE: RE: FW: Owner is asking again — can someone confirm before the call?',
     contextLabel: 'CLIENT',
@@ -440,7 +440,7 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
   },
   engineering: {
     label: 'ENGINEERING',
-    sender: 'Ari Wibowo — Studio',
+    sender: 'Studio',
     preview:
       'Rev.07 attached. We hold installation until you confirm. No rush from us.',
     headline: 'MEP Rev.07 awaiting confirmation',
@@ -501,84 +501,84 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
 const SIT_ID: Record<SituationId, SituationCopy> = {
   client: {
     label: 'URGENT',
-    sender: 'Daniel Prasetyo',
+    sender: 'Villa Owner',
     preview:
       'RE: RE: FW: Pemiliknya menanyakan lagi — ada yang bisa konfirmasi sebelum call?',
     contextLabel: 'CLIENT',
-    headline: 'Pemilik villa meminta konfirmasi',
+    headline: 'Pemilik villa minta konfirmasi',
     line: '"Bisa dikonfirmasi secepatnya?"',
     owner: 'Client Relationship',
     status: 'Sudah ditanggapi',
-    note: 'Tidak ada keputusan yang dibutuhkan darimu saat ini.',
+    note: 'Belum ada yang perlu kamu putuskan.',
   },
   finance: {
     label: 'PAYMENT',
     sender: 'Finance — Approvals',
     preview:
       'Batch VP-114 · 6 invoice · menunggu persetujuanmu sebelum batas waktu bank.',
-    headline: 'Pembayaran kontraktor menunggu persetujuan',
+    headline: 'Pembayaran kontraktor nunggu disetujui',
     line: '"Batch pembayaran tertunda."',
     owner: 'Finance',
-    decision: 'Perlu persetujuan',
+    decision: 'Perlu kamu setujui',
     by: '14:00',
-    consequence: 'Melewati batas waktu bank dapat menunda pengiriman material penting.',
+    consequence: 'Kalau lewat jam bank, kiriman material penting bisa telat.',
   },
   people: {
     label: 'PEOPLE',
     sender: 'Tim People',
     preview:
       'Dia menanyakan kabarnya pagi ini. Tolong kabari kalau sudah ada keputusan.',
-    headline: 'Kandidat final menunggu konfirmasi',
+    headline: 'Kandidat final nunggu kabar',
     line: '"Kandidat menunggu kabar."',
     owner: 'People',
-    status: 'Tim People sedang mengoordinasikan',
-    note: 'Kandidat memegang tawaran lain. Waktunya bergantung pada masukan hiring manager.',
+    status: 'Lagi dikoordinasikan tim People',
+    note: 'Kandidatnya lagi pegang tawaran lain. Waktunya tergantung masukan hiring manager.',
   },
   engineering: {
     label: 'ENGINEERING',
-    sender: 'Ari Wibowo — Studio',
+    sender: 'Studio',
     preview:
       'Rev.07 terlampir. Instalasi kami tahan sampai ada konfirmasi. Tidak buru-buru.',
-    headline: 'MEP Rev.07 menunggu konfirmasi',
+    headline: 'MEP Rev.07 nunggu dikonfirmasi',
     line: '"Revisi terbaru sudah diterima."',
     owner: 'Engineering',
-    decision: 'Perlu konfirmasi',
+    decision: 'Perlu kamu konfirmasi',
     by: 'Hari ini',
-    consequence: 'Instalasi dapat bergeser sekitar 2 hari.',
+    consequence: 'Instalasinya bisa mundur sekitar 2 hari.',
   },
   operations: {
     label: 'OPERATIONS',
     sender: 'Tim Lapangan — Zona B',
     preview:
       'Budi: sudah kami cek · Rina: nanti saya kirim fotonya · Budi: 👍',
-    headline: 'Kendala akses dilaporkan — Zona B',
+    headline: 'Ada kendala akses — Zona B',
     line: '"Tim lapangan menunggu kabar."',
     owner: 'Operations / Civil',
-    status: 'Sedang ditangani',
-    note: 'Belum mencapai ambang eskalasi.',
+    status: 'Lagi ditangani',
+    note: 'Belum sampai perlu dieskalasi.',
   },
   hospitality: {
     label: 'HOSPITALITY',
     sender: 'Front Office',
     preview:
       'Villa 7 tamu tiba 19:30 nanti malam — persiapannya belum selesai.',
-    headline: 'Kendala kedatangan tamu malam ini',
+    headline: 'Ada kendala kedatangan tamu malam ini',
     line: '"Persiapan kedatangan perlu perhatian."',
     owner: 'Hospitality / Operations',
-    decision: 'Mungkin perlu tindakan operasional',
+    decision: 'Mungkin perlu ada yang turun tangan',
     by: 'Sebelum tamu tiba',
-    consequence: 'Berpotensi memengaruhi pengalaman tamu.',
+    consequence: 'Bisa kena ke pengalaman tamunya.',
   },
   governance: {
     label: 'GOVERNANCE',
     sender: 'Corporate Affairs',
     preview:
       'Izin 447/IMB — berkas perpanjangan ada di notaris, bukti terimanya terlampir.',
-    headline: 'Izin mendekati masa berakhir',
+    headline: 'Izin sebentar lagi habis',
     line: '"Status perpanjangan menunggu."',
     owner: 'Corporate Affairs / Governance',
-    status: 'Perpanjangan sudah ditugaskan dan berjalan',
-    note: 'Tidak perlu eskalasi hari ini.',
+    status: 'Perpanjangannya sudah jalan, sudah ada yang pegang',
+    note: 'Hari ini belum perlu dieskalasi.',
   },
   ai: {
     label: 'AI PRIORITY',
@@ -589,8 +589,8 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
     headline: 'Prioritas yang Direkomendasikan: Keputusan Kandidat',
     line: 'keyakinan 94%',
     owner: 'Nucleus Assistant',
-    status: 'Hanya rekomendasi',
-    note: 'Sumber tersedia 6 / 8. Tidak terbaca: Operations Update — 08:52.',
+    status: 'Sekadar rekomendasi',
+    note: 'Sumber yang kebaca 6 dari 8. Yang kelewat: Operations Update — 08:52.',
   },
 };
 

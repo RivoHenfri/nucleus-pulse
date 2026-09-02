@@ -10,7 +10,7 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
-import { AI_STYLE, LOUD_STYLE, situationById } from '../data';
+import { AI_STYLE, LOUD_STYLE, RUN_SENDERS, situationById } from '../data';
 import { COPY, SITUATION_COPY, type Lang } from '../i18n';
 import type { SituationId } from '../types';
 
@@ -85,7 +85,7 @@ export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
               quiet ? 'text-[12px] font-normal text-gray-500' : 'text-[13px] font-bold text-gray-100'
             }`}
           >
-            {c.sender}
+            {RUN_SENDERS[id] ?? c.sender}
           </span>
           {s.important && <span className="shrink-0 text-[11px] font-black text-rose-500">!</span>}
           {!!s.unread && (

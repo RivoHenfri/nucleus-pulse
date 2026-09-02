@@ -111,3 +111,42 @@ export const arrivalPlan = (): Arrival[] => {
 /** Round 2 is calm: everything is already there, in a stable, quiet order. */
 export const contextOrder = (): SituationId[] =>
   [...SITUATION_IDS].sort(() => Math.random() - 0.5);
+
+
+/**
+ * The two senders who are people rather than departments.
+ *
+ * A villa owner and a consultant are individuals, and seeing the same two
+ * names every run makes the morning read as a script — especially to a
+ * facilitator who has watched it a dozen times. The pool is drawn once per
+ * run and held for the whole of it, so the inbox is consistent within a
+ * session and different between them.
+ *
+ * These are names only. The facts behind each situation — the owner
+ * department, the decision, the deadline, the consequence — never move,
+ * because those are what make two participants comparable at all.
+ */
+const OWNER_NAMES = [
+  'Mr. Whitfield — Villa 12',
+  'Ms. Lindqvist — Villa 07',
+  'Mr. Tanaka — Villa 21',
+  'Mrs. Ashworth — Villa 04',
+  'Mr. Bouchard — Villa 16',
+  'Ms. Petrova — Villa 09',
+];
+
+const STUDIO_NAMES = [
+  'Ari — Studio',
+  'Rangga — Studio',
+  'Dimas — Studio',
+  'Yuni — Studio',
+  'Bagus — Studio',
+];
+
+const pick = <T,>(list: T[]): T => list[Math.floor(Math.random() * list.length)];
+
+/** Chosen once per run, so the inbox stays consistent while someone is in it. */
+export const RUN_SENDERS: Partial<Record<SituationId, string>> = {
+  client: pick(OWNER_NAMES),
+  engineering: pick(STUDIO_NAMES),
+};

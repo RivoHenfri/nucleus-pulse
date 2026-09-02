@@ -223,8 +223,16 @@ let calm: Calm | null = null;
 const CALM_VOLUME = 0.055;
 /** Six swells a minute — the pace used to slow breathing down. */
 const BREATH_HZ = 0.1;
-/** The gap between the two carriers, in hertz. Theta. */
-const BEAT_HZ = 4;
+/**
+ * The gap between the two carriers, in hertz.
+ *
+ * This was 4 Hz, which is the textbook theta rate and audibly a buzz: two
+ * tones a fourth of a second apart do not read as atmosphere, they read as a
+ * fault in the speaker. At 0.7 Hz the same two tones drift through each other
+ * about once every second and a half — slow enough to be movement rather than
+ * a tone, which is what the bed was supposed to be doing in the first place.
+ */
+const BEAT_HZ = 0.7;
 /** How far the bed drops while the Pulse is speaking. */
 const DUCK = 0.42;
 
@@ -254,10 +262,14 @@ export const startCalmBed = (): void => {
       nodes.push({ stop: () => osc.stop() });
     };
 
-    drone(55, 0.5);              // root
-    drone(82.5, 0.22);           // a fifth above it
-    drone(110, 0.16);            // carrier
-    drone(110 + BEAT_HZ, 0.16);  // and its slow beat
+    drone(55, 0.42);             // root
+    drone(82.5, 0.18);           // a fifth above it
+    drone(110, 0.13);            // carrier
+    drone(110 + BEAT_HZ, 0.13);  // and its slow drift
+    // A quiet partial two octaves up. Without it the bed is all bottom end,
+    // which on a phone speaker is the muddiest thing it could be; this is what
+    // makes it read as air rather than as rumble.
+    drone(330, 0.05);
 
     // Room tone, filtered down to almost nothing.
     const noise = ac.createBufferSource();
@@ -265,9 +277,9 @@ export const startCalmBed = (): void => {
     noise.loop = true;
     const filter = ac.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = 380;
+    filter.frequency.value = 520;
     const noiseGain = ac.createGain();
-    noiseGain.gain.value = 0.05;
+    noiseGain.gain.value = 0.03;
     noise.connect(filter);
     filter.connect(noiseGain);
     noiseGain.connect(master);
