@@ -135,9 +135,12 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
     >
       <div className="mx-auto w-full max-w-md">
         {/* ---- the morning, stated plainly ----
-             The right padding keeps the countdown clear of the sound toggle,
-             which is pinned to the same corner. */}
-        <div className="flex items-baseline justify-between pr-11">
+             On a phone the sound toggle is pinned over this corner, so the
+             countdown reserves room for it. On a wider screen the toggle sits
+             out at the window edge, well clear of the column, and reserving
+             the same space just knocks the header out of line with the cards
+             below it. */}
+        <div className="flex items-baseline justify-between pr-11 sm:pr-0">
           <span className="font-cinzel text-[19px] tracking-[0.12em] text-[#EDE7DA]">
             {c.morning.clock}
           </span>
@@ -152,7 +155,7 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
           </motion.span>
         </div>
 
-        <div className="mt-1.5 mr-11 h-px bg-white/10">
+        <div className="mt-1.5 mr-11 h-px bg-white/10 sm:mr-0">
           <motion.div
             className={`h-px ${urgent ? 'bg-rose-400/70' : 'bg-[#EDE7DA]/40'}`}
             animate={{ width: `${(left / seconds) * 100}%` }}

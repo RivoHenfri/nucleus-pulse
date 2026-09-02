@@ -26,8 +26,9 @@ interface Props {
   onContinue: () => void;
 }
 
-// The AI card gets its own scene next, so it is not in this list.
-const IDS = SITUATION_IDS.filter(id => id !== 'ai');
+// All eight, AI last: Scene 07 expands this card, so it has to have been on
+// screen here first. Its sources line is withheld until then.
+const IDS = [...SITUATION_IDS.filter(id => id !== 'ai'), 'ai' as const];
 const FIRST_PEEL = cue(1400);
 const PEEL_GAP = cue(900);
 
@@ -77,7 +78,13 @@ const SceneContext: React.FC<Props> = ({ lang, onContinue }) => {
             >
               {/* Read-only here: Scene 06 is for looking, not choosing. The
                   same card becomes selectable again in Scene 08. */}
-              <ContextCard id={id} lang={lang} selected={false} open={i < opened} />
+              <ContextCard
+                id={id}
+                lang={lang}
+                selected={false}
+                open={i < opened}
+                hideNote={id === 'ai'}
+              />
             </motion.div>
           ))}
         </div>

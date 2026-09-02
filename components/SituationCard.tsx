@@ -100,6 +100,15 @@ interface ContextProps extends Props {
    * rather than finding a wall of it already there. Round 2 passes true.
    */
   open?: boolean;
+  /**
+   * Hold back the last line of context.
+   *
+   * Only Scene 06 uses this, and only for the AI card: its note is the 6/8
+   * sources, and that is Scene 07's reveal. The card still has to appear in
+   * Scene 06 — the spec says Scene 07 *expands* it, which it cannot do if the
+   * participant has never seen it sitting there.
+   */
+  hideNote?: boolean;
 }
 
 export const ContextCard: React.FC<ContextProps> = ({
@@ -109,6 +118,7 @@ export const ContextCard: React.FC<ContextProps> = ({
   muted,
   onSelect,
   open = true,
+  hideNote,
 }) => {
   const s = situationById(id);
   const c = SITUATION_COPY[lang][id];
@@ -159,7 +169,9 @@ export const ContextCard: React.FC<ContextProps> = ({
               )}
               {c.by && <Field label={f.by} value={c.by} strong />}
               {c.consequence && <Field label={f.consequence} value={c.consequence} />}
-              {c.note && <p className="pt-1 text-[12px] leading-snug text-gray-500">{c.note}</p>}
+              {c.note && !hideNote && (
+                <p className="pt-1 text-[12px] leading-snug text-gray-500">{c.note}</p>
+              )}
             </div>
           </motion.div>
         )}

@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, LANGUAGES, type Lang } from '../i18n';
 import { hush, narrate, setNarrationLang, unlockAudio } from '../utils/narration';
+import { unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
 
@@ -41,9 +42,14 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
   }, []);
 
   const choose = (next: Lang) => {
-    // Mobile browsers only open the audio pipeline for a gesture. This is it.
+    // Mobile browsers only open the audio pipeline for a gesture, and this is
+    // the only one before Round 1 starts making noise on its own timers. Both
+    // pipelines have to be opened here: the <audio> element that plays the
+    // narration, and the Web Audio context behind the notifications and the
+    // focus bed.
     setNarrationLang(next);
     unlockAudio();
+    unlockWebAudio();
     onChooseLang(next);
     setStarted(true);
   };

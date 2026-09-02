@@ -96,6 +96,32 @@ export const pulseConfirm = () => {
   tone(784, 0.6, 0.18, 'sine', 0.36);
 };
 
+/**
+ * Open the Web Audio context while a gesture is still in hand.
+ *
+ * Mobile browsers create the context in a suspended state and only release it
+ * inside a real user gesture. Without this, the very first thing that tries to
+ * make a sound is a notification arriving on its own timer — which is not a
+ * gesture — so the whole of Round 1 would run silent on iOS, and Round 1 is
+ * the half of the experience that depends on being heard.
+ *
+ * The zero-length silent buffer is the part iOS actually accepts as consent;
+ * resume() alone is not always enough.
+ */
+export const unlockWebAudio = (): void => {
+  const ac = ctx();
+  if (!ac) return;
+  try {
+    ac.resume().catch(() => {});
+    const source = ac.createBufferSource();
+    source.buffer = ac.createBuffer(1, 1, 22050);
+    source.connect(ac.destination);
+    source.start(0);
+  } catch {
+    // Audio is part of the experience, never a precondition for it.
+  }
+};
+
 /** Haptic nudge — silently ignored where unsupported */
 export const buzz = (pattern: number | number[] = 30) => {
   try {
