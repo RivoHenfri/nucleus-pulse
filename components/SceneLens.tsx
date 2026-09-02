@@ -20,7 +20,7 @@ interface Props {
 
 // their words · a lens helps · but a boundary · the four lenses · LENS LOCK
 // · the definition · the hero · out
-const GAPS = beats(1100, 3000, 3200, 2400, 2600, 2000, 2800, 2600);
+const GAPS = beats(1100, 3000, 3200, 2400, 2600, 2000, 2800, 1170);
 
 const SceneLens: React.FC<Props> = ({ lang, influences, onContinue }) => {
   const c = COPY[lang].lens;
@@ -36,7 +36,7 @@ const SceneLens: React.FC<Props> = ({ lang, influences, onContinue }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <Beat show={shown >= 1}>
         <Eyebrow>{c.yours}</Eyebrow>
         <div className="mt-4 space-y-1.5">

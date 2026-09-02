@@ -16,8 +16,11 @@ export const LANGUAGES: { code: Lang; label: string }[] = [
 
 const EN = {
   enter: {
-    brand: 'NUCLEUS',
-    pulse: 'PULSE 01 — SIGNAL',
+    // "Nucleus" on its own is the name of the WhatsApp group these people are
+    // already in, so the opening has to say the product's whole name or it
+    // reads as a message from the group rather than a thing to enter.
+    brand: 'NUCLEUS PULSE',
+    pulse: '01 — SIGNAL',
     question: 'What gets your attention?',
     cta: 'ENTER',
   },
@@ -201,8 +204,8 @@ export type Copy = typeof EN;
 
 const ID: Copy = {
   enter: {
-    brand: 'NUCLEUS',
-    pulse: 'PULSE 01 — SIGNAL',
+    brand: 'NUCLEUS PULSE',
+    pulse: '01 — SIGNAL',
     question: 'Apa yang menarik perhatianmu?',
     cta: 'MULAI',
   },

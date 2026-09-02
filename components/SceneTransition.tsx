@@ -19,7 +19,7 @@ interface Props {
 }
 
 // two lines, then the way on
-const GAPS = beats(1600, 4200, 3200);
+const GAPS = beats(1600, 4200, 1440);
 
 const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
   const c = COPY[lang].transition;
@@ -32,7 +32,7 @@ const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <div className="space-y-10">
         <Beat show={shown >= 1}>
           <p className="text-[18px] leading-relaxed text-gray-300">{c.first}</p>

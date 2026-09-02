@@ -13,14 +13,36 @@
 import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 
-/** Full-height, centred, mobile-first stage. */
-export const Stage: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className = '',
-}) => (
+/**
+ * Full-height, centred, mobile-first stage.
+ *
+ * `glow` puts a very slow warm swell behind the content — twelve seconds a
+ * cycle, barely above the black, never resolving into a shape. On the
+ * reflective screens it gives the eye something to settle on so the silence
+ * reads as space rather than as the app having stopped, and the long period
+ * pulls the breath down with it. Off by default: under the two rounds it would
+ * be one more thing competing for attention, which is the opposite of the job.
+ */
+export const Stage: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  glow?: boolean;
+}> = ({ children, className = '', glow }) => (
   <div
-    className={`min-h-[100dvh] flex flex-col items-center justify-center px-6 py-16 text-center ${className}`}
+    className={`relative min-h-[100dvh] flex flex-col items-center justify-center px-6 py-16 text-center ${className}`}
   >
+    {glow && (
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            'radial-gradient(60% 45% at 50% 42%, rgba(237,231,218,0.05), transparent 70%)',
+        }}
+        animate={{ opacity: [0.35, 1, 0.35], scale: [0.94, 1.06, 0.94] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+    )}
     <div className="w-full max-w-md">{children}</div>
   </div>
 );
@@ -85,18 +107,28 @@ export const Line: React.FC<{ show: boolean; children: React.ReactNode; classNam
   </Beat>
 );
 
-/** The lines that carry the scene. Set in caps, wide, quiet. */
+/**
+ * The lines that carry the scene. Set in caps, wide, quiet — and breathing.
+ *
+ * Once it has arrived a hero line drifts by about one percent over eight
+ * seconds. It is too small to catch as motion and too slow to read as an
+ * animation; what it does is stop the line from going dead on the screen while
+ * the participant sits with it, which is exactly when these lines are supposed
+ * to be doing their work.
+ */
 export const Hero: React.FC<{ show: boolean; children: React.ReactNode; className?: string }> = ({
   show,
   children,
   className = '',
 }) => (
   <Beat show={show} lift={false}>
-    <h2
+    <motion.h2
+      animate={show ? { scale: [1, 1.012, 1], opacity: [0.92, 1, 0.92] } : {}}
+      transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       className={`font-cinzel uppercase tracking-[0.18em] leading-[1.45] text-[22px] text-[#EDE7DA] ${className}`}
     >
       {children}
-    </h2>
+    </motion.h2>
   </Beat>
 );
 

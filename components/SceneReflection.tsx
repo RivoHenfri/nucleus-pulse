@@ -21,7 +21,7 @@ interface Props {
 }
 
 const MAX = 2;
-const GAPS = beats(1200, 1400);
+const GAPS = beats(1200, 700);
 
 const SceneReflection: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].reflection;

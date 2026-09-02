@@ -22,7 +22,7 @@ interface Props {
 
 // complete · SIGNAL · (fade) · but · the mark · next pulse · TRUTH · question
 // · the logo closing the loop
-const GAPS = beats(1200, 1400, 3400, 3000, 2200, 1800, 1600, 2400, 3000);
+const GAPS = beats(1200, 1400, 3400, 3000, 2200, 1800, 1600, 2400, 1350);
 
 const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
   const c = COPY[lang].end;
@@ -42,7 +42,7 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <Beat show={shown >= 1} lift={false}>
         <p className="text-[22px]">⚡</p>
         <h2 className="mt-6 font-cinzel text-[19px] tracking-[0.26em] text-[#EDE7DA]">

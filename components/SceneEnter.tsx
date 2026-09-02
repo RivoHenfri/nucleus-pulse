@@ -29,7 +29,7 @@ interface Props {
 const IGNITION_MS = cue(4200);
 
 // pulse line · question · button
-const GAPS = beats(1800, 2200, 3000);
+const GAPS = beats(1800, 2200, 1350);
 
 const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
   const c = COPY[lang].enter;
@@ -116,7 +116,16 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
             transition={{ duration: 1.2, delay: 0.6 }}
             className="mt-6"
           >
-            <div className="space-y-5">
+            <div className="space-y-4">
+              {/* The whole name, spelled out. The mark alone says NUCLEUS, and
+                  that is the name of the WhatsApp group these people are
+                  already in — so on its own it reads as a message from the
+                  group rather than as something to walk into. */}
+              <Beat show={shown >= 1} lift={false}>
+                <p className="font-cinzel text-[17px] tracking-[0.3em] text-[#EDE7DA]">
+                  {c.brand}
+                </p>
+              </Beat>
               <Beat show={shown >= 1}>
                 <p className="text-[11px] font-semibold tracking-[0.34em] text-gray-500">
                   {c.pulse}

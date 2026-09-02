@@ -24,7 +24,7 @@ interface Props {
 }
 
 // three numbers · the question · what they chose · the way out
-const GAPS = beats(1400, 900, 900, 2400, 2000, 2600);
+const GAPS = beats(1400, 900, 900, 2400, 2000, 1170);
 
 const SceneFreeze: React.FC<Props> = ({ lang, picks, onContinue }) => {
   const c = COPY[lang].freeze;

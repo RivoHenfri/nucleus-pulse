@@ -18,7 +18,7 @@ interface Props {
 }
 
 // the field · the line · the hero · out
-const GAPS = beats(700, 4200, 3000, 2600);
+const GAPS = beats(700, 4200, 3000, 1170);
 
 const COUNT = 44;
 
@@ -47,7 +47,7 @@ const SceneNoise: React.FC<Props> = ({ lang, onContinue }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <div className="relative mx-auto h-56 w-full max-w-[320px]">
         {marks.map((m, i) => (
           <span

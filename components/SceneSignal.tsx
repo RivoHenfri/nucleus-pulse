@@ -16,7 +16,7 @@ interface Props {
 }
 
 // the word · the definition · four supports · the last line · out
-const GAPS = beats(1200, 2600, 2400, 3400, 2600);
+const GAPS = beats(1200, 2600, 2400, 3400, 1170);
 
 const SceneSignal: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].signal;
@@ -29,7 +29,7 @@ const SceneSignal: React.FC<Props> = ({ lang, onContinue }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <Beat show={shown >= 1} lift={false}>
         <h2 className="font-cinzel text-[38px] tracking-[0.3em] text-[#EDE7DA]">{c.word}</h2>
       </Beat>

@@ -20,7 +20,7 @@ interface Props {
 
 // not about · was about · four forces · not the same · not a problem ·
 // the problem · the hero · the question · the small print · out
-const GAPS = beats(1600, 3400, 3000, 1300, 1300, 1300, 3000, 2600, 3400, 3800, 3000, 2600, 2600);
+const GAPS = beats(1600, 3400, 3000, 1300, 1300, 1300, 3000, 2600, 3400, 3800, 3000, 2600, 1170);
 
 const SceneFinal: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].final;
@@ -37,7 +37,7 @@ const SceneFinal: React.FC<Props> = ({ lang, onContinue }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <NucleusMark size={40} dim />
 
       <div className="mt-14 space-y-8">

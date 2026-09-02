@@ -24,7 +24,7 @@ interface Props {
 }
 
 // title · noticed · mattered · with context · the two closing lines · out
-const GAPS = beats(900, 1800, 2000, 2000, 3000, 2000, 2600);
+const GAPS = beats(900, 1800, 2000, 2000, 3000, 2000, 1170);
 
 const Row: React.FC<{ show: boolean; label: string; values: string[]; strong?: boolean }> = ({
   show,

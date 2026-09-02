@@ -21,7 +21,7 @@ interface Props {
 }
 
 // gravity · signalfall · the hero · design · judgment · out
-const GAPS = beats(1200, 4400, 4200, 2600, 2400, 2600);
+const GAPS = beats(1200, 4400, 4200, 2600, 2400, 1170);
 
 const Phenomenon: React.FC<{
   show: boolean;
@@ -57,7 +57,7 @@ const ScenePhenomena: React.FC<Props> = ({ lang, onContinue }) => {
   }, []);
 
   return (
-    <Stage>
+    <Stage glow>
       <div className="space-y-12">
         {/* Small marks pulled off course by a heavy one. */}
         <Phenomenon show={shown >= 1} title={c.gravityTitle} line={c.gravityLine}>

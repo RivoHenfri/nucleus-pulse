@@ -18,7 +18,7 @@ interface Props {
 }
 
 // the card · sources · missing · the two lines · the quote · out
-const GAPS = beats(900, 1800, 2000, 2600, 2600, 2600);
+const GAPS = beats(900, 1800, 2000, 2600, 2600, 1170);
 
 const SceneAI: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].ai;

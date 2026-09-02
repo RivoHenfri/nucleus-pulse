@@ -20,7 +20,7 @@ interface Props {
 }
 
 // columns · the branch line · the two closing lines · out
-const GAPS = beats(1000, 2600, 3000, 2200, 2400);
+const GAPS = beats(1000, 2600, 3000, 2200, 1080);
 
 const Column: React.FC<{ label: string; picks: SituationId[]; strong?: boolean }> = ({
   label,
