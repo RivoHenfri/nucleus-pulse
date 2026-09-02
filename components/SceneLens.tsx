@@ -70,7 +70,7 @@ const SceneLens: React.FC<Props> = ({ lang, influences, onContinue }) => {
 
       <div className="mt-16">
         <Beat show={shown >= 5} lift={false}>
-          <h2 className="font-cinzel text-[26px] tracking-[0.26em] text-[#EDE7DA]">
+          <h2 className="font-display text-[26px] tracking-[0.26em] text-[#EDE7DA]">
             {c.lockTitle}
           </h2>
         </Beat>
@@ -80,8 +80,8 @@ const SceneLens: React.FC<Props> = ({ lang, influences, onContinue }) => {
       </div>
 
       <Beat show={shown >= 7} lift={false} className="mt-16 space-y-1.5">
-        <p className="font-cinzel text-[17px] tracking-[0.16em] text-[#EDE7DA]">{c.heroA}</p>
-        <p className="font-cinzel text-[17px] leading-[1.5] tracking-[0.16em] text-gray-500">
+        <p className="font-display text-[17px] tracking-[0.16em] text-[#EDE7DA]">{c.heroA}</p>
+        <p className="font-display text-[17px] leading-[1.5] tracking-[0.16em] text-gray-500">
           {c.heroB}
         </p>
       </Beat>

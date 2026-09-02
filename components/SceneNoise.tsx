@@ -10,7 +10,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import {Beat, Stage, beats, cue, useAutoAdvance, useBeats} from './atoms';
 
 interface Props {
   lang: Lang;
@@ -25,6 +25,8 @@ const COUNT = 44;
 const SceneNoise: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].noise;
   const shown = useBeats(GAPS);
+  // Nothing to decide here — the screen says its piece and moves on.
+  useAutoAdvance(shown >= 4, cue(2600), onContinue);
 
   const marks = useMemo(
     () =>
@@ -71,12 +73,11 @@ const SceneNoise: React.FC<Props> = ({ lang, onContinue }) => {
       </Beat>
 
       <Beat show={shown >= 3} lift={false} className="mt-14">
-        <h2 className="font-cinzel text-[20px] leading-[1.5] tracking-[0.16em] text-[#EDE7DA]">
+        <h2 className="font-display text-[20px] leading-[1.5] tracking-[0.16em] text-[#EDE7DA]">
           {c.hero}
         </h2>
       </Beat>
 
-      <Continue show={shown >= 4} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

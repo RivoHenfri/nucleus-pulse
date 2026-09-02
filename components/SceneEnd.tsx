@@ -45,7 +45,7 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
     <Stage glow>
       <Beat show={shown >= 1} lift={false}>
         <p className="text-[22px]">⚡</p>
-        <h2 className="mt-6 font-cinzel text-[19px] tracking-[0.26em] text-[#EDE7DA]">
+        <h2 className="mt-6 font-display text-[19px] tracking-[0.26em] text-[#EDE7DA]">
           {c.complete}
         </h2>
       </Beat>
@@ -55,7 +55,7 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
           shown >= 2 && !fadeSignal ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <p className="font-cinzel text-[15px] tracking-[0.36em] text-gray-400">{c.signal}</p>
+        <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.signal}</p>
       </div>
 
       <Beat show={shown >= 4} className="mt-16">
@@ -71,7 +71,7 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
       </Beat>
 
       <Beat show={shown >= 7} lift={false} className="mt-4">
-        <h2 className="font-cinzel text-[36px] tracking-[0.3em] text-[#EDE7DA]">{c.truth}</h2>
+        <h2 className="font-display text-[36px] tracking-[0.3em] text-[#EDE7DA]">{c.truth}</h2>
       </Beat>
 
       <Beat show={shown >= 8} className="mt-6">

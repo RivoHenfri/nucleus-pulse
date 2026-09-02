@@ -71,7 +71,7 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
     return (
       <Stage>
         <p
-          className={`font-cinzel text-[20px] tracking-[0.2em] text-[#EDE7DA] transition-opacity duration-[1200ms] ${
+          className={`font-display text-[20px] tracking-[0.2em] text-[#EDE7DA] transition-opacity duration-[1200ms] ${
             frame >= 0 ? 'opacity-30' : 'opacity-100'
           }`}
         >
@@ -141,7 +141,7 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
       </Beat>
 
       <Beat show={shown >= 2} lift={false} className="mt-16">
-        <h2 className="font-cinzel text-[34px] tracking-[0.24em] text-[#EDE7DA]">
+        <h2 className="font-display text-[34px] tracking-[0.24em] text-[#EDE7DA]">
           {c.thisScreen}
         </h2>
       </Beat>
@@ -156,12 +156,12 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
 
       <div className="mt-16 space-y-2">
         <Beat show={shown >= 6} lift={false}>
-          <p className="font-cinzel text-[16px] leading-[1.5] tracking-[0.14em] text-gray-500">
+          <p className="font-display text-[16px] leading-[1.5] tracking-[0.14em] text-gray-500">
             {c.closingA}
           </p>
         </Beat>
         <Beat show={shown >= 7} lift={false}>
-          <p className="font-cinzel text-[16px] leading-[1.5] tracking-[0.14em] text-[#EDE7DA]">
+          <p className="font-display text-[16px] leading-[1.5] tracking-[0.14em] text-[#EDE7DA]">
             {c.closingB}
           </p>
         </Beat>

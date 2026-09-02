@@ -12,6 +12,7 @@
 
 import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
+import { buzz, tap as tapSound } from '../utils/sound';
 
 /**
  * Full-height, centred, mobile-first stage.
@@ -74,6 +75,25 @@ export const useBeats = (gaps: number[]): number => {
   return shown;
 };
 
+/**
+ * Carry a scene on by itself once its last beat has landed.
+ *
+ * A tap on every one of seventeen screens turns an experience into a form.
+ * Screens that only make a statement now flow on their own, the way a film
+ * cuts; the button is kept for the screens where the participant has produced
+ * something and deserves to sit with it for as long as they like.
+ *
+ * `hold` is how long the finished screen stands before it moves.
+ */
+export const useAutoAdvance = (ready: boolean, hold: number, onDone: () => void): void => {
+  useEffect(() => {
+    if (!ready) return;
+    const t = setTimeout(onDone, hold);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, hold]);
+};
+
 /** The sum of a beat timeline — where the continue button belongs. */
 export const totalOf = (gaps: number[]): number => gaps.reduce((a, b) => a + b, 0);
 
@@ -125,7 +145,7 @@ export const Hero: React.FC<{ show: boolean; children: React.ReactNode; classNam
     <motion.h2
       animate={show ? { scale: [1, 1.012, 1], opacity: [0.92, 1, 0.92] } : {}}
       transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      className={`font-cinzel uppercase tracking-[0.18em] leading-[1.45] text-[22px] text-[#EDE7DA] ${className}`}
+      className={`font-display uppercase tracking-[0.18em] leading-[1.45] text-[22px] text-[#EDE7DA] ${className}`}
     >
       {children}
     </motion.h2>
@@ -142,7 +162,17 @@ export const Eyebrow: React.FC<{ children: React.ReactNode; className?: string }
   </p>
 );
 
-/** The one way forward. Never rushed onto the screen. */
+/**
+ * The one way forward. Never rushed onto the screen.
+ *
+ * It arrives rather than appears — a short rise under the fade, so the eye
+ * catches that something became available without being poked about it.
+ *
+ * And it answers the finger. Every other tap in the experience returns a
+ * haptic; this was the one button that did not, which made the most-pressed
+ * control in the app the only dead one. A tick that is felt and not really
+ * heard, so it confirms without announcing.
+ */
 export const Continue: React.FC<{
   show: boolean;
   label: string;
@@ -151,13 +181,17 @@ export const Continue: React.FC<{
 }> = ({ show, label, onClick, tone = 'quiet' }) => (
   <motion.div
     initial={false}
-    animate={{ opacity: show ? 1 : 0 }}
-    transition={{ duration: 1 }}
+    animate={{ opacity: show ? 1 : 0, y: show ? 0 : 8 }}
+    transition={{ duration: 1, ease: [0.22, 0.61, 0.36, 1] }}
     style={{ pointerEvents: show ? 'auto' : 'none' }}
   >
     <motion.button
       whileTap={{ scale: 0.96 }}
-      onClick={onClick}
+      onClick={() => {
+        buzz(tone === 'solid' ? 24 : 14);
+        tapSound();
+        onClick();
+      }}
       className={
         tone === 'solid'
           ? 'mt-14 px-12 py-4 rounded-full bg-[#EDE7DA] text-[#07090C] text-[12px] font-bold tracking-[0.28em]'

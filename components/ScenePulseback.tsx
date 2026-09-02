@@ -65,7 +65,7 @@ const ScenePulseback: React.FC<Props> = ({ lang, first, influences, second, onCo
   return (
     <Stage>
       <Beat show={shown >= 1} lift={false}>
-        <p className="font-cinzel text-[22px] tracking-[0.28em] text-[#EDE7DA]">
+        <p className="font-display text-[22px] tracking-[0.28em] text-[#EDE7DA]">
           ⚡ {c.title}
         </p>
       </Beat>

@@ -8,7 +8,7 @@
 import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import {Beat, Stage, beats, cue, useAutoAdvance, useBeats} from './atoms';
 
 interface Props {
   lang: Lang;
@@ -21,6 +21,8 @@ const GAPS = beats(1200, 2600, 2400, 3400, 1170);
 const SceneSignal: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].signal;
   const shown = useBeats(GAPS);
+  // Nothing to decide here — the screen says its piece and moves on.
+  useAutoAdvance(shown >= 5, cue(2600), onContinue);
 
   useEffect(() => {
     narrate('signal-1', cue(1400));
@@ -31,7 +33,7 @@ const SceneSignal: React.FC<Props> = ({ lang, onContinue }) => {
   return (
     <Stage glow>
       <Beat show={shown >= 1} lift={false}>
-        <h2 className="font-cinzel text-[38px] tracking-[0.3em] text-[#EDE7DA]">{c.word}</h2>
+        <h2 className="font-display text-[38px] tracking-[0.3em] text-[#EDE7DA]">{c.word}</h2>
       </Beat>
 
       <Beat show={shown >= 2} className="mt-8">
@@ -55,7 +57,6 @@ const SceneSignal: React.FC<Props> = ({ lang, onContinue }) => {
         <p className="text-[16px] leading-relaxed text-[#EDE7DA]">{c.closing}</p>
       </Beat>
 
-      <Continue show={shown >= 5} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

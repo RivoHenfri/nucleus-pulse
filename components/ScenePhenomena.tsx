@@ -13,7 +13,7 @@ import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
 import { drone } from '../utils/sound';
-import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import {Beat, Stage, beats, cue, useAutoAdvance, useBeats} from './atoms';
 
 interface Props {
   lang: Lang;
@@ -33,7 +33,7 @@ const Phenomenon: React.FC<{
     <div className="flex items-center gap-4 text-left">
       <div className="grid h-14 w-14 shrink-0 place-items-center">{children}</div>
       <div>
-        <p className="font-cinzel text-[15px] tracking-[0.2em] text-[#EDE7DA]">{title}</p>
+        <p className="font-display text-[15px] tracking-[0.2em] text-[#EDE7DA]">{title}</p>
         <p className="mt-1 text-[14px] leading-snug text-gray-400">{line}</p>
       </div>
     </div>
@@ -43,6 +43,8 @@ const Phenomenon: React.FC<{
 const ScenePhenomena: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].phenomena;
   const shown = useBeats(GAPS);
+  // Nothing to decide here — the screen says its piece and moves on.
+  useAutoAdvance(shown >= 6, cue(2600), onContinue);
 
   useEffect(() => {
     narrate('phenomena-1', cue(1100));
@@ -88,7 +90,7 @@ const ScenePhenomena: React.FC<Props> = ({ lang, onContinue }) => {
       </div>
 
       <Beat show={shown >= 3} lift={false} className="mt-20">
-        <h2 className="font-cinzel text-[21px] leading-[1.5] tracking-[0.18em] text-[#EDE7DA]">
+        <h2 className="font-display text-[21px] leading-[1.5] tracking-[0.18em] text-[#EDE7DA]">
           {c.hero}
         </h2>
       </Beat>
@@ -102,7 +104,6 @@ const ScenePhenomena: React.FC<Props> = ({ lang, onContinue }) => {
         </Beat>
       </div>
 
-      <Continue show={shown >= 6} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

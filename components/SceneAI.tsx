@@ -10,7 +10,7 @@
 import React, { useEffect } from 'react';
 import { COPY, MISSING_SOURCE, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import {Beat, Stage, beats, cue, useAutoAdvance, useBeats} from './atoms';
 
 interface Props {
   lang: Lang;
@@ -23,6 +23,8 @@ const GAPS = beats(900, 1800, 2000, 2600, 2600, 1170);
 const SceneAI: React.FC<Props> = ({ lang, onContinue }) => {
   const c = COPY[lang].ai;
   const shown = useBeats(GAPS);
+  // Nothing to decide here — the screen says its piece and moves on.
+  useAutoAdvance(shown >= 6, cue(2600), onContinue);
 
   useEffect(() => {
     narrate('ai-1', cue(7500));
@@ -67,10 +69,10 @@ const SceneAI: React.FC<Props> = ({ lang, onContinue }) => {
 
       <div className="mt-14 space-y-2">
         <Beat show={shown >= 4} lift={false}>
-          <p className="font-cinzel text-[18px] tracking-[0.14em] text-[#EDE7DA]">{c.high}</p>
+          <p className="font-display text-[18px] tracking-[0.14em] text-[#EDE7DA]">{c.high}</p>
         </Beat>
         <Beat show={shown >= 5} lift={false}>
-          <p className="font-cinzel text-[18px] tracking-[0.14em] text-gray-500">{c.incomplete}</p>
+          <p className="font-display text-[18px] tracking-[0.14em] text-gray-500">{c.incomplete}</p>
         </Beat>
       </div>
 
@@ -78,7 +80,6 @@ const SceneAI: React.FC<Props> = ({ lang, onContinue }) => {
         <p className="text-[15px] italic leading-relaxed text-gray-400">{c.quote}</p>
       </Beat>
 
-      <Continue show={shown >= 6} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

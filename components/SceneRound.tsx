@@ -95,6 +95,9 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
     done.current = true;
     setFrozen(true);
     setToast(null);
+    // The moment the morning stops. Felt, not heard — the sound is about to
+    // cut out entirely and the spec wants that silence intact.
+    buzz([40, 70, 40]);
     stopFocusBed();
     hush();
     setTimeout(() => onComplete(chosen), FREEZE_MS);
@@ -217,7 +220,7 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
             transition={{ duration: 0.55, ease: 'easeOut' }}
           >
             <motion.p
-              className="font-cinzel text-[22px] tracking-[0.14em] text-[#EDE7DA]"
+              className="font-display text-[22px] tracking-[0.14em] text-[#EDE7DA]"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
@@ -412,7 +415,7 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
       ) : (
         <div className="px-4 pb-16 pt-5">
           <div className="flex items-baseline justify-between pr-11 sm:pr-0">
-            <span className="font-cinzel text-[19px] tracking-[0.12em] text-[#EDE7DA]">
+            <span className="font-display text-[19px] tracking-[0.12em] text-[#EDE7DA]">
               {c.morning.clock}
             </span>
             {Countdown}

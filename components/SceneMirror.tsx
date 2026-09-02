@@ -84,10 +84,10 @@ const SceneMirror: React.FC<Props> = ({ lang, first, second, onContinue }) => {
 
       <div className="mt-16 space-y-2">
         <Beat show={shown >= 3} lift={false}>
-          <p className="font-cinzel text-[17px] tracking-[0.14em] text-gray-500">{c.closingA}</p>
+          <p className="font-display text-[17px] tracking-[0.14em] text-gray-500">{c.closingA}</p>
         </Beat>
         <Beat show={shown >= 4} lift={false}>
-          <p className="font-cinzel text-[17px] tracking-[0.14em] text-[#EDE7DA]">{c.closingB}</p>
+          <p className="font-display text-[17px] tracking-[0.14em] text-[#EDE7DA]">{c.closingB}</p>
         </Beat>
       </div>
 

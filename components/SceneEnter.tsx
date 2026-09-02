@@ -15,7 +15,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, LANGUAGES, type Lang } from '../i18n';
 import { hush, narrate, setNarrationLang, unlockAudio, whenQuiet } from '../utils/narration';
-import { unlockWebAudio } from '../utils/sound';
+import { buzz, unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
 
@@ -52,6 +52,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
     setNarrationLang(next);
     unlockAudio();
     unlockWebAudio();
+    buzz(18);
     onChooseLang(next);
     setStarted(true);
   };
@@ -122,7 +123,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
                   already in — so on its own it reads as a message from the
                   group rather than as something to walk into. */}
               <Beat show={shown >= 1} lift={false}>
-                <p className="font-cinzel text-[17px] tracking-[0.3em] text-[#EDE7DA]">
+                <p className="font-display text-[17px] tracking-[0.3em] text-[#EDE7DA]">
                   {c.brand}
                 </p>
               </Beat>

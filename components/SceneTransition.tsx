@@ -11,7 +11,7 @@
 import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import {Beat, Stage, beats, cue, useAutoAdvance, useBeats} from './atoms';
 
 interface Props {
   lang: Lang;
@@ -24,6 +24,8 @@ const GAPS = beats(1600, 4200, 1440);
 const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
   const c = COPY[lang].transition;
   const shown = useBeats(GAPS);
+  // Nothing to decide here — the screen says its piece and moves on.
+  useAutoAdvance(shown >= 3, cue(2600), onDone);
 
   useEffect(() => {
     narrate('transition-1', cue(1300));
@@ -41,15 +43,6 @@ const SceneTransition: React.FC<Props> = ({ lang, onDone }) => {
           <p className="text-[18px] leading-relaxed text-[#EDE7DA]">{c.second}</p>
         </Beat>
       </div>
-
-      <Continue
-        show={shown >= 3}
-        label={COPY[lang].context.cta}
-        onClick={() => {
-          hush();
-          onDone();
-        }}
-      />
     </Stage>
   );
 };

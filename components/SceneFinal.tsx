@@ -70,7 +70,7 @@ const SceneFinal: React.FC<Props> = ({ lang, onContinue }) => {
       </div>
 
       <Beat show={shown >= 10} lift={false} className="mt-20">
-        <h2 className="font-cinzel text-[22px] leading-[1.55] tracking-[0.18em] text-[#EDE7DA]">
+        <h2 className="font-display text-[22px] leading-[1.55] tracking-[0.18em] text-[#EDE7DA]">
           {c.hero}
         </h2>
       </Beat>
