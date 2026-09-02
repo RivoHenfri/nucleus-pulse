@@ -488,15 +488,14 @@ const Room: React.FC = () => {
                   {ai ? (
                     <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-gray-300">
                       {ai
-                        .split(/
-+/)
+                        .split(/\n+/)
                         .map(l => l.trim())
                         .filter(Boolean)
                         .map((l, i) =>
-                          l.startsWith('â¢') ? (
+                          l.startsWith('•') ? (
                             <p key={i} className="flex gap-3 text-gray-200">
-                              <span className="text-sky-200/70">â¢</span>
-                              <span>{l.replace(/^â¢\s*/, '')}</span>
+                              <span className="text-sky-200/70">•</span>
+                              <span>{l.replace(/^•\s*/, '')}</span>
                             </p>
                           ) : (
                             <p key={i}>{l}</p>
