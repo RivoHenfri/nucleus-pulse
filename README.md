@@ -127,8 +127,8 @@ npm run preview
 ```
 
 In dev only, `?scene=lens` opens straight into a scene with stand-in choices,
-for re-timing without playing four minutes to reach it. It is stripped from
-production builds.
+for re-timing without playing four minutes to reach it. It is gated on
+`import.meta.env.DEV`, so the parameter does nothing on a production build.
 
 ## Tech
 

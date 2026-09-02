@@ -63,8 +63,10 @@ const save = (state: Saved) => {
 /**
  * Rehearsal only: `?scene=lens` opens straight into a scene with stand-in
  * choices, so a scene can be re-timed without playing four minutes to reach
- * it. Stripped from production builds — a participant who found this could
- * skip the entire first round and the experience would make no sense.
+ * it. Gated on import.meta.env.DEV, which is a compile-time false in a
+ * production build, so the parameter does nothing on the deployed app — a
+ * participant who found it could otherwise skip the first round entirely and
+ * the rest of the experience would mean nothing.
  */
 const dev = (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV ?? false;
 const rehearsal = (): { scene?: SceneId; picks?: SituationId[] } => {
