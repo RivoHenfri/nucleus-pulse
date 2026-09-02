@@ -143,8 +143,14 @@ const pump = () => {
     pending.push(
       setTimeout(() => {
         if (mine !== generation) return;
-        if (audio.currentTime > 0.05) provenAudible = true;
-        else if (!audio.paused) onTrouble?.('silent');
+        if (audio.currentTime > 0.05) {
+          provenAudible = true;
+        } else {
+          // Stalled at zero, whether it is still trying or was stopped by
+          // something else. Both are inaudible to the participant, which is
+          // the only thing that matters here.
+          onTrouble?.('silent');
+        }
       }, 900),
     );
   } catch {
@@ -253,6 +259,14 @@ export const setNarrationEnabled = (on: boolean): void => {
 };
 
 /**
+ * A fraction of a second of silence, inline.
+ *
+ * The unlock has to play something, and it must not be a file: see below.
+ */
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
+
+/**
  * Claim playback permission while a gesture is still in hand.
  *
  * Called from the language choice on the first screen — the only tap that
@@ -260,22 +274,38 @@ export const setNarrationEnabled = (on: boolean): void => {
  * real, muted line is what marks the element as user-activated; a src-less
  * element is not enough on iOS.
  *
- * An earlier version pointed this at a line id that no longer exists after the
- * rebuild, so it 404'd and unlocked nothing at all. It now uses the first line
- * the participant is actually about to hear, which is also warm in the cache
- * by the time it is wanted.
+ * It plays a few milliseconds of inline silence, and this matters more than it
+ * looks. Two earlier versions of this function were broken:
+ *
+ * The first pointed at a line id that no longer existed after the rebuild, so
+ * it 404'd and unlocked nothing.
+ *
+ * The second played the real first line, muted, and paused it once the promise
+ * resolved. On a fast machine that resolves in milliseconds and all is well.
+ * On a phone, ninety kilobytes of audio can take longer to start than the gap
+ * before the first line is cued — so the unlock's pause() landed on the line
+ * that had already begun, stopping it dead. No exception was thrown, so
+ * nothing reported a problem; "ended" never fired, so the queue stalled behind
+ * it; and not one line of the run was ever heard. It was invisible in testing
+ * because a fast local server never loses that race.
+ *
+ * Inline silence has no network to wait on, so there is no race left to lose,
+ * and the generation token means a late promise can never touch a clip that
+ * has moved on without it.
  */
 export const unlockAudio = (): void => {
   const audio = element();
   if (!audio) return;
+  const mine = ++generation;
   try {
-    audio.src = url('enter-1');
+    audio.src = SILENT_WAV;
     audio.volume = 0;
     audio
       .play()
       .then(() => {
+        // If a real line has started since, this pause would stop it dead.
+        if (mine !== generation) return;
         audio.pause();
-        audio.currentTime = 0;
         audio.volume = 1;
       })
       .catch(() => {
