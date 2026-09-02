@@ -171,8 +171,32 @@ const Tile: React.FC<{ n: number; label: string; total: number }> = ({ n, label,
 
 const Room: React.FC = () => {
   const q = new URLSearchParams(window.location.search);
-  const lang: Lang = q.get('lang') === 'en' ? 'en' : 'id';
+  const [lang, setLang] = useState<Lang>(q.get('lang') === 'en' ? 'en' : 'id');
   const t = T[lang];
+
+  const switchLang = (next: Lang) => {
+    setLang(next);
+    const u = new URL(window.location.href);
+    u.searchParams.set('lang', next);
+    window.history.replaceState(null, '', u.toString());
+  };
+
+  // A facilitator at the front of a room should not have to edit a URL.
+  const LangToggle = (
+    <span className="flex gap-1 text-[11px] tracking-[0.2em]">
+      {(['en', 'id'] as Lang[]).map(l => (
+        <button
+          key={l}
+          onClick={() => switchLang(l)}
+          className={`rounded-full px-2.5 py-1 ${
+            lang === l ? 'bg-[#EDE7DA] text-[#07090C]' : 'text-gray-500 hover:text-gray-300'
+          }`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </span>
+  );
   const o = COPY[lang].reflection.options;
 
   const [code, setCode] = useState(q.get('room')?.toUpperCase() ?? '');
@@ -233,6 +257,7 @@ const Room: React.FC = () => {
     return (
       <main className="grid min-h-[100dvh] place-items-center px-8 text-center">
         <div>
+          <div className="mb-8 flex justify-center">{LangToggle}</div>
           <button
             onClick={open}
             disabled={busy}
@@ -259,8 +284,9 @@ const Room: React.FC = () => {
     <main className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-10 py-12">
       <header className="flex items-baseline justify-between">
         <span className="font-display text-[18px] tracking-[0.2em] text-[#EDE7DA]">NUCLEUS PULSE</span>
-        <span className="text-[12px] tracking-[0.3em] text-gray-500">
+        <span className="flex items-center gap-6 text-[12px] tracking-[0.3em] text-gray-500">
           {code} · {t.joined(n)}
+          {LangToggle}
         </span>
       </header>
 
