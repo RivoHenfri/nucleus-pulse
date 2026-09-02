@@ -20,8 +20,14 @@ import {
   stopCalmBed,
   stopFocusBed,
 } from './utils/ambience';
-import { hush, setNarrationEnabled, setNarrationLang } from './utils/narration';
+import {
+  hush,
+  onAudioTrouble,
+  setNarrationEnabled,
+  setNarrationLang,
+} from './utils/narration';
 import { setVoiceEnabled, silence } from './utils/voice';
+import { unlockWebAudio } from './utils/sound';
 
 import SceneEnter from './components/SceneEnter';
 import SceneRound from './components/SceneRound';
@@ -93,6 +99,20 @@ const App: React.FC = () => {
     rehearse.scene ? ['engineering', 'finance'] : [],
   );
   const [sound, setSound] = useState(true);
+  /**
+   * Whether the voice is actually reaching the participant.
+   *
+   * The timing of most of these screens is built around a line being spoken.
+   * A run where the audio silently failed is not a quieter version of the
+   * experience, it is a broken one — the pauses become dead air and the whole
+   * thing goes flat. So the app now notices, and says so, rather than letting
+   * someone sit through it wondering why nothing is happening.
+   */
+  const [trouble, setTrouble] = useState<'blocked' | 'silent' | null>(null);
+
+  useEffect(() => {
+    onAudioTrouble(why => setTrouble(current => current ?? why));
+  }, []);
 
   useEffect(() => {
     setNarrationLang(lang);
@@ -173,6 +193,23 @@ const App: React.FC = () => {
       >
         {sound ? '🔊' : '🔇'}
       </button>
+
+      {/* Sound failed, and the participant is owed an explanation and a way
+          out of it — not a silent run they assume is working. */}
+      {trouble && sound && (
+        <button
+          onClick={() => {
+            unlockWebAudio();
+            startCalmBed();
+            setTrouble(null);
+          }}
+          className="fixed inset-x-3 top-3 z-40 rounded-xl border border-amber-300/25 bg-[#12171d] px-4 py-3 text-left text-[12px] leading-snug text-amber-100/90 shadow-lg shadow-black/60"
+        >
+          {trouble === 'blocked'
+            ? COPY[lang].common.soundBlocked
+            : COPY[lang].common.soundSilent}
+        </button>
+      )}
 
       {/* One scene at a time, and the old one is fully gone before the new one
           starts. The gap between them is part of the pacing: an overlap would

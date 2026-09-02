@@ -98,6 +98,9 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
             transition={{ duration: 1.4 }}
             className="mt-10 flex flex-col gap-3"
           >
+            <p className="mb-4 px-6 text-[12px] leading-relaxed text-gray-600">
+              {COPY[lang].common.soundHint}
+            </p>
             {LANGUAGES.map(l => (
               <button
                 key={l.code}

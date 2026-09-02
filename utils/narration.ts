@@ -133,9 +133,20 @@ const pump = () => {
     audio.play().catch(() => {
       // Autoplay refused, or the file is missing — say it the plain way and
       // keep the queue moving rather than stalling every line behind it.
+      onTrouble?.('blocked');
       if (text) speak(text);
       next();
     });
+
+    // A clip that is playing has moved by now. One that has not is either
+    // muted at the hardware switch or not really running.
+    pending.push(
+      setTimeout(() => {
+        if (mine !== generation) return;
+        if (audio.currentTime > 0.05) provenAudible = true;
+        else if (!audio.paused) onTrouble?.('silent');
+      }, 900),
+    );
   } catch {
     if (text) speak(text);
     next();
@@ -160,6 +171,30 @@ const enqueue = (id: string) => {
  * gone rather than avoided.
  */
 let lastCueAt = -1;
+
+/**
+ * Told when the voice cannot actually be heard.
+ *
+ * Half of this experience is carried by sound, and until now a browser that
+ * refused to play simply produced a silent run: the participant sat through
+ * screens whose timing was built around a voice they never heard, and nothing
+ * on screen admitted it. Failing silently is the worst possible behaviour for
+ * the one thing the experience cannot do without.
+ *
+ * Two different failures are caught. play() rejecting is the obvious one —
+ * autoplay refused. The quieter one is a clip that starts, reports no error,
+ * and never advances: that is a device muted at the hardware switch, which no
+ * API will tell us about directly, but a playhead frozen at zero will.
+ */
+let onTrouble: ((why: 'blocked' | 'silent') => void) | null = null;
+
+export const onAudioTrouble = (cb: (why: 'blocked' | 'silent') => void): void => {
+  onTrouble = cb;
+};
+
+/** Cleared once anything is confirmed audible. */
+let provenAudible = false;
+export const audioProven = (): boolean => provenAudible;
 
 /** Speak one recorded line, optionally after a delay so it lands with its animation. */
 export const narrate = (id: LineId | string, delay = 0): void => {

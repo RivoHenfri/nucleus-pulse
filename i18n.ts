@@ -197,6 +197,11 @@ const EN = {
   common: {
     soundOn: 'Sound on',
     soundOff: 'Sound off',
+    // Said before the language is chosen, because after that it is too late
+    // to go and find headphones.
+    soundHint: 'This experience is carried by sound. Headphones if you have them.',
+    soundBlocked: 'Sound is off. Tap to turn it on.',
+    soundSilent: 'No sound is coming through. Check the silent switch or the volume.',
   },
 };
 
@@ -384,6 +389,9 @@ const ID: Copy = {
   common: {
     soundOn: 'Suara hidup',
     soundOff: 'Suara mati',
+    soundHint: 'Pengalaman ini dibawa oleh suara. Pakai headphone kalau ada.',
+    soundBlocked: 'Suara belum menyala. Ketuk untuk menyalakan.',
+    soundSilent: 'Suara tidak terdengar. Cek tombol senyap atau volume perangkatmu.',
   },
 };
 
