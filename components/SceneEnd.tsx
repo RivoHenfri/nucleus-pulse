@@ -25,7 +25,7 @@ interface Props {
 
 // complete · SIGNAL · (fade) · but · the mark · next pulse · TRUTH · question
 // · the logo closing the loop
-const GAPS = beats(1200, 1400, 3400, 3000, 2200, 1800, 1600, 2400, 1350);
+const GAPS = beats(1200, 1400, 3400, 4200, 2200, 1800, 1600, 2400, 1350);
 
 const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const c = COPY[lang].end;
@@ -74,6 +74,23 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.signal}</p>
       </div>
 
+
+      {/* The challenge, while they are still standing on "PULSE 01 COMPLETE".
+          It used to sit under the TRUTH teaser, which meant the moment to
+          hand the question on arrived after the story had already moved to
+          the next one. Share first; then the hinge into Pulse 02. */}
+      <Beat show={shown >= 3} className="mt-10">
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15] transition-transform duration-300 active:scale-95"
+        >
+          <span className="text-[15px]">💬</span>
+          {c.share}
+        </a>
+      </Beat>
+
       <Beat show={shown >= 4} className="mt-16">
         <p className="text-[16px] leading-relaxed text-gray-300">{c.but}</p>
       </Beat>
@@ -92,20 +109,6 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
 
       <Beat show={shown >= 8} className="mt-6">
         <p className="text-[16px] italic text-gray-400">{c.question}</p>
-      </Beat>
-
-      {/* The challenge goes out before the mark returns: the last thing the
-          participant does is hand the question to someone else. */}
-      <Beat show={shown >= 8} className="mt-12">
-        <a
-          href={waHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15] transition-transform duration-300 active:scale-95"
-        >
-          <span className="text-[15px]">💬</span>
-          {c.share}
-        </a>
       </Beat>
 
       {/* Where it started. */}
