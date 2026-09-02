@@ -60,8 +60,12 @@ const SceneMirror: React.FC<Props> = ({ lang, first, second, onContinue }) => {
   const branch = changed >= 2 ? c.both : changed === 1 ? c.one : c.none;
 
   useEffect(() => {
+    // Which of the three is true is the whole point of the scene, and it was
+    // the one line left on screen in silence.
+    narrate(changed >= 2 ? 'mirror-both' : changed === 1 ? 'mirror-one' : 'mirror-none', cue(2800));
     narrate('mirror', cue(7600));
     return () => hush();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

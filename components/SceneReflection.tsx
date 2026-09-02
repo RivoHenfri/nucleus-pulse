@@ -30,6 +30,7 @@ const SceneReflection: React.FC<Props> = ({ lang, onContinue }) => {
 
   useEffect(() => {
     narrate('reflection', cue(900));
+    narrate('ready', cue(3600));
     return () => hush();
   }, []);
 

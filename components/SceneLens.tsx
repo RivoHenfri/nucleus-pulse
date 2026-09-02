@@ -31,6 +31,7 @@ const SceneLens: React.FC<Props> = ({ lang, influences, onContinue }) => {
     narrate('lens-1', cue(1300));
     narrate('lens-2', cue(4600));
     narrate('lens-3', cue(12000));
+    narrate('lens-hero', cue(17000));
     return () => hush();
   }, []);
 

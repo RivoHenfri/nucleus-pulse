@@ -169,11 +169,19 @@ def wav(pcm: bytes) -> bytes:
 
 
 def normalise_text(text: str) -> str:
-    """Compare what was said to what was written, ignoring anything a listener
-    would not hear: case, accents, punctuation, and whitespace."""
+    """
+    Compare what was said to what was written, ignoring anything a listener
+    cannot hear: case, accents, punctuation — and word boundaries.
+
+    Spaces have to go too. An initialism is written "A I." to force the model
+    to say the letters, and it then transcribes them back as "AI"; comparing
+    word by word, that is a mismatch, and the line can never pass however many
+    takes it is given. Nobody can hear the gap between two letters, so the
+    verifier should not be able to either.
+    """
     folded = unicodedata.normalize("NFKD", text.lower())
     folded = "".join(c for c in folded if not unicodedata.combining(c))
-    return " ".join(re.sub(r"[^a-z0-9\s]", " ", folded).split())
+    return re.sub(r"[^a-z0-9]", "", folded)
 
 
 # ---------------------------------------------------------------------------
@@ -324,15 +332,34 @@ def synthesize(key: str, voice: str, text: str, system: str) -> tuple[bytes, flo
     return b"".join(base64.b64decode(c) for c in chunks), cost, transcript
 
 
-def expected_seconds(text: str, lang: str) -> float:
-    """Roughly how long a person takes to say this line, unhurried."""
+# Lines whose spoken length character count cannot predict. An initialism is
+# the whole category: "A I." is four characters and two whole letter-names.
+# Stated here rather than guessed, so the audition loop stops rejecting takes
+# that were right all along.
+EXPECT_OVERRIDE = {"name-ai": 1.2}
+
+
+def expected_seconds(text: str, lang: str, line_id: str = "") -> float:
+    """
+    Roughly how long a person takes to say this line, unhurried.
+
+    The onset-and-decay overhead is real for a sentence and far too generous
+    for a single word: "Client." was being scored as rushed at 0.9s against a
+    1.4s estimate, and the audition loop threw away eight clean takes in a row.
+    Short utterances carry half the overhead.
+    """
+    if line_id in EXPECT_OVERRIDE:
+        return EXPECT_OVERRIDE[line_id]
     sentences = max(1, len(re.findall(r"[.!?]+", text)))
-    return (
-        len(text) / PACE.get(lang, 14.0) + sentences * SENTENCE_COST + UTTERANCE_COST
-    )
+    overhead = sentences * SENTENCE_COST + UTTERANCE_COST
+    if len(text) < 16:
+        overhead *= 0.5
+    return len(text) / PACE.get(lang, 14.0) + overhead
 
 
-def judge(buf: array.array, transcript: str, text: str, lang: str) -> tuple[float, str]:
+def judge(
+    buf: array.array, transcript: str, text: str, lang: str, line_id: str = ""
+) -> tuple[float, str]:
     """
     Score a take, and say in one phrase what is wrong with it.
 
@@ -353,15 +380,20 @@ def judge(buf: array.array, transcript: str, text: str, lang: str) -> tuple[floa
         return 0.0, f"{gap / 1000:.1f}s stall mid-line"
 
     spoken = seconds(trim_and_polish(buf))
-    expected = expected_seconds(text, lang)
+    expected = expected_seconds(text, lang, line_id)
     ratio = spoken / expected if expected else 1.0
-    if ratio > SLOWEST:
+    # Character count stops predicting anything below a handful of characters:
+    # "A I." is four characters and two whole letter-names, and every clean
+    # take of it scores as padded. Judge the very short lines on whether they
+    # are audible and unbroken, not on their length.
+    slowest = SLOWEST if len(text) >= 8 else 4.0
+    if ratio > slowest:
         return 0.0, f"padded — {spoken:.1f}s for a {expected:.1f}s line"
     if ratio < FASTEST:
         return 0.0, f"rushed — {spoken:.1f}s for a {expected:.1f}s line"
 
     # Closest to the natural pace wins, with a small bonus for a clean inside.
-    pace_score = 1.0 - min(1.0, abs(math.log(ratio)) / math.log(SLOWEST))
+    pace_score = 1.0 - min(1.0, abs(math.log(ratio)) / math.log(slowest))
     calm_score = 1.0 - min(1.0, gap / MAX_INNER_GAP_MS)
     return 0.75 * pace_score + 0.25 * calm_score, f"{spoken:.1f}s vs {expected:.1f}s"
 
@@ -369,7 +401,9 @@ def judge(buf: array.array, transcript: str, text: str, lang: str) -> tuple[floa
 ACCEPT = 0.62
 
 
-def audition(key: str, voice: str, text: str, lang: str, attempts: int, system: str):
+def audition(
+    key: str, voice: str, text: str, lang: str, attempts: int, system: str, line_id: str
+):
     """Keep taking the line until one is right, then stop. Returns the best
     take seen, the money spent, and how many attempts it took."""
     spent = 0.0
@@ -378,7 +412,7 @@ def audition(key: str, voice: str, text: str, lang: str, attempts: int, system: 
         pcm, cost, transcript = synthesize(key, voice, text, system)
         spent += cost
         buf = samples(pcm)
-        score, why = judge(buf, transcript, text, lang)
+        score, why = judge(buf, transcript, text, lang, line_id)
         if best is None or score > best[0]:
             best = (score, buf, why)
         if score >= ACCEPT:
@@ -462,7 +496,7 @@ def main() -> None:
                 continue
 
             best, cost, took = audition(
-                key, voice, text, lang, attempts, system_prompt(line_id, directions)
+                key, voice, text, lang, attempts, system_prompt(line_id, directions), line_id
             )
             total_cost += cost
             if best is None or best[0] <= 0:

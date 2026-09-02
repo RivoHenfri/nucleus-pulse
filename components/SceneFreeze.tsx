@@ -3,6 +3,13 @@
 // The sound stops, the movement stops, and for two seconds nothing happens at
 // all. Then three numbers, the question, and the two things they chose — shown
 // back exactly as they were, with no verdict attached to either.
+//
+// And read back aloud. The scene was showing the participant their own choices
+// in silence, which made the screen feel like a receipt; hearing "you chose"
+// and then your own two names said out loud is what turns it into a mirror.
+// The read-back is assembled from fixed clips through the narration queue —
+// the carrier line, then one clip per situation — so nothing has to be
+// synthesised live and it sounds like the same person throughout.
 
 import React, { useEffect } from 'react';
 import { COPY, SHORT_NAME, SITUATION_COPY, type Lang } from '../i18n';
@@ -25,7 +32,13 @@ const SceneFreeze: React.FC<Props> = ({ lang, picks, onContinue }) => {
 
   useEffect(() => {
     narrate('freeze', cue(4200));
+    // The queue holds each line until the one before it has finished, so these
+    // land as one spoken sentence however tight the tempo is set.
+    narrate('you-chose', cue(6400));
+    picks.forEach((id, i) => narrate(`name-${id}`, cue(6600 + i * 200)));
+    narrate('ready', cue(7600));
     return () => hush();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

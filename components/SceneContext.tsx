@@ -38,6 +38,8 @@ const SceneContext: React.FC<Props> = ({ lang, onContinue }) => {
 
   useEffect(() => {
     narrate('context', cue(900));
+    // Say what the new structure actually is, once, while it opens.
+    narrate('context-2', cue(3200));
     const timers = IDS.map((_, i) =>
       setTimeout(() => {
         setOpened(i + 1);

@@ -33,6 +33,7 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
     const t = setTimeout(() => setFadeSignal(true), GAPS[0] + GAPS[1] + GAPS[2]);
     const s = setTimeout(shimmer, 600);
     narrate('end', cue(1300));
+    narrate('end-next', cue(12000));
     return () => {
       clearTimeout(t);
       clearTimeout(s);

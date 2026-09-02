@@ -47,6 +47,14 @@ const ScenePulseback: React.FC<Props> = ({ lang, first, influences, second, onCo
 
   useEffect(() => {
     const chime = setTimeout(pulseConfirm, 600);
+    // Their own three rows, spoken back in the order they appear on screen.
+    // Each cue gets its own moment. Two narrate() calls sharing a delay is a
+    // coin toss over which one survives, and the queue can only order what it
+    // is actually handed.
+    narrate('you-chose', cue(1600));
+    first.forEach((id, i) => narrate(`name-${id}`, cue(1800 + i * 200)));
+    narrate('you-context', cue(2400));
+    second.forEach((id, i) => narrate(`name-${id}`, cue(2600 + i * 200)));
     narrate('pulseback', cue(10200));
     return () => {
       clearTimeout(chime);

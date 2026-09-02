@@ -11,7 +11,7 @@
     "context": "plain and factual, an assistant reading a list",
     "ai": "level and neutral; observing a limit, not criticising a machine",
     "second": "the same practical voice as the morning, with less pressure",
-    "mirror": "steady and non-judgemental; both halves equally true",
+    "mirror": "steady and non-judgemental; whichever of these is true, it is not a verdict",
     "signal": "deliberate, giving a name to something already felt",
     "noise": "measured, slightly weary of the noise",
     "lens": "warm then serious; the last line is an instruction to keep something, not to drop it",
@@ -19,7 +19,10 @@
     "phenomena": "even and explanatory, naming two things once",
     "pulseback": "soft and generous, letting someone else be right",
     "final": "slow and spacious, the end of a long thought; the last line is asked, not pressed",
-    "end": "quiet close, then one step forward"
+    "end": "quiet close, then one step forward",
+    "name": "one word, said plainly, as if reading a name off a list; a small pause at the end",
+    "you": "warm and neutral, handing something back rather than announcing it",
+    "ready": "unhurried, an invitation with no pressure in it at all"
   },
   "languages": {
     "en": {
@@ -58,7 +61,25 @@
       "final-4": "The problem begins when we assume everyone sees what we see.",
       "final-5": "Reality is larger than any one lens.",
       "final-6": "What might you be seeing clearly, but only through your own lens?",
-      "end": "Pulse One complete. Signal. But noticing something does not make it true."
+      "end": "Pulse One complete. Signal. But noticing something does not make it true.",
+      "you-chose": "You chose.",
+      "you-context": "With more context, you chose.",
+      "ready": "Take your time. Continue when you are ready.",
+      "name-client": "Client.",
+      "name-finance": "Payment.",
+      "name-people": "Candidate.",
+      "name-engineering": "Engineering.",
+      "name-operations": "Operations.",
+      "name-hospitality": "Hospitality.",
+      "name-governance": "Governance.",
+      "name-ai": "A I.",
+      "mirror-both": "More context changed what deserved your attention.",
+      "mirror-one": "Some instincts held. One changed with context.",
+      "mirror-none": "More context reinforced your first judgment.",
+      "context-2": "Each one now shows who owns it, what it needs, and what happens if it waits.",
+      "noise-hero": "High activity is not the same as high signal.",
+      "lens-hero": "Bring your experience. But do not mistake it for the whole picture.",
+      "end-next": "Next Pulse. Truth. What do you trust?"
     },
     "id": {
       "enter-1": "Selamat datang di Nucleus.",
@@ -96,7 +117,25 @@
       "final-4": "Masalah dimulai ketika kita menganggap semua orang melihat apa yang kita lihat.",
       "final-5": "Realitas lebih besar dari satu sudut pandang.",
       "final-6": "Apa yang saat ini terlihat sangat jelas bagimu, tetapi mungkin hanya dari sudut pandangmu?",
-      "end": "Pulse Satu selesai. Signal. Tetapi memperhatikan sesuatu tidak otomatis membuatnya benar."
+      "end": "Pulse Satu selesai. Signal. Tetapi memperhatikan sesuatu tidak otomatis membuatnya benar.",
+      "you-chose": "Yang kamu pilih.",
+      "you-context": "Setelah ada konteks tambahan, kamu memilih.",
+      "ready": "Tidak perlu buru-buru. Lanjut kalau sudah siap.",
+      "name-client": "Client.",
+      "name-finance": "Payment.",
+      "name-people": "Candidate.",
+      "name-engineering": "Engineering.",
+      "name-operations": "Operations.",
+      "name-hospitality": "Hospitality.",
+      "name-governance": "Governance.",
+      "name-ai": "A I.",
+      "mirror-both": "Konteks tambahan mengubah apa yang menurutmu perlu diperhatikan.",
+      "mirror-one": "Sebagian pilihanmu tetap. Satu berubah setelah mendapat konteks tambahan.",
+      "mirror-none": "Konteks tambahan memperkuat pilihan awalmu.",
+      "context-2": "Sekarang setiap informasi menunjukkan siapa pemiliknya, apa yang dibutuhkan, dan apa akibatnya jika ditunda.",
+      "noise-hero": "Aktivitas yang tinggi tidak sama dengan signal yang tinggi.",
+      "lens-hero": "Bawa pengalamanmu. Tetapi jangan anggap itu sebagai seluruh gambaran.",
+      "end-next": "Pulse berikutnya. Truth. Apa yang kamu percaya?"
     }
   }
 }

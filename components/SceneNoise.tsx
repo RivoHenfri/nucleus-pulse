@@ -42,6 +42,7 @@ const SceneNoise: React.FC<Props> = ({ lang, onContinue }) => {
 
   useEffect(() => {
     narrate('noise', cue(5200));
+    narrate('noise-hero', cue(8400));
     return () => hush();
   }, []);
 

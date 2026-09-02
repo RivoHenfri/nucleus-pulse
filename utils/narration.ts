@@ -46,6 +46,17 @@ let pending: ReturnType<typeof setTimeout>[] = [];
 /** Lines cued but not yet spoken, in the order they were asked for. */
 let queue: string[] = [];
 let speaking = false;
+/**
+ * Which clip the element is currently supposed to be playing.
+ *
+ * Swapping `src` on a media element makes the browser tear down the old
+ * source, and the events from that teardown arrive after the new clip has
+ * already started. Without a token to check them against, that stale "ended"
+ * advanced the queue a second time and the clip that had just started was
+ * immediately replaced — which is why the first of every pair of names was
+ * never heard.
+ */
+let generation = 0;
 /** Callers waiting for the voice to finish everything it was given. */
 let waiting: (() => void)[] = [];
 /** A breath between one line and the next, so they do not run together. */
@@ -95,16 +106,23 @@ const pump = () => {
     return;
   }
 
+  const mine = ++generation;
   const next = () => {
+    // Anything from a clip we have already moved past is not our business.
+    if (mine !== generation) return;
     speaking = false;
     pending.push(setTimeout(pump, GAP_MS));
   };
 
   try {
     speaking = true;
-    audio.onended = next;
+    // Detach before swapping the source, so the teardown of the old clip
+    // cannot advance the queue.
+    audio.onended = null;
+    audio.pause();
     audio.src = url(id);
-    audio.currentTime = 0;
+    audio.load();
+    audio.onended = next;
     audio.volume = 1;
     audio.play().catch(() => {
       // Autoplay refused, or the file is missing — say it the plain way and
@@ -124,11 +142,26 @@ const enqueue = (id: string) => {
   pump();
 };
 
+/**
+ * The last moment anything was cued for, so two cues can never land together.
+ *
+ * Two narrate() calls scheduled at the identical millisecond reliably lost one
+ * of them — reproducibly, always the earlier one, both in the read-back of a
+ * pair of choices and where an invitation happened to share a timestamp with a
+ * name. Rather than leave that as a trap for whoever writes the next scene, a
+ * cue that collides with one already scheduled is nudged a few milliseconds
+ * later. Ordering is preserved, nothing is audible, and the class of bug is
+ * gone rather than avoided.
+ */
+let lastCueAt = -1;
+
 /** Speak one recorded line, optionally after a delay so it lands with its animation. */
 export const narrate = (id: LineId | string, delay = 0): void => {
   if (!enabled) return;
   if (delay > 0) {
-    pending.push(setTimeout(() => enqueue(id), delay));
+    const at = delay <= lastCueAt ? lastCueAt + 5 : delay;
+    lastCueAt = at;
+    pending.push(setTimeout(() => enqueue(id), at));
   } else {
     enqueue(id);
   }
@@ -141,6 +174,7 @@ export const hush = (): void => {
   queue = [];
   speaking = false;
   waiting = [];
+  lastCueAt = -1;
   if (voice) {
     try {
       voice.onended = null;
