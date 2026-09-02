@@ -333,7 +333,12 @@ const App: React.FC = () => {
             <SceneFinal lang={lang} onContinue={go('end')} />
           )}
 
-          {scene === 'end' && <SceneEnd lang={lang} onRestart={restart} />}
+          {scene === 'end' && <SceneEnd
+              lang={lang}
+              first={firstLook}
+              second={secondLook}
+              onRestart={restart}
+            />}
         </motion.div>
       </AnimatePresence>
     </main>

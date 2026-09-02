@@ -11,6 +11,7 @@
 import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
+import { shimmer } from '../utils/sound';
 import { Beat, Continue, NucleusMark, Stage, beats, cue, useBeats } from './atoms';
 
 interface Props {
@@ -32,8 +33,14 @@ const SceneFinal: React.FC<Props> = ({ lang, onContinue }) => {
     narrate('final-3', cue(15000));
     narrate('final-4', cue(21000));
     narrate('final-5', cue(27000));
+    // "Reality is larger than any one lens" gets the one bright sound in the
+    // whole run, timed to land as the line does.
+    const rise = setTimeout(shimmer, cue(26600));
     narrate('final-6', cue(32000));
-    return () => hush();
+    return () => {
+      clearTimeout(rise);
+      hush();
+    };
   }, []);
 
   return (

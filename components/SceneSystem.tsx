@@ -15,7 +15,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, type Lang } from '../i18n';
 import { hush, narrate } from '../utils/narration';
-import { buzz, pingLoud } from '../utils/sound';
+import { startCalmBed, stopCalmBed } from '../utils/ambience';
+import { buzz, lockThunk, pingLoud } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 
 interface Props {
@@ -62,9 +63,23 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
 
   useEffect(() => {
     if (!replayOver) return;
+    // The turn. Everything under the room drops out, there is a moment of
+    // nothing at all, then one low hit lands with "THIS SCREEN." and the room
+    // comes back underneath it. Until now this was the loudest idea in the
+    // experience delivered at exactly the same level as everything around it.
+    stopCalmBed();
+    const hit = setTimeout(() => {
+      lockThunk();
+      buzz([60, 40, 60]);
+    }, cue(3400));
+    const back = setTimeout(startCalmBed, cue(6000));
     narrate('system-2', cue(1000));
     narrate('system-3', cue(4000));
     narrate('system-4', cue(12500));
+    return () => {
+      clearTimeout(hit);
+      clearTimeout(back);
+    };
   }, [replayOver]);
 
   if (!replayOver) {

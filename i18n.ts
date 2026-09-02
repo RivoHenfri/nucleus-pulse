@@ -193,6 +193,23 @@ const EN = {
     truth: 'TRUTH',
     question: 'What do you trust?',
     restart: 'Start again',
+    // The challenge. It shares the participant's own mirror — first look,
+    // then with context — in their own words, and nothing else. No score, no
+    // ratio, no "signal 60%": the spec bans that outright, and in a group chat
+    // a number becomes a leaderboard inside a minute. What spreads instead is
+    // the question the whole thing opened with.
+    share: 'Challenge the group',
+    shareText: (first: string, second: string, changed: string) =>
+      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+
+30 seconds. 8 messages. 2 choices.
+
+What pulled my attention first: ${first}
+With more context: ${second}
+${changed}
+
+What gets YOUR attention?
+`,
   },
   common: {
     soundOn: 'Sound on',
@@ -385,6 +402,18 @@ const ID: Copy = {
     truth: 'TRUTH',
     question: 'Apa yang kamu percaya?',
     restart: 'Mulai lagi',
+    share: 'Tantang grup',
+    shareText: (first: string, second: string, changed: string) =>
+      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+
+30 detik. 8 pesan. 2 pilihan.
+
+Yang narik perhatianku duluan: ${first}
+Setelah lihat konteksnya: ${second}
+${changed}
+
+Apa yang narik perhatian KAMU?
+`,
   },
   common: {
     soundOn: 'Suara hidup',

@@ -23,7 +23,7 @@ import { COPY, SITUATION_COPY, type Lang } from '../i18n';
 import type { SituationId } from '../types';
 import { setUrgency, startFocusBed, stopFocusBed } from '../utils/ambience';
 import { hush, narrate } from '../utils/narration';
-import { buzz, ping, pingLoud, tap } from '../utils/sound';
+import { buzz, lockThunk, ping, pingLoud, tap } from '../utils/sound';
 import { cue } from './atoms';
 import { ContextCard, SurfaceCard } from './SituationCard';
 
@@ -95,8 +95,9 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
     done.current = true;
     setFrozen(true);
     setToast(null);
-    // The moment the morning stops. Felt, not heard — the sound is about to
-    // cut out entirely and the spec wants that silence intact.
+    // The moment the morning stops: one low thud, then nothing. The silence
+    // the spec asks for reads as silence only if something marks its start.
+    lockThunk();
     buzz([40, 70, 40]);
     stopFocusBed();
     hush();

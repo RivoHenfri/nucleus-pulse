@@ -9,7 +9,8 @@
 // the run is bracketed by the same image. Nothing between them ever shows it.
 
 import React, { useEffect, useState } from 'react';
-import { COPY, type Lang } from '../i18n';
+import { COPY, SHORT_NAME, type Lang } from '../i18n';
+import type { SituationId } from '../types';
 import { hush, narrate } from '../utils/narration';
 import { shimmer } from '../utils/sound';
 import { Beat, Stage, beats, cue, useBeats } from './atoms';
@@ -17,6 +18,8 @@ import NucleusLogo from './NucleusLogo';
 
 interface Props {
   lang: Lang;
+  first: SituationId[];
+  second: SituationId[];
   onRestart: () => void;
 }
 
@@ -24,8 +27,21 @@ interface Props {
 // · the logo closing the loop
 const GAPS = beats(1200, 1400, 3400, 3000, 2200, 1800, 1600, 2400, 1350);
 
-const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
+const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const c = COPY[lang].end;
+  const m = COPY[lang].mirror;
+
+  // The share is the PULSEBACK mirror, verbatim: what they noticed, what they
+  // chose with context, and which of the three mirror lines was true for
+  // them. Their own words, voluntarily sent. The app itself exposes nothing.
+  const changed = first.filter(id => !second.includes(id)).length;
+  const line = changed >= 2 ? m.both : changed === 1 ? m.one : m.none;
+  const text = c.shareText(
+    first.map(id => SHORT_NAME[id]).join(' · ') || '—',
+    second.map(id => SHORT_NAME[id]).join(' · ') || '—',
+    line,
+  ) + window.location.origin + window.location.pathname;
+  const waHref = `https://wa.me/?text=${encodeURIComponent(text)}`;
   const shown = useBeats(GAPS);
   const [fadeSignal, setFadeSignal] = useState(false);
 
@@ -78,8 +94,22 @@ const SceneEnd: React.FC<Props> = ({ lang, onRestart }) => {
         <p className="text-[16px] italic text-gray-400">{c.question}</p>
       </Beat>
 
+      {/* The challenge goes out before the mark returns: the last thing the
+          participant does is hand the question to someone else. */}
+      <Beat show={shown >= 8} className="mt-12">
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15] transition-transform duration-300 active:scale-95"
+        >
+          <span className="text-[15px]">💬</span>
+          {c.share}
+        </a>
+      </Beat>
+
       {/* Where it started. */}
-      <Beat show={shown >= 9} lift={false} className="mt-24">
+      <Beat show={shown >= 9} lift={false} className="mt-20">
         <NucleusLogo size={190} ignite={shown >= 9} />
       </Beat>
 
