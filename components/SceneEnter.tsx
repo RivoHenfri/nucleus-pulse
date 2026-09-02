@@ -1,71 +1,134 @@
-import React, { useEffect, useState } from 'react';
-import { pingLoud, shimmer } from '../utils/sound';
-import { hush, narrateSequence, unlockAudio } from '../utils/narration';
-import { COPY, type Lang } from '../i18n';
+// SCENE 01 — ENTER
+//
+// Black. The Nucleus mark ignites from its own centre. Then, and only then, a
+// language, five quiet sentences, and a way in.
+//
+// No mention of an experiment, no explanation of Signal or Noise, no
+// instruction beyond "choose what makes sense to you".
+//
+// The language is chosen before the first word is spoken and holds for the
+// rest of the run — the alternative is swapping the voice under someone who is
+// already inside the experience. Choosing is also the gesture that buys the
+// right to play audio at all on mobile, so it is spent there deliberately.
 
-interface SceneEnterProps {
+import { AnimatePresence, motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { COPY, LANGUAGES, type Lang } from '../i18n';
+import { hush, narrate, setNarrationLang, unlockAudio } from '../utils/narration';
+import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
+import NucleusLogo from './NucleusLogo';
+
+interface Props {
   lang: Lang;
+  onChooseLang: (lang: Lang) => void;
   onEnter: () => void;
 }
 
-const SceneEnter: React.FC<SceneEnterProps> = ({ lang, onEnter }) => {
+/** The mark takes this long to light before anything is asked of anyone. */
+const IGNITION_MS = cue(4200);
+
+// pulse line · question · button
+const GAPS = beats(1800, 2200, 3000);
+
+const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onEnter }) => {
   const c = COPY[lang].enter;
-  const LINES = c.lines;
-  const [visibleLines, setVisibleLines] = useState(0);
-  const [showButton, setShowButton] = useState(false);
+  const [lit, setLit] = useState(false);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    LINES.forEach((_, i) => {
-      timers.push(setTimeout(() => setVisibleLines(i + 1), 1400 + i * 1600));
-    });
-    timers.push(setTimeout(() => {
-      setShowButton(true);
-      shimmer();
-    }, 1400 + LINES.length * 1600 + 600));
-    return () => { timers.forEach(clearTimeout); hush(); };
+    const t = setTimeout(() => setLit(true), IGNITION_MS);
+    return () => clearTimeout(t);
   }, []);
 
-  // The Pulse introduces itself over the materializing nucleus.
+  const choose = (next: Lang) => {
+    // Mobile browsers only open the audio pipeline for a gesture. This is it.
+    setNarrationLang(next);
+    unlockAudio();
+    onChooseLang(next);
+    setStarted(true);
+  };
+
   useEffect(() => {
-    narrateSequence([
-      { id: 'enter-1', delay: 1600 },
-      { id: 'enter-2', delay: 7600 },
-      { id: 'enter-3', delay: 9800 },
-    ]);
+    if (!started) return;
+    // Five sentences, spoken with room between them. The last one names the
+    // Pulse just as the way in becomes available.
+    const lines: [string, number][] = [
+      ['enter-1', cue(1200)],
+      ['enter-2', cue(4000)],
+      ['enter-3', cue(6800)],
+      ['enter-4', cue(10000)],
+      ['enter-5', cue(13600)],
+    ];
+    lines.forEach(([id, delay]) => narrate(id, delay));
     return () => hush();
-  }, []);
+  }, [started]);
+
+  const shown = useBeats(started ? GAPS : []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-      {/* Nucleus slowly materializing */}
-      <div className="relative mb-14 animate-fadeIn" style={{ animationDuration: '3s' }}>
-        <div className="absolute inset-0 rounded-full animate-ping-ring bg-amber-400/30"></div>
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 animate-nucleusPulse"></div>
-      </div>
+    <Stage>
+      {/* One mark, two sizes. It shrinks out of the way rather than being
+          replaced, so the thing that lit up is the thing you carry in. */}
+      <motion.div
+        animate={{ scale: started ? 0.62 : 1, y: started ? -8 : 0 }}
+        transition={{ duration: 1.6, ease: [0.22, 0.61, 0.36, 1] }}
+      >
+        <NucleusLogo size={280} />
+      </motion.div>
 
-      <div className="space-y-4 min-h-44">
-        {LINES.map((line, i) => (
-          <p
-            key={line}
-            className={`transition-opacity duration-1000 ${i === 0 ? 'font-cinzel text-amber-200 tracking-[0.3em] text-sm' : 'text-gray-300 text-lg'} ${i < visibleLines ? 'opacity-100' : 'opacity-0'}`}
+      <AnimatePresence mode="wait">
+        {!started ? (
+          <motion.div
+            key="choose"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: lit ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4 }}
+            className="mt-10 flex flex-col gap-3"
           >
-            {line}
-          </p>
-        ))}
-      </div>
+            {LANGUAGES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => choose(l.code)}
+                disabled={!lit}
+                className="mx-auto w-56 rounded-full border border-white/12 py-3.5 text-[12px] tracking-[0.24em] text-gray-400 transition-colors duration-500 hover:border-white/35 hover:text-[#EDE7DA]"
+              >
+                {l.label}
+              </button>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.6 }}
+            className="mt-6"
+          >
+            <div className="space-y-5">
+              <Beat show={shown >= 1}>
+                <p className="text-[11px] font-semibold tracking-[0.34em] text-gray-500">
+                  {c.pulse}
+                </p>
+              </Beat>
+              <Beat show={shown >= 2}>
+                <p className="pt-4 text-[17px] italic text-gray-400">{c.question}</p>
+              </Beat>
+            </div>
 
-      <div className={`mt-10 transition-all duration-1000 ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <p className="text-gray-500 text-sm mb-6 tracking-widest">{c.ready}</p>
-        <button
-          onClick={() => { hush(); unlockAudio(); pingLoud(); onEnter(); }}
-          className="px-12 py-4 bg-amber-400 text-gray-900 font-extrabold tracking-widest rounded-full shadow-lg shadow-amber-400/30 hover:bg-amber-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
-        >
-          {c.cta}
-        </button>
-      </div>
-    </div>
+            <Continue
+              show={shown >= 3}
+              label={c.cta}
+              tone="solid"
+              onClick={() => {
+                hush();
+                onEnter();
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Stage>
   );
 };
 

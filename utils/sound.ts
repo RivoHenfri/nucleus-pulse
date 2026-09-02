@@ -39,17 +39,39 @@ const tone = (freq: number, duration: number, volume = 0.2, type: OscillatorType
   }
 };
 
-/** Soft notification blip (ordinary cards) */
-export const ping = () => tone(880, 0.12, 0.12);
-
-/** Sharp attention-grabbing notification (loud cards) */
-export const pingLoud = () => {
-  tone(1240, 0.1, 0.18, 'square');
-  tone(1240, 0.1, 0.14, 'square', 0.14);
+/**
+ * A struck bell rather than a beep.
+ *
+ * Real notification sounds are inharmonic: a fundamental, a partial a little
+ * over an octave above it that decays faster, and a very short bright top that
+ * is gone before you can name it. A single sine reads as a hearing test and a
+ * square wave reads as a quiz app — neither belongs in a workplace morning,
+ * and both make the participant feel like they are playing a game.
+ */
+const bell = (root: number, duration: number, volume: number, when = 0) => {
+  tone(root, duration, volume, 'sine', when);
+  tone(root * 2.76, duration * 0.55, volume * 0.4, 'sine', when);
+  tone(root * 5.4, duration * 0.22, volume * 0.14, 'sine', when);
 };
 
-/** Selection tap */
-export const tap = () => tone(660, 0.08, 0.15, 'triangle');
+/** Ordinary situation arriving: present, easy to talk over. */
+export const ping = () => bell(784, 0.5, 0.1);
+
+/**
+ * A loud situation arriving. Two strikes, a fifth apart, the second a shade
+ * quieter — the shape every phone uses to say "this one is for you". It is not
+ * louder than the ordinary ping so much as harder to leave alone.
+ */
+export const pingLoud = () => {
+  bell(1046, 0.42, 0.17);
+  bell(1568, 0.55, 0.13, 0.13);
+};
+
+/** Selection tap — short, wooden, no pitch to speak of. */
+export const tap = () => {
+  tone(420, 0.05, 0.16, 'triangle');
+  tone(1180, 0.03, 0.07, 'sine');
+};
 
 /** Heavy LOCK thunk */
 export const lockThunk = () => {

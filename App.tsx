@@ -1,30 +1,115 @@
+// NUCLEUS — PULSE 01: SIGNAL
+//
+// One participant, one morning, seventeen screens, three to four minutes.
+//
+// The arc the scenes are cut to:
+//   normal → pressure → choice → curiosity → context → reconsideration →
+//   recognition → surprise → reflection
+//
+// Everything the run remembers lives in this component and, for a refresh, in
+// localStorage: two sets of choices and up to two self-reported influences.
+// There is no login, no identity, no backend and nothing leaves the device.
+
+import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
-import type { SceneId } from './types';
-import { LANGUAGES, type Lang } from './i18n';
+import { COPY, type Lang } from './i18n';
+import type { InfluenceId, SceneId, SituationId } from './types';
 import { setAmbienceEnabled, stopFocusBed } from './utils/ambience';
-import { setVoiceEnabled, silence } from './utils/voice';
 import { hush, setNarrationEnabled, setNarrationLang } from './utils/narration';
+import { setVoiceEnabled, silence } from './utils/voice';
+
 import SceneEnter from './components/SceneEnter';
-import ScenePulse from './components/ScenePulse';
-import SceneLock from './components/SceneLock';
-import ScenePeel from './components/ScenePeel';
-import SceneGravity from './components/SceneGravity';
-import SceneReveal from './components/SceneReveal';
-import SceneHuman from './components/SceneHuman';
+import SceneRound from './components/SceneRound';
+import SceneFreeze from './components/SceneFreeze';
+import SceneReflection from './components/SceneReflection';
+import SceneTransition from './components/SceneTransition';
+import SceneContext from './components/SceneContext';
+import SceneAI from './components/SceneAI';
+import SceneMirror from './components/SceneMirror';
+import SceneSignal from './components/SceneSignal';
+import SceneNoise from './components/SceneNoise';
+import SceneLens from './components/SceneLens';
+import SceneSystem from './components/SceneSystem';
+import ScenePhenomena from './components/ScenePhenomena';
 import ScenePulseback from './components/ScenePulseback';
+import SceneFinal from './components/SceneFinal';
+import SceneEnd from './components/SceneEnd';
+
+const STORE_KEY = 'nucleus.pulse01';
+
+interface Saved {
+  lang: Lang;
+  firstLook: SituationId[];
+  influences: InfluenceId[];
+  secondLook: SituationId[];
+}
+
+const load = (): Partial<Saved> => {
+  try {
+    return JSON.parse(localStorage.getItem(STORE_KEY) ?? '{}');
+  } catch {
+    return {};
+  }
+};
+
+const save = (state: Saved) => {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  } catch {
+    // A private window is not a reason to lose the experience.
+  }
+};
+
+/**
+ * Rehearsal only: `?scene=lens` opens straight into a scene with stand-in
+ * choices, so a scene can be re-timed without playing four minutes to reach
+ * it. Stripped from production builds — a participant who found this could
+ * skip the entire first round and the experience would make no sense.
+ */
+const dev = (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV ?? false;
+const rehearsal = (): { scene?: SceneId; picks?: SituationId[] } => {
+  if (!dev) return {};
+  const wanted = new URLSearchParams(window.location.search).get('scene');
+  if (!wanted) return {};
+  return { scene: wanted as SceneId, picks: ['client', 'people'] };
+};
 
 const App: React.FC = () => {
-  const [scene, setScene] = useState<SceneId>('enter');
-  const [round1Picks, setRound1Picks] = useState<string[]>([]);
-  const [round2Picks, setRound2Picks] = useState<string[]>([]);
+  const rehearse = rehearsal();
+  const [scene, setScene] = useState<SceneId>(rehearse.scene ?? 'enter');
+  const [lang, setLang] = useState<Lang>(() => (load().lang as Lang) ?? 'en');
+  const [firstLook, setFirstLook] = useState<SituationId[]>(rehearse.picks ?? []);
+  const [influences, setInfluences] = useState<InfluenceId[]>(
+    rehearse.scene ? ['experience', 'impact'] : [],
+  );
+  const [secondLook, setSecondLook] = useState<SituationId[]>(
+    rehearse.scene ? ['engineering', 'finance'] : [],
+  );
   const [sound, setSound] = useState(true);
-  const [lang, setLang] = useState<Lang>('en');
 
+  useEffect(() => {
+    setNarrationLang(lang);
+  }, [lang]);
+
+  // Every scene begins at the top of itself.
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [scene]);
 
-  // One switch for the room: kills the voice and the bed together.
+  useEffect(() => {
+    save({ lang, firstLook, influences, secondLook });
+  }, [lang, firstLook, influences, secondLook]);
+
+  useEffect(
+    () => () => {
+      hush();
+      silence();
+      stopFocusBed();
+    },
+    [],
+  );
+
+  // One switch for the room: the voice and the bed go together.
   const toggleSound = () => {
     const next = !sound;
     setSound(next);
@@ -33,93 +118,161 @@ const App: React.FC = () => {
     setAmbienceEnabled(next);
   };
 
-  // The language is chosen before anything is spoken, and holds to the end.
-  const chooseLang = (next: Lang) => {
-    hush();
-    setLang(next);
-    setNarrationLang(next);
-  };
-
-  useEffect(() => () => { hush(); silence(); stopFocusBed(); }, []);
-
   const restart = () => {
     hush();
     silence();
     stopFocusBed();
-    setRound1Picks([]);
-    setRound2Picks([]);
+    setFirstLook([]);
+    setInfluences([]);
+    setSecondLook([]);
     setScene('enter');
   };
 
+  const go = (next: SceneId) => () => {
+    hush();
+    setScene(next);
+  };
+
   return (
-    <main className="min-h-screen bg-[#05080a] text-gray-200 select-none">
-      <div className="fixed top-3 right-3 z-50 flex items-center gap-2">
-        {/* Language is only switchable before the experience starts — mid-run it
-            would swap the voice under someone who is already inside it. */}
-        {scene === 'enter' && (
-          <div className="flex rounded-full bg-black/40 backdrop-blur border border-white/10 overflow-hidden">
-            {LANGUAGES.map(l => (
-              <button
-                key={l.code}
-                onClick={() => chooseLang(l.code)}
-                aria-label={l.label}
-                className={`px-3 py-1.5 text-[11px] font-bold tracking-widest transition-colors ${
-                  lang === l.code ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-amber-200'
-                }`}
-              >
-                {l.code.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        )}
+    <main className="min-h-[100dvh] bg-[#06080B] text-gray-200 select-none">
+      {/* The one control on screen, and it stays out of the way. Sound is part
+          of the experience, so it is never hidden — but it is never loud
+          either, and it does not follow the participant into a decision. */}
+      <button
+        onClick={toggleSound}
+        aria-label={
+          sound ? COPY[lang].common.soundOn : COPY[lang].common.soundOff
+        }
+        className="fixed right-3 top-3 z-50 grid h-9 w-9 place-items-center rounded-full border border-white/[0.08] bg-black/30 text-[13px] text-gray-600 backdrop-blur transition-colors hover:text-gray-300"
+      >
+        {sound ? '🔊' : '🔇'}
+      </button>
 
-        {/* The Pulse speaks. Some rooms need it not to. */}
-        <button
-          onClick={toggleSound}
-          aria-label={sound ? 'Mute the Pulse' : 'Unmute the Pulse'}
-          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur border border-white/10 text-sm text-gray-400 hover:text-amber-200 hover:border-amber-300/40 transition-colors"
+      {/* One scene at a time, and the old one is fully gone before the new one
+          starts. The gap between them is part of the pacing: an overlap would
+          let the pressure of a round bleed into the silence after it. */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={scene}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
         >
-          {sound ? '🔊' : '🔇'}
-        </button>
-      </div>
+          {scene === 'enter' && (
+            <SceneEnter
+              lang={lang}
+              onChooseLang={setLang}
+              onEnter={go('morning')}
+            />
+          )}
 
-      {scene === 'enter' && (
-        <SceneEnter lang={lang} onEnter={() => setScene('pulse1')} />
-      )}
-      {scene === 'pulse1' && (
-        <ScenePulse
-          lang={lang}
-          mode="loud"
-          seconds={30}
-          onComplete={(picks) => { setRound1Picks(picks); setScene('lock'); }}
-        />
-      )}
-      {scene === 'lock' && (
-        <SceneLock lang={lang} onContinue={() => setScene('peel')} />
-      )}
-      {scene === 'peel' && (
-        <ScenePeel lang={lang} picks={round1Picks} onContinue={() => setScene('gravity')} />
-      )}
-      {scene === 'gravity' && (
-        <SceneGravity lang={lang} onContinue={() => setScene('pulse2')} />
-      )}
-      {scene === 'pulse2' && (
-        <ScenePulse
-          lang={lang}
-          mode="clear"
-          seconds={15}
-          onComplete={(picks) => { setRound2Picks(picks); setScene('reveal'); }}
-        />
-      )}
-      {scene === 'reveal' && (
-        <SceneReveal lang={lang} round1={round1Picks} round2={round2Picks} onContinue={() => setScene('human')} />
-      )}
-      {scene === 'human' && (
-        <SceneHuman lang={lang} onContinue={() => setScene('pulseback')} />
-      )}
-      {scene === 'pulseback' && (
-        <ScenePulseback lang={lang} round1={round1Picks} round2={round2Picks} onRestart={restart} />
-      )}
+          {scene === 'morning' && (
+            <SceneRound
+              key="round-1"
+              lang={lang}
+              mode="surface"
+              seconds={30}
+              onComplete={(picks) => {
+                setFirstLook(picks);
+                setScene('freeze');
+              }}
+            />
+          )}
+
+          {scene === 'freeze' && (
+            <SceneFreeze
+              lang={lang}
+              picks={firstLook}
+              onContinue={go('reflection')}
+            />
+          )}
+
+          {scene === 'reflection' && (
+            <SceneReflection
+              lang={lang}
+              onContinue={(chosen) => {
+                setInfluences(chosen);
+                setScene('transition');
+              }}
+            />
+          )}
+
+          {scene === 'transition' && (
+            <SceneTransition lang={lang} onDone={go('context')} />
+          )}
+
+          {scene === 'context' && (
+            <SceneContext lang={lang} onContinue={go('aiContext')} />
+          )}
+
+          {scene === 'aiContext' && (
+            <SceneAI lang={lang} onContinue={go('second')} />
+          )}
+
+          {scene === 'second' && (
+            <SceneRound
+              key="round-2"
+              lang={lang}
+              mode="context"
+              seconds={15}
+              onComplete={(picks) => {
+                setSecondLook(picks);
+                setScene('mirror');
+              }}
+            />
+          )}
+
+          {scene === 'mirror' && (
+            <SceneMirror
+              lang={lang}
+              first={firstLook}
+              second={secondLook}
+              onContinue={go('signal')}
+            />
+          )}
+
+          {scene === 'signal' && (
+            <SceneSignal lang={lang} onContinue={go('noise')} />
+          )}
+
+          {scene === 'noise' && (
+            <SceneNoise lang={lang} onContinue={go('lens')} />
+          )}
+
+          {scene === 'lens' && (
+            <SceneLens
+              lang={lang}
+              influences={influences}
+              onContinue={go('system')}
+            />
+          )}
+
+          {scene === 'system' && (
+            <SceneSystem lang={lang} onContinue={go('phenomena')} />
+          )}
+
+          {scene === 'phenomena' && (
+            <ScenePhenomena lang={lang} onContinue={go('pulseback')} />
+          )}
+
+          {scene === 'pulseback' && (
+            <ScenePulseback
+              lang={lang}
+              first={firstLook}
+              influences={influences}
+              second={secondLook}
+              onContinue={go('final')}
+            />
+          )}
+
+          {scene === 'final' && (
+            <SceneFinal lang={lang} onContinue={go('end')} />
+          )}
+
+          {scene === 'end' && <SceneEnd lang={lang} onRestart={restart} />}
+        </motion.div>
+      </AnimatePresence>
     </main>
   );
 };

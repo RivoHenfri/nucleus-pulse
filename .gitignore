@@ -18,3 +18,8 @@ dist-ssr
 .env.local
 .dev.vars
 worker/.wrangler
+.gstack/
+
+# The narration renderer reads the OpenRouter key from here when it is not
+# already in the environment (bws run injects it).
+narration/.env
