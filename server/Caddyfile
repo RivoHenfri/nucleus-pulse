@@ -1,5 +1,9 @@
 # TLS from Let's Encrypt, automatically, for the one hostname.
 nucleus-api.rivohenfri.cloud {
+	log {
+		output stdout
+		format json
+	}
 	encode zstd gzip
 	reverse_proxy api:3000
 	header {

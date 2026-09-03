@@ -28,7 +28,7 @@ import {
 } from './utils/narration';
 import { setVoiceEnabled, silence } from './utils/voice';
 import { unlockWebAudio } from './utils/sound';
-import { submitToRoom } from './utils/room';
+import { joinRoom, submitToRoom } from './utils/room';
 
 import SceneEnter from './components/SceneEnter';
 import SceneRound from './components/SceneRound';
@@ -118,6 +118,11 @@ const App: React.FC = () => {
   useEffect(() => {
     setNarrationLang(lang);
   }, [lang]);
+
+  // If this phone came in through a room link, the room hears it arrived.
+  useEffect(() => {
+    joinRoom();
+  }, []);
 
   // Every scene begins at the top of itself.
   useEffect(() => {

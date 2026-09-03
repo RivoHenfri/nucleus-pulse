@@ -28,7 +28,7 @@ const SECOND = '#3987e5';
 const T = {
   en: {
     waiting: 'Scan, or open',
-    joined: (n: number) => `${n} in the room`,
+    joined: (j: number, n: number) => `${j} joined · ${n} finished`,
     stage: ['', 'FIRST LOOK', 'WITH MORE CONTEXT', 'WHERE ATTENTION MOVED', 'WHAT MATTERED', '', 'CONCLUSION'],
     first: 'First look',
     second: 'With more context',
@@ -78,7 +78,7 @@ Reality is larger than any one lens.
   },
   id: {
     waiting: 'Scan, atau buka',
-    joined: (n: number) => `${n} orang di ruangan`,
+    joined: (j: number, n: number) => `${j} masuk · ${n} selesai`,
     stage: ['', 'PILIHAN PERTAMA', 'SETELAH ADA KONTEKS', 'KE MANA PERHATIAN PINDAH', 'YANG DIPERTIMBANGKAN', '', 'KESIMPULAN'],
     first: 'Pilihan pertama',
     second: 'Setelah ada konteks',
@@ -386,7 +386,7 @@ const Room: React.FC = () => {
       <header className="flex items-baseline justify-between">
         <span className="font-display text-[18px] tracking-[0.2em] text-[#EDE7DA]">NUCLEUS PULSE</span>
         <span className="flex items-center gap-6 text-[12px] tracking-[0.3em] text-gray-500">
-          {code} · {t.joined(n)}
+          {code} · {t.joined(s?.joined ?? 0, n)}
           {LangToggle}
         </span>
       </header>
@@ -413,7 +413,7 @@ const Room: React.FC = () => {
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=352x352&data=${encodeURIComponent(link)}`}
                 />
                 <p className="font-display mt-10 text-[40px] text-[#EDE7DA]">
-                  {n} <span className="text-[18px] text-gray-500">{t.people}</span>
+                  {s?.joined ?? 0} <span className="text-[18px] text-gray-500">{t.people}</span>
                 </p>
               </div>
             )}

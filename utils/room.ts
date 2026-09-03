@@ -37,6 +37,24 @@ export const roomCode = (): string | null => {
   }
 };
 
+/**
+ * Tell the room this phone has arrived. Once per room per device — the
+ * facilitator is counting heads, not page loads. Fire-and-forget, like
+ * everything else here.
+ */
+export const joinRoom = (): void => {
+  const room = roomCode();
+  if (!room) return;
+  try {
+    const seen = localStorage.getItem(`${KEY}.joined`);
+    if (seen === room) return;
+    localStorage.setItem(`${KEY}.joined`, room);
+    void fetch(`${ROOM_API}/rooms/${encodeURIComponent(room)}/join`, { method: 'POST', keepalive: true });
+  } catch {
+    // never the participant's problem
+  }
+};
+
 export interface RoomResponse {
   lang: 'en' | 'id';
   first: SituationId[];
@@ -65,6 +83,7 @@ export interface RoomSummary {
   code: string;
   title: string | null;
   n: number;
+  joined: number;
   first: Record<string, number>;
   second: Record<string, number>;
   influences: Record<string, number>;

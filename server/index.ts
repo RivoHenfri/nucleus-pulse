@@ -57,6 +57,15 @@ db.exec(`
     created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
   );
   CREATE INDEX IF NOT EXISTS responses_room ON responses(room);
+  -- A phone that opened the room, whether or not it ever finishes. One row
+  -- per join; nothing about who. This is what the facilitator watches while
+  -- waiting to start, so it has to move the moment someone scans.
+  CREATE TABLE IF NOT EXISTS joins (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    room        TEXT NOT NULL REFERENCES rooms(code),
+    created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+  );
+  CREATE INDEX IF NOT EXISTS joins_room ON joins(room);
 `);
 
 // ---------------------------------------------------------------------------
@@ -143,7 +152,8 @@ const summarise = (code: string) => {
     for (const x of a) for (const y of b) flows[`${x}>${y}`] = (flows[`${x}>${y}`] ?? 0) + 1;
   }
 
-  return { n: rows.length, first, second, influences, changed, langs, flows };
+  const joined = (db.query<{ c: number }, [string]>('SELECT COUNT(*) AS c FROM joins WHERE room = ?').get(code)?.c) ?? 0;
+  return { n: rows.length, joined, first, second, influences, changed, langs, flows };
 };
 
 // ---------------------------------------------------------------------------
@@ -171,6 +181,16 @@ Bun.serve({
       const key = randomKey();
       db.query('INSERT INTO rooms (code, key, title) VALUES (?, ?, ?)').run(code, key, title);
       return json({ code, key, title }, 201, origin);
+    }
+
+    // -- a phone opens the room --------------------------------------------
+    const j = url.pathname.match(/^\/rooms\/([A-Z0-9]{4,8})\/join$/i);
+    if (j && req.method === 'POST') {
+      if (!allow(ip)) return json({ error: 'slow down' }, 429, origin);
+      const code = j[1].toUpperCase();
+      if (!db.query('SELECT 1 FROM rooms WHERE code = ?').get(code)) return json({ error: 'no such room' }, 404, origin);
+      db.query('INSERT INTO joins (room) VALUES (?)').run(code);
+      return json({ ok: true }, 201, origin);
     }
 
     // -- a phone finishes a run --------------------------------------------
