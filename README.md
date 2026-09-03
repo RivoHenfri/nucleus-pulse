@@ -29,8 +29,8 @@ The reaction it is built for is **"Oh… I actually did that."** — never
 | 06 | CONTEXT REVEAL | The same seven, flattened, peeling open one at a time. |
 | 07 | SECOND LOOK | The same inbox, the same rows, the same order, the same 30s — with the context opened under each row. Choose 2 again. |
 | 08 | THE MIRROR | First look vs. with more context. Three branches, all valid. *Your experience didn't change. The information available to you did.* |
-| 09 | PULSEBACK | A personal mirror: what they noticed, what mattered to them, what they chose with context. No score, no analysis. |
-| — | END | PULSE 01 complete. SIGNAL and SIGNALFALL, one line each. The experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
+| 09 | PULSEBACK | A personal mirror: what they noticed, what mattered to them, what they chose with context — then the one thing that needed a decision and never became one of their two, how long it had been waiting, and what it was waiting on. Named SIGNALFALL, with *not a mistake* attached. No score, no analysis. |
+| — | END | PULSE 01 complete. SIGNAL, with a meaning attached. The experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
 
 Six screens were cut on the way here. Four taught vocabulary the morning had
 already taught (SIGNAL, SIGNAL / NOISE, LENS, PHENOMENA) and ended on maxims

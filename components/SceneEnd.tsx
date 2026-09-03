@@ -27,9 +27,9 @@ interface Props {
   onRestart: () => void;
 }
 
-// complete · SIGNAL · SIGNALFALL · (fade) · share · but · the mark · next
-// pulse · TRUTH · question · the logo closing the loop
-const GAPS = beats(1200, 1600, 3600, 3400, 4200, 2200, 1800, 1600, 2400, 1350);
+// complete · SIGNAL · (fade) · share · but · the mark · next pulse · TRUTH ·
+// question · the logo closing the loop
+const GAPS = beats(1200, 1600, 4000, 4200, 2200, 1800, 1600, 2400, 1350);
 
 const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const c = COPY[lang].end;
@@ -56,10 +56,7 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const [fadeSignal, setFadeSignal] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(
-      () => setFadeSignal(true),
-      GAPS[0] + GAPS[1] + GAPS[2] + GAPS[3],
-    );
+    const t = setTimeout(() => setFadeSignal(true), GAPS[0] + GAPS[1] + GAPS[2]);
     const s = setTimeout(shimmer, 600);
     narrate('end', cue(1300));
     narrate('end-next', cue(12000));
@@ -79,10 +76,9 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         </h2>
       </Beat>
 
-      {/* The two names Pulse 01 leaves behind. They used to close the system
-          reveal; with that screen gone they close the run itself, which is
-          also the last moment the morning is still fresh enough for either of
-          them to mean anything. */}
+      {/* SIGNAL, with a meaning attached. SIGNALFALL is not repeated here —
+          PULSEBACK just showed it happening to this participant's own morning,
+          and a definition after that would only flatten it back into a slide. */}
       <div
         className={`mt-6 transition-opacity duration-[2600ms] ${
           shown >= 2 && !fadeSignal ? 'opacity-100' : 'opacity-0'
@@ -94,23 +90,12 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         </p>
       </div>
 
-      <div
-        className={`mt-10 transition-opacity duration-[2600ms] ${
-          shown >= 3 && !fadeSignal ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.fallTitle}</p>
-        <p className="mx-auto mt-3 max-w-[21rem] text-[14px] leading-relaxed text-gray-500">
-          {c.fallLine}
-        </p>
-      </div>
-
 
       {/* The challenge, while they are still standing on "PULSE 01 COMPLETE".
           It used to sit under the TRUTH teaser, which meant the moment to
           hand the question on arrived after the story had already moved to
           the next one. Share first; then the hinge into Pulse 02. */}
-      <Beat show={shown >= 4} className="mt-10">
+      <Beat show={shown >= 3} className="mt-10">
         <a
           href={waHref}
           target="_blank"
@@ -122,35 +107,35 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         </a>
       </Beat>
 
-      <Beat show={shown >= 5} className="mt-16">
+      <Beat show={shown >= 4} className="mt-16">
         <p className="text-[16px] leading-relaxed text-gray-300">{c.but}</p>
       </Beat>
 
-      <Beat show={shown >= 6} lift={false} className="mt-20">
+      <Beat show={shown >= 5} lift={false} className="mt-20">
         <p className="text-[18px] text-gray-600">◉</p>
       </Beat>
 
-      <Beat show={shown >= 7} className="mt-8">
+      <Beat show={shown >= 6} className="mt-8">
         <p className="text-[10px] font-semibold tracking-[0.34em] text-gray-500">{c.next}</p>
       </Beat>
 
-      <Beat show={shown >= 8} lift={false} className="mt-4">
+      <Beat show={shown >= 7} lift={false} className="mt-4">
         <h2 className="font-display text-[36px] tracking-[0.3em] text-[#EDE7DA]">{c.truth}</h2>
       </Beat>
 
-      <Beat show={shown >= 9} className="mt-6">
+      <Beat show={shown >= 8} className="mt-6">
         <p className="text-[16px] italic text-gray-400">{c.question}</p>
       </Beat>
 
       {/* Where it started. */}
-      <Beat show={shown >= 10} lift={false} className="mt-20">
-        <NucleusLogo size={190} ignite={shown >= 10} />
+      <Beat show={shown >= 9} lift={false} className="mt-20">
+        <NucleusLogo size={190} ignite={shown >= 9} />
       </Beat>
 
       {/* The word "experiment", said once, at the end, small — a reveal rather
           than a disclaimer. It used to close the scene before this one; that
           scene is gone, and this was the only line in it worth keeping. */}
-      <Beat show={shown >= 10} className="mt-10">
+      <Beat show={shown >= 9} className="mt-10">
         <p className="font-display text-[12px] tracking-[0.3em] text-gray-500">{c.nucleus}</p>
         <p className="mx-auto mt-2 max-w-[20rem] text-[12px] leading-relaxed text-gray-600">
           {c.experiment}
@@ -158,7 +143,7 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
       </Beat>
 
       <div
-        className={`transition-opacity duration-1000 ${shown >= 10 ? 'opacity-100' : 'opacity-0'}`}
+        className={`transition-opacity duration-1000 ${shown >= 9 ? 'opacity-100' : 'opacity-0'}`}
       >
         <button
           onClick={() => {
