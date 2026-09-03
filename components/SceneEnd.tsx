@@ -15,6 +15,7 @@ import { hush, narrate } from '../utils/narration';
 import { shimmer } from '../utils/sound';
 import { Beat, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
+import { roomCode } from '../utils/room';
 
 interface Props {
   lang: Lang;
@@ -40,7 +41,13 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
     first.map(id => SHORT_NAME[id]).join(' · ') || '—',
     second.map(id => SHORT_NAME[id]).join(' · ') || '—',
     line,
-  ) + window.location.origin + window.location.pathname;
+  ) +
+    window.location.origin +
+    window.location.pathname +
+    // The room travels with the challenge. A friend who joins from this
+    // message must land in the same room, or the facilitator's count and
+    // the group's share drift apart.
+    (roomCode() ? `?room=${roomCode()}` : '');
   const waHref = `https://wa.me/?text=${encodeURIComponent(text)}`;
   const shown = useBeats(GAPS);
   const [fadeSignal, setFadeSignal] = useState(false);
