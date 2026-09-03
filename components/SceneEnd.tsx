@@ -123,6 +123,16 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         <NucleusLogo size={190} ignite={shown >= 9} />
       </Beat>
 
+      {/* The word "experiment", said once, at the end, small — a reveal rather
+          than a disclaimer. It used to close the scene before this one; that
+          scene is gone, and this was the only line in it worth keeping. */}
+      <Beat show={shown >= 9} className="mt-10">
+        <p className="font-display text-[12px] tracking-[0.3em] text-gray-500">{c.nucleus}</p>
+        <p className="mx-auto mt-2 max-w-[20rem] text-[12px] leading-relaxed text-gray-600">
+          {c.experiment}
+        </p>
+      </Beat>
+
       <div
         className={`transition-opacity duration-1000 ${shown >= 9 ? 'opacity-100' : 'opacity-0'}`}
       >

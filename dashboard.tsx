@@ -41,7 +41,7 @@ const T = {
       '',
       'Same 30 seconds. Same 8 messages. Attention did not go to the same places.',
       'Nothing was added. Only what was visible changed. And with it, what deserved attention.',
-      'The loud ones pulled first. Context pulled back. That distance is Noise Gravity.',
+      'The loud ones pulled first. Context pulled back. That distance is the whole point.',
       'Urgency, instinct, role. Every reason here is valid. Same room, different lenses.',
       '',
       '',
@@ -50,10 +50,10 @@ const T = {
       'Same information does not create the same experience.',
       'Nobody enters a morning as a blank slate. Attention is shaped by role, experience, responsibility, familiarity, perceived risk, and the information environment, including how fast it arrives and how little time there is to judge it.',
       'Noise never goes away. The question is never whether it exists, but how much of it we can filter. And one person’s signal today may be tomorrow’s noise. There is no single right signal, only the one each of us could see from where we stood.',
-      'Bring your experience. Do not mistake it for the whole picture.',
+      'None of this is a ranking. It is what this room could see this morning, from where each of us was standing.',
     ],
-    heroA: 'Confidence ≠ Context.',
-    heroB: 'Reality is always larger than the lens we use to see it.',
+    heroA: (pct: number) => `${pct}% of us changed a choice once the context was there.`,
+    heroB: (n: number) => `The morning did not change. ${n} of us read it differently.`,
     aiTitle: 'A READING OF THIS ROOM',
     aiWait: 'Reading the room…',
     share: 'Share the conclusion',
@@ -67,8 +67,6 @@ const T = {
 🔄 ${pct}% changed at least one choice
 
 💡 Same information. Different experience.
-💡 Confidence ≠ context.
-💡 Reality is bigger than the lens we look through.
 
 🔗 Try it:`,
     next: 'next  →',
@@ -93,7 +91,7 @@ const T = {
       '',
       'Semua dapat 30 detik yang sama dan 8 pesan yang sama. Tapi yang dilihat duluan beda-beda.',
       'Pesannya tidak ditambah. Cuma latar belakangnya yang dibuka. Dan pilihan orang langsung bergeser.',
-      'Yang paling ribut menarik perhatian duluan. Begitu konteksnya kelihatan, perhatian pindah. Jarak itu yang kita sebut Noise Gravity.',
+      'Yang paling ribut menarik perhatian duluan. Begitu konteksnya kelihatan, perhatian pindah. Jarak itu yang jadi bahan obrolan hari ini.',
       'Ada yang pakai rasa urgensi, ada yang pakai insting, ada yang pakai perannya. Semua masuk akal. Ruangan yang sama, kacamata yang beda.',
       '',
       '',
@@ -102,10 +100,10 @@ const T = {
       'Informasi yang sama, tapi pengalamannya beda-beda.',
       'Tidak ada yang mulai pagi dengan kepala kosong. Apa yang kita perhatikan dibentuk oleh peran kita, pengalaman kita, tanggung jawab kita, apa yang sudah akrab, risiko yang terasa, dan cara informasinya datang: seberapa cepat, seberapa banyak, dan seberapa sedikit waktu untuk mencernanya.',
       'Noise selalu ada. Pertanyaannya bukan ada atau tidak, tapi seberapa banyak yang bisa kita saring. Yang penting buat seseorang hari ini, besok bisa jadi tidak. Tidak ada satu jawaban yang paling benar. Yang ada: apa yang bisa dilihat tiap orang dari tempatnya berdiri.',
-      'Bawa pengalamanmu. Tapi jangan anggap itu sudah seluruh gambarannya.',
+      'Ini bukan penilaian siapa yang paling benar. Ini yang bisa dilihat ruangan ini pagi ini, dari tempat masing-masing berdiri.',
     ],
-    heroA: 'Yakin ≠ Tahu konteksnya.',
-    heroB: 'Kenyataan selalu lebih besar dari kacamata yang kita pakai.',
+    heroA: (pct: number) => `${pct}% dari kita ganti pilihan begitu konteksnya kelihatan.`,
+    heroB: (n: number) => `Paginya sama. ${n} orang membacanya berbeda.`,
     aiTitle: 'APA KATA AI SOAL RUANGAN INI',
     aiWait: 'Sebentar, sedang membaca ruangan…',
     share: 'Bagikan ke grup',
@@ -119,8 +117,6 @@ const T = {
 🔄 ${pct}% ganti minimal satu pilihan
 
 💡 Informasi sama. Pengalaman beda.
-💡 Yakin ≠ tahu konteksnya.
-💡 Kenyataan lebih besar dari kacamata kita.
 
 🔗 Coba sendiri:`,
     next: 'lanjut  →',
@@ -485,8 +481,8 @@ const Room: React.FC = () => {
                   <p className="text-[16px] leading-relaxed text-gray-300">{t.conclusion[3]}</p>
                 </div>
                 <div className="mt-10 space-y-2">
-                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroA}</p>
-                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroB}</p>
+                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroA(pctChanged)}</p>
+                  <p className="font-display text-[26px] text-[#EDE7DA]">{t.heroB(n)}</p>
                 </div>
 
                 <div className="mt-12 rounded-2xl border border-sky-300/15 bg-sky-400/[0.03] px-6 py-5">

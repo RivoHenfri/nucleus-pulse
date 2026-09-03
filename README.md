@@ -30,19 +30,22 @@ The reaction it is built for is **"Oh… I actually did that."** — never
 | 07 | AI CONTEXT | 94% confidence, computed over 6 of 8 sources. |
 | 08 | SECOND LOOK | Same morning, more context, 15s. Choose 2 again. |
 | 09 | THE MIRROR | First look vs. with more context. Three branches, all valid. |
-| 10 | SIGNAL | The word is finally defined. |
-| 11 | SIGNAL / NOISE | High activity ≠ high signal. Never a personal ratio. |
-| 12 | LENS | Their own answers come back. Then LENS LOCK. |
-| 13 | THE SYSTEM REVEAL | The replay, and *THIS SCREEN.* |
-| 14 | PHENOMENA | NOISE GRAVITY. SIGNALFALL. Every system has gravity. |
-| 15 | PULSEBACK | A personal mirror. No score, no analysis. |
-| — | FINAL | *Reality is larger than any one lens.* The experiment is named here, once. |
-| — | END | PULSE 01 complete, and a teaser for PULSE 02 — TRUTH. |
+| 10 | THE SYSTEM REVEAL | The replay, *THIS SCREEN*, then the only two names in Pulse 01: SIGNAL and SIGNALFALL. |
+| 11 | PULSEBACK | A personal mirror. No score, no analysis. |
+| — | END | PULSE 01 complete, the experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
+
+Four screens that used to sit between the Mirror and Pulseback — SIGNAL,
+SIGNAL / NOISE, LENS (LENS LOCK), PHENOMENA (NOISE GRAVITY) — were cut. They
+taught vocabulary the morning had already taught, and they ended on maxims that
+would have been just as true if nobody had played. What is left names one
+thing, SIGNALFALL, and hands the run straight back to the participant.
 
 ## What it will not do
 
 No score. No signal ratio. No personality or attention profile. No right answer,
-no wrong answer, no ranking of people or departments. It never infers a trait
+no wrong answer, no ranking of people or departments. No aphorisms: nothing on
+screen is allowed to be a sentence that would still be true if this morning had
+never happened. It never infers a trait
 from a click, never stores individual performance, and never tells one
 participant what another chose. The three Mirror outcomes are written so that
 none of them reads as the good one.

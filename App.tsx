@@ -1,6 +1,6 @@
 // NUCLEUS — PULSE 01: SIGNAL
 //
-// One participant, one morning, seventeen screens, three to four minutes.
+// One participant, one morning, twelve screens.
 //
 // The arc the scenes are cut to:
 //   normal → pressure → choice → curiosity → context → reconsideration →
@@ -38,13 +38,8 @@ import SceneTransition from './components/SceneTransition';
 import SceneContext from './components/SceneContext';
 import SceneAI from './components/SceneAI';
 import SceneMirror from './components/SceneMirror';
-import SceneSignal from './components/SceneSignal';
-import SceneNoise from './components/SceneNoise';
-import SceneLens from './components/SceneLens';
 import SceneSystem from './components/SceneSystem';
-import ScenePhenomena from './components/ScenePhenomena';
 import ScenePulseback from './components/ScenePulseback';
-import SceneFinal from './components/SceneFinal';
 import SceneEnd from './components/SceneEnd';
 
 const STORE_KEY = 'nucleus.pulse01';
@@ -73,7 +68,7 @@ const save = (state: Saved) => {
 };
 
 /**
- * Rehearsal only: `?scene=lens` opens straight into a scene with stand-in
+ * Rehearsal only: `?scene=system` opens straight into a scene with stand-in
  * choices, so a scene can be re-timed without playing four minutes to reach
  * it. Gated on import.meta.env.DEV, which is a compile-time false in a
  * production build, so the parameter does nothing on the deployed app — a
@@ -303,32 +298,12 @@ const App: React.FC = () => {
               lang={lang}
               first={firstLook}
               second={secondLook}
-              onContinue={go('signal')}
-            />
-          )}
-
-          {scene === 'signal' && (
-            <SceneSignal lang={lang} onContinue={go('noise')} />
-          )}
-
-          {scene === 'noise' && (
-            <SceneNoise lang={lang} onContinue={go('lens')} />
-          )}
-
-          {scene === 'lens' && (
-            <SceneLens
-              lang={lang}
-              influences={influences}
               onContinue={go('system')}
             />
           )}
 
           {scene === 'system' && (
-            <SceneSystem lang={lang} onContinue={go('phenomena')} />
-          )}
-
-          {scene === 'phenomena' && (
-            <ScenePhenomena lang={lang} onContinue={go('pulseback')} />
+            <SceneSystem lang={lang} onContinue={go('pulseback')} />
           )}
 
           {/* Everything the run will ever know is known by now. If this
@@ -340,12 +315,8 @@ const App: React.FC = () => {
               first={firstLook}
               influences={influences}
               second={secondLook}
-              onContinue={go('final')}
+              onContinue={go('end')}
             />
-          )}
-
-          {scene === 'final' && (
-            <SceneFinal lang={lang} onContinue={go('end')} />
           )}
 
           {scene === 'end' && <SceneEnd

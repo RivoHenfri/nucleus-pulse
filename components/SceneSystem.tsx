@@ -1,6 +1,6 @@
-// SCENE 13 — THE SYSTEM REVEAL
+// THE SYSTEM REVEAL
 //
-// The turn.
+// The turn — and the only place in Pulse 01 where anything gets a name.
 //
 // Everything until now has been about the information and about the person
 // reading it. This scene puts up the third thing that was in the room: the
@@ -10,6 +10,12 @@
 //
 // The word "manipulated" does not appear, because it would make the
 // participant the object of something instead of the noticer of it.
+//
+// Two names close it, and only two: SIGNAL, for the thing that changes what
+// happens next, and SIGNALFALL, for what the last three minutes did to it.
+// NOISE GRAVITY and LENS LOCK used to have scenes of their own after this
+// one. Four coined terms in a sitting is a vocabulary nobody carries out of
+// the room; two they might.
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
@@ -57,8 +63,12 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
   }, [frame]);
 
   // after the replay: the influence · THIS SCREEN · three lines · two closings
+  // …the influence · THIS SCREEN · three lines · two closings · SIGNAL ·
+  // SIGNALFALL · out
   const shown = useBeats(
-    replayOver ? beats(900, 2600, 2600, 1500, 1500, 2600, 2200, 2600) : [],
+    replayOver
+      ? beats(900, 2600, 2600, 1500, 1500, 2600, 2200, 3000, 3400, 2600)
+      : [],
   );
 
   useEffect(() => {
@@ -76,6 +86,8 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
     narrate('system-2', cue(1000));
     narrate('system-3', cue(4000));
     narrate('system-4', cue(12500));
+    narrate('signal-1', cue(17000));
+    narrate('phenomena-2', cue(20400));
     return () => {
       clearTimeout(hit);
       clearTimeout(back);
@@ -182,7 +194,25 @@ const SceneSystem: React.FC<Props> = ({ lang, onContinue }) => {
         </Beat>
       </div>
 
-      <Continue show={shown >= 8} label={c.cta} onClick={onContinue} />
+      {/* The names, last, once the thing each one points at has already been
+          felt twice. A definition offered any earlier is just vocabulary. */}
+      <div className="mt-24 space-y-12 text-left">
+        <Beat show={shown >= 8}>
+          <p className="font-display text-[15px] tracking-[0.24em] text-[#EDE7DA]">
+            {c.signalWord}
+          </p>
+          <p className="mt-2 text-[14px] leading-snug text-gray-400">{c.signalLine}</p>
+        </Beat>
+
+        <Beat show={shown >= 9}>
+          <p className="font-display text-[15px] tracking-[0.24em] text-[#EDE7DA]">
+            {c.fallTitle}
+          </p>
+          <p className="mt-2 text-[14px] leading-snug text-gray-400">{c.fallLine}</p>
+        </Beat>
+      </div>
+
+      <Continue show={shown >= 10} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

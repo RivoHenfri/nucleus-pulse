@@ -6,7 +6,7 @@
 // breath into a task. In a room that is wrong: it is the one screen where a
 // facilitator cannot hold the group, and a participant who looks up from their
 // phone finds the moment already gone. Every scene now waits to be told to
-// move on. LENS LOCK is still not mentioned yet.
+// move on. Nothing has a name yet.
 
 import React, { useEffect } from 'react';
 import { COPY, type Lang } from '../i18n';

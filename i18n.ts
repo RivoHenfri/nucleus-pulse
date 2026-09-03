@@ -1,7 +1,7 @@
 // Two languages, chosen on the first screen and honoured everywhere after.
 //
 // Nucleus terminology stays in English in both: NUCLEUS, PULSE, SIGNAL,
-// PULSEBACK, NOISE GRAVITY, SIGNALFALL, LENS LOCK. Everything around it is
+// SIGNALFALL, PULSEBACK — and nothing else. Everything around it is
 // translated — written, not machine-translated, so the Indonesian carries the
 // same weight and the morning reads like a real Indonesian work morning.
 
@@ -111,29 +111,6 @@ const EN = {
     closingB: 'The information available to you did.',
     cta: 'CONTINUE',
   },
-  signal: {
-    word: 'SIGNAL',
-    definition: 'Information that changes what needs to happen next.',
-    concepts: ['DECISION', 'ACTION', 'RISK', 'OUTCOME'],
-    closing: 'Something can be important without requiring your attention right now.',
-    cta: 'CONTINUE',
-  },
-  noise: {
-    line: "More information doesn't always create more clarity.",
-    hero: 'HIGH ACTIVITY ≠ HIGH SIGNAL',
-    cta: 'CONTINUE',
-  },
-  lens: {
-    yours: 'WHAT MATTERED TO YOU',
-    helps: 'A lens helps us see.',
-    boundary: 'But every lens has a boundary.',
-    lenses: ['ROLE', 'EXPERIENCE', 'EXPERTISE', 'AI'],
-    lockTitle: 'LENS LOCK',
-    lockLine: 'When one useful perspective becomes the only perspective.',
-    heroA: 'BRING YOUR EXPERIENCE.',
-    heroB: "DON'T MISTAKE IT FOR THE WHOLE PICTURE.",
-    cta: 'CONTINUE',
-  },
   system: {
     oneMore: 'One more thing.',
     fragments: {
@@ -150,16 +127,10 @@ const EN = {
     lines: ['Some things were louder.', 'Some appeared first.', 'Some looked more certain.'],
     closingA: 'The information was part of the experience.',
     closingB: 'So was the way it reached you.',
-    cta: 'CONTINUE',
-  },
-  phenomena: {
-    gravityTitle: 'NOISE GRAVITY',
-    gravityLine: "When what's loud pulls attention.",
+    signalWord: 'SIGNAL',
+    signalLine: 'Information that changes what needs to happen next.',
     fallTitle: 'SIGNALFALL',
     fallLine: 'When what matters gets buried.',
-    hero: 'EVERY SYSTEM HAS GRAVITY.',
-    closingA: 'Design influences what becomes easy to notice.',
-    closingB: 'Human judgment decides what deserves attention.',
     cta: 'CONTINUE',
   },
   pulseback: {
@@ -171,20 +142,6 @@ const EN = {
     closingB: 'And they may have had a good reason.',
     cta: 'CONTINUE',
   },
-  final: {
-    notAbout: "This wasn't about finding the right two messages.",
-    wasAbout: 'It was about noticing what makes something feel important.',
-    forces: ['Your role.', 'Your experience.', 'The context available.', 'The system around you.'],
-    notSame: "We don't all notice the same things.",
-    notProblem: "That's not always a problem.",
-    problem: 'The problem begins when we assume everyone sees what we see.',
-    hero: 'REALITY IS LARGER THAN ANY ONE LENS.',
-    reflection: 'What might you be seeing clearly — but only through your own lens?',
-    small: 'No need to answer. Just notice it.',
-    nucleus: 'NUCLEUS',
-    experiment: 'An experiment in how we see, think, and decide at work.',
-    cta: 'CONTINUE',
-  },
   end: {
     complete: 'PULSE 01 COMPLETE',
     signal: 'SIGNAL',
@@ -193,6 +150,8 @@ const EN = {
     truth: 'TRUTH',
     question: 'What do you trust?',
     restart: 'Start again',
+    nucleus: 'NUCLEUS',
+    experiment: 'An experiment in how we see, think, and decide at work.',
     // The challenge. It shares the participant's own mirror — first look,
     // then with context — in their own words, and nothing else. No score, no
     // ratio, no "signal 60%": the spec bans that outright, and in a group chat
@@ -315,29 +274,6 @@ const ID: Copy = {
     closingB: 'Tapi informasi yang kamu punya.',
     cta: 'LANJUT',
   },
-  signal: {
-    word: 'SIGNAL',
-    definition: 'Informasi yang mengubah apa yang harus kamu lakukan berikutnya.',
-    concepts: ['KEPUTUSAN', 'TINDAKAN', 'RISIKO', 'HASIL'],
-    closing: 'Sesuatu bisa saja penting, tanpa harus kamu urus sekarang.',
-    cta: 'LANJUT',
-  },
-  noise: {
-    line: 'Informasi yang lebih banyak belum tentu bikin lebih jelas.',
-    hero: 'AKTIVITAS TINGGI ≠ SIGNAL TINGGI',
-    cta: 'LANJUT',
-  },
-  lens: {
-    yours: 'YANG KAMU PERTIMBANGKAN',
-    helps: 'Sudut pandang bikin kita bisa melihat.',
-    boundary: 'Tapi setiap sudut pandang punya batasnya.',
-    lenses: ['PERAN', 'PENGALAMAN', 'KEAHLIAN', 'AI'],
-    lockTitle: 'LENS LOCK',
-    lockLine: 'Waktu satu sudut pandang yang berguna berubah jadi satu-satunya yang kamu pakai.',
-    heroA: 'BAWA PENGALAMANMU.',
-    heroB: 'TAPI JANGAN KIRA ITU SELURUH GAMBARANNYA.',
-    cta: 'LANJUT',
-  },
   system: {
     oneMore: 'Satu hal lagi.',
     fragments: {
@@ -358,16 +294,10 @@ const ID: Copy = {
     ],
     closingA: 'Informasinya bagian dari pengalaman ini.',
     closingB: 'Begitu juga cara informasi itu sampai ke kamu.',
-    cta: 'LANJUT',
-  },
-  phenomena: {
-    gravityTitle: 'NOISE GRAVITY',
-    gravityLine: 'Waktu yang paling berisik yang menarik perhatian.',
+    signalWord: 'SIGNAL',
+    signalLine: 'Informasi yang mengubah apa yang harus kamu lakukan berikutnya.',
     fallTitle: 'SIGNALFALL',
     fallLine: 'Waktu yang penting tenggelam di antara yang lain.',
-    hero: 'SETIAP SISTEM PUNYA GRAVITASI.',
-    closingA: 'Desain menentukan apa yang lebih gampang terlihat.',
-    closingB: 'Manusia yang menentukan apa yang layak diperhatikan.',
     cta: 'LANJUT',
   },
   pulseback: {
@@ -379,21 +309,6 @@ const ID: Copy = {
     closingB: 'Dan alasannya bisa jadi masuk akal juga.',
     cta: 'LANJUT',
   },
-  final: {
-    notAbout: 'Ini bukan soal menemukan dua pesan yang paling benar.',
-    wasAbout: 'Ini soal menyadari apa yang bikin sesuatu terasa penting.',
-    forces: ['Peranmu.', 'Pengalamanmu.', 'Konteks yang tersedia.', 'Sistem di sekitarmu.'],
-    notSame: 'Kita memang tidak selalu memperhatikan hal yang sama.',
-    notProblem: 'Dan itu tidak selalu jadi masalah.',
-    problem: 'Masalahnya baru mulai waktu kita mengira semua orang melihat apa yang kita lihat.',
-    hero: 'REALITAS LEBIH BESAR DARI SATU SUDUT PANDANG.',
-    reflection: 'Apa yang sekarang terasa jelas sekali buatmu — tapi mungkin cuma dari sudut pandangmu?',
-    small: 'Tidak perlu dijawab. Cukup disadari.',
-    nucleus: 'NUCLEUS',
-    experiment:
-      'Eksperimen tentang cara kita melihat, berpikir, dan mengambil keputusan di tempat kerja.',
-    cta: 'LANJUT',
-  },
   end: {
     complete: 'PULSE 01 SELESAI',
     signal: 'SIGNAL',
@@ -402,6 +317,9 @@ const ID: Copy = {
     truth: 'TRUTH',
     question: 'Apa yang kamu percaya?',
     restart: 'Mulai lagi',
+    nucleus: 'NUCLEUS',
+    experiment:
+      'Eksperimen tentang cara kita melihat, berpikir, dan mengambil keputusan di tempat kerja.',
     share: 'Tantang grup',
     shareText: (first: string, second: string, changed: string) =>
       `⚛️ *NUCLEUS PULSE 01 — SIGNAL*

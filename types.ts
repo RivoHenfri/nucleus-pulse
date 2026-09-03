@@ -97,13 +97,8 @@ export type SceneId =
   | 'aiContext'
   | 'second'
   | 'mirror'
-  | 'signal'
-  | 'noise'
-  | 'lens'
   | 'system'
-  | 'phenomena'
   | 'pulseback'
-  | 'final'
   | 'end';
 
 /** Everything the session remembers. Local only — no login, no identity. */
