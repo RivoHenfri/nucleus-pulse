@@ -58,17 +58,17 @@ const T = {
     aiWait: 'Reading the room…',
     share: 'Share the conclusion',
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
-      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
+      `*NUCLEUS PULSE 01 — SIGNAL*
 
-👥 ${n} of us. 🕒 30 seconds. 📩 8 messages. 🎯 2 choices.
+${n} of us. 30 seconds. 8 messages. 2 choices.
 
 👀 First look → *${top1}* (${c1} of us)
 🔍 With context → *${top2}* (${c2} of us)
 🔄 ${pct}% changed at least one choice
 
-💡 Same information. Different experience.
+Same information. Different experience.
 
-🔗 Try it:`,
+Try it:`,
     next: 'next  →',
     open: 'Open a room',
     opening: 'Opening…',
@@ -108,17 +108,17 @@ const T = {
     aiWait: 'Sebentar, sedang membaca ruangan…',
     share: 'Bagikan ke grup',
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
-      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
+      `*NUCLEUS PULSE 01 — SIGNAL*
 
-👥 ${n} orang. 🕒 30 detik. 📩 8 pesan. 🎯 2 pilihan.
+${n} orang. 30 detik. 8 pesan. 2 pilihan.
 
 👀 Dilihat duluan → *${top1}* (${c1} dari kita)
 🔍 Setelah tahu konteks → *${top2}* (${c2} dari kita)
 🔄 ${pct}% ganti minimal satu pilihan
 
-💡 Informasi sama. Pengalaman beda.
+Informasi sama. Pengalaman beda.
 
-🔗 Coba sendiri:`,
+Coba sendiri:`,
     next: 'lanjut  →',
     open: 'Buka ruang',
     opening: 'Membuka…',
