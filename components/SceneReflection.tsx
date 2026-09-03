@@ -4,7 +4,7 @@
 // "What mattered to you here?" lets them describe the moment instead.
 //
 // These answers are self-reported and stay self-reported. They come back once,
-// in Scene 12 and in PULSEBACK, quoted exactly as chosen. Nothing is inferred
+// in PULSEBACK, quoted exactly as chosen. Nothing is inferred
 // from them, ever.
 
 import React, { useEffect, useState } from 'react';

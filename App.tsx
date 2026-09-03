@@ -1,6 +1,6 @@
 // NUCLEUS — PULSE 01: SIGNAL
 //
-// One participant, one morning, twelve screens.
+// One participant, one morning, ten screens.
 //
 // The arc the scenes are cut to:
 //   normal → pressure → choice → curiosity → context → reconsideration →
@@ -36,9 +36,7 @@ import SceneFreeze from './components/SceneFreeze';
 import SceneReflection from './components/SceneReflection';
 import SceneTransition from './components/SceneTransition';
 import SceneContext from './components/SceneContext';
-import SceneAI from './components/SceneAI';
 import SceneMirror from './components/SceneMirror';
-import SceneSystem from './components/SceneSystem';
 import ScenePulseback from './components/ScenePulseback';
 import SceneEnd from './components/SceneEnd';
 
@@ -273,11 +271,7 @@ const App: React.FC = () => {
           )}
 
           {scene === 'context' && (
-            <SceneContext lang={lang} onContinue={go('aiContext')} />
-          )}
-
-          {scene === 'aiContext' && (
-            <SceneAI lang={lang} onContinue={go('second')} />
+            <SceneContext lang={lang} onContinue={go('second')} />
           )}
 
           {scene === 'second' && (
@@ -298,16 +292,12 @@ const App: React.FC = () => {
               lang={lang}
               first={firstLook}
               second={secondLook}
-              onContinue={go('system')}
+              onContinue={go('pulseback')}
             />
           )}
 
-          {scene === 'system' && (
-            <SceneSystem lang={lang} onContinue={go('pulseback')} />
-          )}
-
-          {/* Everything the run will ever know is known by now. If this
-              phone is in a room, the room hears about it here — once, in the
+          {/* Everything the run will ever know is known by now. If this phone
+              is in a room, the room hears about it here — once, in the
               background, and without any effect on what the participant sees. */}
           {scene === 'pulseback' && (
             <ScenePulseback

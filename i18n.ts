@@ -1,7 +1,7 @@
 // Two languages, chosen on the first screen and honoured everywhere after.
 //
 // Nucleus terminology stays in English in both: NUCLEUS, PULSE, SIGNAL,
-// SIGNALFALL, PULSEBACK — and nothing else. Everything around it is
+// SIGNALFALL — and nothing else. Everything around it is
 // translated — written, not machine-translated, so the Indonesian carries the
 // same weight and the morning reads like a real Indonesian work morning.
 
@@ -32,7 +32,7 @@ const EN = {
     selected: (n: number) => `${n} of 2 chosen`,
     locked: 'Locked in.',
     // The mail client around the morning. None of this is the experiment —
-    // it is the room the experiment happens in, and without it the eight
+    // it is the room the experiment happens in, and without it the seven
     // situations read as a quiz instead of a Tuesday.
     inbox: 'Inbox',
     account: 'you@company.co.id',
@@ -50,7 +50,7 @@ const EN = {
     now: 'now',
   },
   freeze: {
-    stats: ['30 seconds', '8 pieces of information', '2 choices'],
+    stats: ['30 seconds', '7 pieces of information', '2 choices'],
     question: 'Where did your attention go?',
     yours: 'You chose',
     cta: 'CONTINUE',
@@ -83,19 +83,6 @@ const EN = {
     consequence: 'CONSEQUENCE',
     cta: 'CONTINUE',
   },
-  ai: {
-    eyebrow: 'AI PRIORITY',
-    recommended: "Where I'd start",
-    candidate: 'Candidate Decision',
-    confidence: "I'm fairly sure about this one.",
-    sources: 'SOURCES AVAILABLE',
-    sourcesValue: '6 / 8',
-    missing: 'MISSING',
-    high: 'High confidence.',
-    incomplete: 'Incomplete context.',
-    quote: 'AI can only reason from what it can see.',
-    cta: 'CONTINUE',
-  },
   second: {
     same: 'Same morning.',
     more: 'More context.',
@@ -111,28 +98,6 @@ const EN = {
     closingB: 'The information available to you did.',
     cta: 'CONTINUE',
   },
-  system: {
-    oneMore: 'One more thing.',
-    fragments: {
-      urgent: 'URGENT',
-      sound: 'a sound, and one underneath it',
-      unread: '4 unread',
-      countdown: '00:07',
-      order: 'arrived first',
-      confidence: 'it sounded sure',
-      position: 'top of the screen',
-    },
-    influence: 'There was one more influence.',
-    thisScreen: 'THIS SCREEN.',
-    lines: ['Some things were louder.', 'Some appeared first.', 'Some looked more certain.'],
-    closingA: 'The information was part of the experience.',
-    closingB: 'So was the way it reached you.',
-    signalWord: 'SIGNAL',
-    signalLine: 'Information that changes what needs to happen next.',
-    fallTitle: 'SIGNALFALL',
-    fallLine: 'When what matters gets buried.',
-    cta: 'CONTINUE',
-  },
   pulseback: {
     title: 'PULSEBACK',
     noticed: 'YOU NOTICED',
@@ -145,6 +110,9 @@ const EN = {
   end: {
     complete: 'PULSE 01 COMPLETE',
     signal: 'SIGNAL',
+    signalLine: 'Information that changes what needs to happen next.',
+    fallTitle: 'SIGNALFALL',
+    fallLine: 'When what matters gets buried.',
     but: "But noticing something doesn't make it true.",
     next: 'NEXT PULSE',
     truth: 'TRUTH',
@@ -161,7 +129,7 @@ const EN = {
     shareText: (first: string, second: string, changed: string) =>
       `*NUCLEUS PULSE 01 — SIGNAL*
 
-30 seconds. 8 messages. 2 choices.
+30 seconds. 7 messages. 2 choices.
 
 👀 What pulled me first → ${first}
 🔍 With context → ${second}
@@ -213,7 +181,7 @@ const ID: Copy = {
     now: 'sekarang',
   },
   freeze: {
-    stats: ['30 detik', '8 informasi', '2 pilihan'],
+    stats: ['30 detik', '7 informasi', '2 pilihan'],
     question: 'Tadi perhatianmu ke mana?',
     yours: 'Yang kamu pilih',
     cta: 'LANJUT',
@@ -246,19 +214,6 @@ const ID: Copy = {
     consequence: 'KONSEKUENSI',
     cta: 'LANJUT',
   },
-  ai: {
-    eyebrow: 'AI PRIORITY',
-    recommended: 'Aku mulai dari sini',
-    candidate: 'Keputusan Kandidat',
-    confidence: 'Aku cukup yakin soal yang ini.',
-    sources: 'SUMBER TERSEDIA',
-    sourcesValue: '6 / 8',
-    missing: 'TIDAK TERBACA',
-    high: 'Keyakinan tinggi.',
-    incomplete: 'Konteks belum lengkap.',
-    quote: 'AI cuma bisa berpikir dari apa yang bisa dia lihat.',
-    cta: 'LANJUT',
-  },
   second: {
     same: 'Pagi yang sama.',
     more: 'Konteksnya lebih lengkap.',
@@ -274,32 +229,6 @@ const ID: Copy = {
     closingB: 'Tapi informasi yang kamu punya.',
     cta: 'LANJUT',
   },
-  system: {
-    oneMore: 'Satu hal lagi.',
-    fragments: {
-      urgent: 'URGENT',
-      sound: 'sebuah bunyi, dan satu lagi di bawahnya',
-      unread: '4 belum dibaca',
-      countdown: '00:07',
-      order: 'muncul lebih dulu',
-      confidence: 'terdengar yakin',
-      position: 'paling atas layar',
-    },
-    influence: 'Ada satu hal lagi yang ikut memengaruhi.',
-    thisScreen: 'LAYAR INI.',
-    lines: [
-      'Ada yang terasa lebih mendesak.',
-      'Ada yang muncul lebih dulu.',
-      'Ada yang terlihat lebih meyakinkan.',
-    ],
-    closingA: 'Informasinya bagian dari pengalaman ini.',
-    closingB: 'Begitu juga cara informasi itu sampai ke kamu.',
-    signalWord: 'SIGNAL',
-    signalLine: 'Informasi yang mengubah apa yang harus kamu lakukan berikutnya.',
-    fallTitle: 'SIGNALFALL',
-    fallLine: 'Waktu yang penting tenggelam di antara yang lain.',
-    cta: 'LANJUT',
-  },
   pulseback: {
     title: 'PULSEBACK',
     noticed: 'YANG KAMU PERHATIKAN',
@@ -312,6 +241,9 @@ const ID: Copy = {
   end: {
     complete: 'PULSE 01 SELESAI',
     signal: 'SIGNAL',
+    signalLine: 'Informasi yang mengubah apa yang harus kamu lakukan berikutnya.',
+    fallTitle: 'SIGNALFALL',
+    fallLine: 'Waktu yang penting tenggelam di antara yang lain.',
     but: 'Tapi memperhatikan sesuatu tidak otomatis bikin hal itu benar.',
     next: 'PULSE BERIKUTNYA',
     truth: 'TRUTH',
@@ -324,7 +256,7 @@ const ID: Copy = {
     shareText: (first: string, second: string, changed: string) =>
       `*NUCLEUS PULSE 01 — SIGNAL*
 
-30 detik. 8 pesan. 2 pilihan.
+30 detik. 7 pesan. 2 pilihan.
 
 👀 Yang narik perhatianku duluan → ${first}
 🔍 Setelah tahu konteksnya → ${second}
@@ -345,7 +277,7 @@ Coba sendiri:\n`,
 export const COPY: Record<Lang, Copy> = { en: EN, id: ID };
 
 // ---------------------------------------------------------------------------
-// The eight situations, in both languages. Same facts, same owners, same
+// The seven situations, in both languages. Same facts, same owners, same
 // deadlines, same consequences — only the language moves.
 // ---------------------------------------------------------------------------
 
@@ -431,18 +363,6 @@ const SIT_EN: Record<SituationId, SituationCopy> = {
     status: 'Renewal already assigned and underway',
     note: 'No escalation required today.',
   },
-  ai: {
-    label: 'AI PRIORITY',
-    sender: 'Nucleus Assistant',
-    preview:
-      'Based on 6 signals from your morning.',
-    contextLabel: 'AI',
-    headline: "I'd start with the candidate decision",
-    line: "Fairly sure about this one.",
-    owner: 'Nucleus Assistant',
-    status: 'Recommendation only',
-    note: 'Sources available 6 / 8. Missing: Operations Update — 08:52.',
-  },
 };
 
 const SIT_ID: Record<SituationId, SituationCopy> = {
@@ -527,18 +447,6 @@ const SIT_ID: Record<SituationId, SituationCopy> = {
     status: 'Perpanjangannya sudah jalan, sudah ada yang pegang',
     note: 'Hari ini belum perlu dieskalasi.',
   },
-  ai: {
-    label: 'AI PRIORITY',
-    sender: 'Nucleus Assistant',
-    preview:
-      'Berdasarkan 6 sinyal pagi ini.',
-    contextLabel: 'AI',
-    headline: 'Kayaknya keputusan kandidat duluan',
-    line: 'Cukup yakin soal yang ini.',
-    owner: 'Nucleus Assistant',
-    status: 'Sekadar rekomendasi',
-    note: 'Sumber yang kebaca 6 dari 8. Yang kelewat: Operations Update — 08:52.',
-  },
 };
 
 export const SITUATION_COPY: Record<Lang, Record<SituationId, SituationCopy>> = {
@@ -546,7 +454,7 @@ export const SITUATION_COPY: Record<Lang, Record<SituationId, SituationCopy>> = 
   id: SIT_ID,
 };
 
-/** Short names used in the Mirror and in PULSEBACK. Deliberately identical in
+/** Short names used in the Mirror. Deliberately identical in
  *  both languages — these are the names people actually say out loud at work. */
 export const SHORT_NAME: Record<SituationId, string> = {
   client: 'Client',
@@ -556,8 +464,4 @@ export const SHORT_NAME: Record<SituationId, string> = {
   operations: 'Operations',
   hospitality: 'Hospitality',
   governance: 'Governance',
-  ai: 'AI',
 };
-
-/** The source the AI could not see. Quoted in Scene 07. */
-export const MISSING_SOURCE = 'Operations Update — 08:52';

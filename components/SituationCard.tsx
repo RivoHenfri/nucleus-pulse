@@ -10,7 +10,7 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
-import { AI_STYLE, LOUD_STYLE, RUN_SENDERS, situationById } from '../data';
+import { LOUD_STYLE, RUN_SENDERS, situationById } from '../data';
 import { COPY, SITUATION_COPY, type Lang } from '../i18n';
 import type { SituationId } from '../types';
 
@@ -29,7 +29,7 @@ interface Props {
  *
  * All of this chrome — the avatar, the sender, the red importance flag, the
  * unread pill, the ageing timestamp, the paperclip, the typing dots — is the
- * room, not the experiment. Stripped back to plain cards the eight situations
+ * room, not the experiment. Stripped back to plain cards the seven situations
  * read as a quiz, and a participant who feels quizzed starts looking for the
  * right answer instead of behaving like themselves.
  *
@@ -48,7 +48,6 @@ export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
   const s = situationById(id);
   const c = SITUATION_COPY[lang][id];
   const m = COPY[lang].morning;
-  const isAI = id === 'ai';
   const loud = s.loudness === 'loud';
   const quiet = s.loudness === 'quiet';
 
@@ -99,7 +98,7 @@ export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
         <span
           className={`block truncate ${
             quiet ? 'text-[12px] text-gray-500' : 'text-[13px] font-semibold text-gray-100'
-          } ${isAI ? 'text-sky-100' : ''}`}
+          }`}
         >
           {c.headline}
         </span>

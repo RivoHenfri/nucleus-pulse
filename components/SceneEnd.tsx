@@ -1,7 +1,9 @@
 // END / NEXT PULSE
 //
-// PULSE 01 closes on the word it opened with, then lets that word fade before
-// undercutting it — noticing something is not the same as it being true. That
+// PULSE 01 closes on the word it opened with — now with a meaning attached,
+// and with the name for what the morning did to it — then lets both fade
+// before undercutting them: noticing something is not the same as it being
+// true. That
 // sentence is the hinge into PULSE 02, and nothing more of PULSE 02 is built
 // or promised here.
 //
@@ -15,6 +17,7 @@ import { hush, narrate } from '../utils/narration';
 import { shimmer } from '../utils/sound';
 import { Beat, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
+import WhatsAppMark from './WhatsAppMark';
 import { roomCode } from '../utils/room';
 
 interface Props {
@@ -24,9 +27,9 @@ interface Props {
   onRestart: () => void;
 }
 
-// complete · SIGNAL · (fade) · but · the mark · next pulse · TRUTH · question
-// · the logo closing the loop
-const GAPS = beats(1200, 1400, 3400, 4200, 2200, 1800, 1600, 2400, 1350);
+// complete · SIGNAL · SIGNALFALL · (fade) · share · but · the mark · next
+// pulse · TRUTH · question · the logo closing the loop
+const GAPS = beats(1200, 1600, 3600, 3400, 4200, 2200, 1800, 1600, 2400, 1350);
 
 const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const c = COPY[lang].end;
@@ -53,7 +56,10 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const [fadeSignal, setFadeSignal] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setFadeSignal(true), GAPS[0] + GAPS[1] + GAPS[2]);
+    const t = setTimeout(
+      () => setFadeSignal(true),
+      GAPS[0] + GAPS[1] + GAPS[2] + GAPS[3],
+    );
     const s = setTimeout(shimmer, 600);
     narrate('end', cue(1300));
     narrate('end-next', cue(12000));
@@ -73,12 +79,30 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
         </h2>
       </Beat>
 
+      {/* The two names Pulse 01 leaves behind. They used to close the system
+          reveal; with that screen gone they close the run itself, which is
+          also the last moment the morning is still fresh enough for either of
+          them to mean anything. */}
       <div
         className={`mt-6 transition-opacity duration-[2600ms] ${
           shown >= 2 && !fadeSignal ? 'opacity-100' : 'opacity-0'
         }`}
       >
         <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.signal}</p>
+        <p className="mx-auto mt-3 max-w-[21rem] text-[14px] leading-relaxed text-gray-500">
+          {c.signalLine}
+        </p>
+      </div>
+
+      <div
+        className={`mt-10 transition-opacity duration-[2600ms] ${
+          shown >= 3 && !fadeSignal ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.fallTitle}</p>
+        <p className="mx-auto mt-3 max-w-[21rem] text-[14px] leading-relaxed text-gray-500">
+          {c.fallLine}
+        </p>
       </div>
 
 
@@ -86,47 +110,47 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
           It used to sit under the TRUTH teaser, which meant the moment to
           hand the question on arrived after the story had already moved to
           the next one. Share first; then the hinge into Pulse 02. */}
-      <Beat show={shown >= 3} className="mt-10">
+      <Beat show={shown >= 4} className="mt-10">
         <a
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15] transition-transform duration-300 active:scale-95"
         >
-          <span className="text-[15px]">💬</span>
+          <WhatsAppMark size={17} />
           {c.share}
         </a>
       </Beat>
 
-      <Beat show={shown >= 4} className="mt-16">
+      <Beat show={shown >= 5} className="mt-16">
         <p className="text-[16px] leading-relaxed text-gray-300">{c.but}</p>
       </Beat>
 
-      <Beat show={shown >= 5} lift={false} className="mt-20">
+      <Beat show={shown >= 6} lift={false} className="mt-20">
         <p className="text-[18px] text-gray-600">◉</p>
       </Beat>
 
-      <Beat show={shown >= 6} className="mt-8">
+      <Beat show={shown >= 7} className="mt-8">
         <p className="text-[10px] font-semibold tracking-[0.34em] text-gray-500">{c.next}</p>
       </Beat>
 
-      <Beat show={shown >= 7} lift={false} className="mt-4">
+      <Beat show={shown >= 8} lift={false} className="mt-4">
         <h2 className="font-display text-[36px] tracking-[0.3em] text-[#EDE7DA]">{c.truth}</h2>
       </Beat>
 
-      <Beat show={shown >= 8} className="mt-6">
+      <Beat show={shown >= 9} className="mt-6">
         <p className="text-[16px] italic text-gray-400">{c.question}</p>
       </Beat>
 
       {/* Where it started. */}
-      <Beat show={shown >= 9} lift={false} className="mt-20">
-        <NucleusLogo size={190} ignite={shown >= 9} />
+      <Beat show={shown >= 10} lift={false} className="mt-20">
+        <NucleusLogo size={190} ignite={shown >= 10} />
       </Beat>
 
       {/* The word "experiment", said once, at the end, small — a reveal rather
           than a disclaimer. It used to close the scene before this one; that
           scene is gone, and this was the only line in it worth keeping. */}
-      <Beat show={shown >= 9} className="mt-10">
+      <Beat show={shown >= 10} className="mt-10">
         <p className="font-display text-[12px] tracking-[0.3em] text-gray-500">{c.nucleus}</p>
         <p className="mx-auto mt-2 max-w-[20rem] text-[12px] leading-relaxed text-gray-600">
           {c.experiment}
@@ -134,7 +158,7 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
       </Beat>
 
       <div
-        className={`transition-opacity duration-1000 ${shown >= 9 ? 'opacity-100' : 'opacity-0'}`}
+        className={`transition-opacity duration-1000 ${shown >= 10 ? 'opacity-100' : 'opacity-0'}`}
       >
         <button
           onClick={() => {

@@ -6,11 +6,11 @@
 // sync spinner, search box, Focused/Other, banners dropping from the top as
 // things land, timestamps ageing while you read, someone typing in a group.
 // None of that is the experiment; it is the room the experiment happens in.
-// Stripped back to plain cards, the eight situations read as a quiz — and a
+// Stripped back to plain cards, the seven situations read as a quiz — and a
 // participant who feels quizzed starts hunting for the right answer instead of
 // behaving like themselves.
 //
-// CONTEXT is the same eight situations fifteen seconds later with the client
+// CONTEXT is the same seven situations fifteen seconds later with the client
 // taken away: no status bar, no banners, no unread counts, no typing, nothing
 // arriving mid-thought. The absence of all that chrome is the point.
 //

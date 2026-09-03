@@ -1,9 +1,9 @@
 import type { InfluenceId, Loudness, Situation, SituationId } from './types';
 
 /**
- * The eight situations.
+ * The seven situations.
  *
- * Every participant gets the same eight, with the same owners, deadlines and
+ * Every participant gets the same seven, with the same owners, deadlines and
  * consequences. Only arrival order and arrival timing move — enough for the
  * morning to feel alive, not enough to make two participants incomparable.
  *
@@ -17,8 +17,6 @@ export const SITUATIONS: Situation[] = [
   // have been sitting there for the better part of an hour.
   { id: 'client', glyph: '🔴', contextGlyph: '🤝', loudness: 'loud', unread: 4,
     app: 'mail', initials: 'DP', avatar: 'bg-rose-600', minsAgo: 2, important: true },
-  { id: 'ai', glyph: '✦', loudness: 'loud',
-    app: 'assistant', initials: '✦', avatar: 'bg-sky-600', minsAgo: 0 },
   { id: 'hospitality', glyph: '🛎️', loudness: 'loud', unread: 2,
     app: 'chat', initials: 'FO', avatar: 'bg-amber-600', minsAgo: 4, important: true },
   { id: 'finance', glyph: '💳', loudness: 'medium',
@@ -51,12 +49,7 @@ export const INFLUENCES: InfluenceId[] = [
   'instinct',
 ];
 
-/** Round-1 chrome per loudness level. Kept in one place so the replay in
- *  Scene 13 can quote the exact same treatment back at the participant.
- *
- *  The AI card is loud in a different key — confident rather than alarmed —
- *  and SurfaceCard swaps in AI_STYLE for it. Red would have made the AI look
- *  like an emergency, which is the one thing it is not. */
+/** Round-1 chrome per loudness level. */
 export const LOUD_STYLE: Record<Loudness, { row: string; label: string }> = {
   loud: {
     row: 'border-rose-400/40 bg-rose-500/[0.07] shadow-[0_0_40px_-12px_rgba(244,63,94,0.45)]',
@@ -70,11 +63,6 @@ export const LOUD_STYLE: Record<Loudness, { row: string; label: string }> = {
     row: 'border-white/[0.06] bg-white/[0.015]',
     label: 'text-gray-500',
   },
-};
-
-export const AI_STYLE = {
-  row: 'border-sky-300/35 bg-sky-400/[0.05] shadow-[0_0_40px_-14px_rgba(56,189,248,0.45)]',
-  label: 'text-sky-200/85',
 };
 
 export interface Arrival {

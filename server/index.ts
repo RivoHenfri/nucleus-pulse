@@ -27,7 +27,7 @@ const ORIGINS = new Set([
 
 const SITUATIONS = new Set([
   'client', 'finance', 'people', 'engineering',
-  'operations', 'hospitality', 'governance', 'ai',
+  'operations', 'hospitality', 'governance',
 ]);
 const INFLUENCES = new Set([
   'role', 'experience', 'urgency', 'impact', 'needed', 'information', 'instinct',
@@ -272,7 +272,6 @@ const NAMES: Record<string, string> = {
   operations: 'Operations (site access issue, already handled)',
   hospitality: 'Hospitality (guest arrival tonight, action needed)',
   governance: 'Governance (permit renewal, already underway)',
-  ai: 'AI (assistant recommendation, made from 6 of 8 sources)',
 };
 
 /**
@@ -282,11 +281,11 @@ const NAMES: Record<string, string> = {
  */
 const BRIEF = `You are writing a short, mindful reading of a workplace experiment called NUCLEUS PULSE 01 — SIGNAL, for a facilitator to show a room of colleagues.
 
-What happened: everyone saw the same eight workplace messages arriving over thirty seconds and chose two to deal with first. Then they saw the same eight with the hidden context (owner, decision, deadline, consequence) and chose two again. Some messages were loud but already handled; some were quiet but carried a real deadline. An AI card recommended one item with high confidence, having read six of eight sources.
+What happened: everyone saw the same seven workplace messages arriving over thirty seconds and chose two to deal with first. Then they saw the same seven with the hidden context (owner, decision, deadline, consequence) and chose two again. Some messages were loud but already handled; some were quiet but carried a real deadline.
 
 The facilitator's framing, which you must read through:
 - Same information does not create the same experience. Nobody enters a morning as a blank slate: attention is shaped by role, past experience, responsibility, familiarity, perceived risk, current context, assumptions, and the information environment — including how fast information arrives and how little time there is to judge it.
-- This matters in a growing organisation where processes are still forming, new joiners bring useful but different habits from previous companies, and AI can raise confidence faster than organisational context is acquired.
+- This matters in a growing organisation where processes are still forming, and new joiners bring useful but different habits from previous companies.
 - Noise never goes away; the question is how much of it we can filter. One person's signal today may be tomorrow's noise. There is no single right signal, only the one each person could see from where they stood.
 - Experience is worth bringing and worth checking. A confident reading and a complete one are not the same reading, and the room just watched the difference between them.
 

@@ -1,7 +1,7 @@
 // THE ROOM — the facilitator's screen.
 //
 // Forty phones each finish a private run. This is the moment the room finds
-// out it was not one run: the same eight situations, the same thirty seconds,
+// out it was not one run: the same seven situations, the same thirty seconds,
 // and the attention went everywhere. Shown in stages, on a big screen, by
 // someone who decides when the next stage appears.
 //
@@ -19,6 +19,7 @@ import { INFLUENCES, SITUATION_IDS } from './data';
 import { COPY, SHORT_NAME, type Lang } from './i18n';
 import type { InfluenceId, SituationId } from './types';
 import { fetchReading, fetchSummary, openRoom, type RoomSummary } from './utils/room';
+import WhatsAppMark from './components/WhatsAppMark';
 
 // Validated for the dark surface (OKLCH L 0.48–0.67, CVD ΔE 26.8): orange for
 // the first look — the pull — and blue for the look with context.
@@ -39,7 +40,7 @@ const T = {
     closeB: 'That is not the problem.',
     reading: [
       '',
-      'Same 30 seconds. Same 8 messages. Attention did not go to the same places.',
+      'Same 30 seconds. Same 7 messages. Attention did not go to the same places.',
       'Nothing was added. Only what was visible changed. And with it, what deserved attention.',
       'The loud ones pulled first. Context pulled back. That distance is the whole point.',
       'Urgency, instinct, role. Every reason here is valid. Same room, different lenses.',
@@ -60,7 +61,7 @@ const T = {
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
       `*NUCLEUS PULSE 01 — SIGNAL*
 
-${n} of us. 30 seconds. 8 messages. 2 choices.
+${n} of us. 30 seconds. 7 messages. 2 choices.
 
 👀 First look → *${top1}* (${c1} of us)
 🔍 With context → *${top2}* (${c2} of us)
@@ -89,7 +90,7 @@ Try it:`,
     closeB: 'Dan itu bukan masalah.',
     reading: [
       '',
-      'Semua dapat 30 detik yang sama dan 8 pesan yang sama. Tapi yang dilihat duluan beda-beda.',
+      'Semua dapat 30 detik yang sama dan 7 pesan yang sama. Tapi yang dilihat duluan beda-beda.',
       'Pesannya tidak ditambah. Cuma latar belakangnya yang dibuka. Dan pilihan orang langsung bergeser.',
       'Yang paling ribut menarik perhatian duluan. Begitu konteksnya kelihatan, perhatian pindah. Jarak itu yang jadi bahan obrolan hari ini.',
       'Ada yang pakai rasa urgensi, ada yang pakai insting, ada yang pakai perannya. Semua masuk akal. Ruangan yang sama, kacamata yang beda.',
@@ -110,7 +111,7 @@ Try it:`,
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
       `*NUCLEUS PULSE 01 — SIGNAL*
 
-${n} orang. 30 detik. 8 pesan. 2 pilihan.
+${n} orang. 30 detik. 7 pesan. 2 pilihan.
 
 👀 Dilihat duluan → *${top1}* (${c1} dari kita)
 🔍 Setelah tahu konteks → *${top2}* (${c2} dari kita)
@@ -518,7 +519,7 @@ const Room: React.FC = () => {
                   rel="noopener noreferrer"
                   className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#25D366]/90 px-7 py-3.5 text-[12px] font-bold tracking-[0.2em] text-[#062b15]"
                 >
-                  <span className="text-[15px]">💬</span>
+                  <WhatsAppMark size={17} />
                   {t.share}
                 </a>
               </div>

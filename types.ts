@@ -11,8 +11,7 @@ export type SituationId =
   | 'engineering'
   | 'operations'
   | 'hospitality'
-  | 'governance'
-  | 'ai';
+  | 'governance';
 
 /** How loudly a situation announces itself in Round 1. Deliberately mixed:
  *  loud does not mean important, quiet does not mean safe. */
@@ -57,7 +56,7 @@ export interface SituationCopy {
   /**
    * The label once the hierarchy is stripped in Scene 06. Only the two
    * situations whose surface label was a volume setting rather than a name
-   * need one — "URGENT" and "AI PRIORITY" would smuggle the old ranking into
+   * need one — "URGENT" would smuggle the old ranking into
    * the calm view. Everything else keeps its label, because a department name
    * is not a claim about importance.
    */
@@ -94,10 +93,8 @@ export type SceneId =
   | 'reflection'
   | 'transition'
   | 'context'
-  | 'aiContext'
   | 'second'
   | 'mirror'
-  | 'system'
   | 'pulseback'
   | 'end';
 

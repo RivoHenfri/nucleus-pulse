@@ -22,23 +22,28 @@ The reaction it is built for is **"Oh… I actually did that."** — never
 | # | Scene | What happens |
 |---|-------|--------------|
 | 01 | ENTER | The mark ignites. Language, five quiet lines, a way in. |
-| 02 | THE MORNING | 09:07. Eight situations arrive unevenly over 30s. Choose 2. |
+| 02 | THE MORNING | 09:07. Seven situations arrive unevenly over 30s. Choose 2. |
 | 03 | FREEZE | Sound stops, movement stops, two seconds of nothing. *Where did your attention go?* |
 | 04 | REFLECTION | *What mattered to you here?* Up to two, self-reported. |
 | 05 | TRANSITION | *Now let's add what you couldn't see.* |
-| 06 | CONTEXT REVEAL | The same eight, flattened, peeling open one at a time. |
-| 07 | AI CONTEXT | 94% confidence, computed over 6 of 8 sources. |
-| 08 | SECOND LOOK | Same morning, more context, 15s. Choose 2 again. |
-| 09 | THE MIRROR | First look vs. with more context. Three branches, all valid. |
-| 10 | THE SYSTEM REVEAL | The replay, *THIS SCREEN*, then the only two names in Pulse 01: SIGNAL and SIGNALFALL. |
-| 11 | PULSEBACK | A personal mirror. No score, no analysis. |
-| — | END | PULSE 01 complete, the experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
+| 06 | CONTEXT REVEAL | The same seven, flattened, peeling open one at a time. |
+| 07 | SECOND LOOK | Same morning, more context, 15s. Choose 2 again. |
+| 08 | THE MIRROR | First look vs. with more context. Three branches, all valid. *Your experience didn't change. The information available to you did.* |
+| 09 | PULSEBACK | A personal mirror: what they noticed, what mattered to them, what they chose with context. No score, no analysis. |
+| — | END | PULSE 01 complete. SIGNAL and SIGNALFALL, one line each. The experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
 
-Four screens that used to sit between the Mirror and Pulseback — SIGNAL,
-SIGNAL / NOISE, LENS (LENS LOCK), PHENOMENA (NOISE GRAVITY) — were cut. They
-taught vocabulary the morning had already taught, and they ended on maxims that
-would have been just as true if nobody had played. What is left names one
-thing, SIGNALFALL, and hands the run straight back to the participant.
+Six screens were cut on the way here. Four taught vocabulary the morning had
+already taught (SIGNAL, SIGNAL / NOISE, LENS, PHENOMENA) and ended on maxims
+that would have been just as true if nobody had played. FINAL was one long
+maxim. THE SYSTEM REVEAL — the *one more thing* replay — went last: the run
+still read as too long, and the Mirror is the strongest thing the experience
+has to say. It now goes Mirror, PULSEBACK, and then the two names on the way
+out.
+
+The AI PRIORITY card went with them — a confident recommendation built from six
+of eight sources, then a screen unpacking what it could not see. It was the one
+part of the morning nobody could place: too clever to read under pressure, and
+the point it made was about machines rather than about the room.
 
 ## What it will not do
 
@@ -50,11 +55,11 @@ from a click, never stores individual performance, and never tells one
 participant what another chose. The three Mirror outcomes are written so that
 none of them reads as the good one.
 
-## The eight situations
+## The seven situations
 
-Client · Finance · People · Engineering · Operations · Hospitality · Governance ·
-AI. Every participant gets the same eight, with the same owners, deadlines and
-consequences; only arrival order and timing move.
+Client · Finance · People · Engineering · Operations · Hospitality ·
+Governance. Every participant gets the same seven, with the same owners,
+deadlines and consequences; only arrival order and timing move.
 
 Loudness is deliberately uncorrelated with consequence — Hospitality is loud
 **and** consequential, Engineering is quiet **and** consequential, the URGENT

@@ -1,6 +1,6 @@
 // SCENE 06 — CONTEXT REVEAL
 //
-// The same eight situations, re-set as a flat list: owner, decision or status,
+// The same seven situations, re-set as a flat list: owner, decision or status,
 // deadline, consequence. The red badge is gone, so is the unread count, so is
 // the order things happened to arrive in.
 //
@@ -26,9 +26,7 @@ interface Props {
   onContinue: () => void;
 }
 
-// All eight, AI last: Scene 07 expands this card, so it has to have been on
-// screen here first. Its sources line is withheld until then.
-const IDS = [...SITUATION_IDS.filter(id => id !== 'ai'), 'ai' as const];
+const IDS = SITUATION_IDS;
 const FIRST_PEEL = cue(1400);
 const PEEL_GAP = cue(900);
 
@@ -85,7 +83,6 @@ const SceneContext: React.FC<Props> = ({ lang, onContinue }) => {
                 lang={lang}
                 selected={false}
                 open={i < opened}
-                hideNote={id === 'ai'}
               />
             </motion.div>
           ))}
