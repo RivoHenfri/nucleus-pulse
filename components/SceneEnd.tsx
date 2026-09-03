@@ -1,16 +1,18 @@
 // END / NEXT PULSE
 //
-// PULSE 01 closes on the word it opened with — now with a meaning attached,
-// and with the name for what the morning did to it — then lets both fade
-// before undercutting them: noticing something is not the same as it being
-// true. That
+// PULSE 01 closes on the word it opened with, now with a meaning attached.
+//
+// That word used to fade out a few seconds after arriving, on the idea that
+// letting it go made the line underneath land harder. On a phone it did the
+// opposite: the definition was gone before it could be read, and what was left
+// was a screen with a hole in the middle of it. It stays up now. That
 // sentence is the hinge into PULSE 02, and nothing more of PULSE 02 is built
 // or promised here.
 //
 // The mark that ignited on the first screen lights again on the last one, so
 // the run is bracketed by the same image. Nothing between them ever shows it.
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { COPY, SHORT_NAME, type Lang } from '../i18n';
 import type { SituationId } from '../types';
 import { hush, narrate } from '../utils/narration';
@@ -27,9 +29,9 @@ interface Props {
   onRestart: () => void;
 }
 
-// complete · SIGNAL · (fade) · share · but · the mark · next pulse · TRUTH ·
-// question · the logo closing the loop
-const GAPS = beats(1200, 1600, 4000, 4200, 2200, 1800, 1600, 2400, 1350);
+// complete · SIGNAL · share · but · the mark · next pulse · TRUTH · question ·
+// the logo closing the loop
+const GAPS = beats(1200, 1900, 3600, 4200, 2200, 1800, 1600, 2400, 1350);
 
 const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
   const c = COPY[lang].end;
@@ -53,15 +55,12 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
     (roomCode() ? `?room=${roomCode()}` : '');
   const waHref = `https://wa.me/?text=${encodeURIComponent(text)}`;
   const shown = useBeats(GAPS);
-  const [fadeSignal, setFadeSignal] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setFadeSignal(true), GAPS[0] + GAPS[1] + GAPS[2]);
     const s = setTimeout(shimmer, 600);
     narrate('end', cue(1300));
     narrate('end-next', cue(12000));
     return () => {
-      clearTimeout(t);
       clearTimeout(s);
       hush();
     };
@@ -79,17 +78,12 @@ const SceneEnd: React.FC<Props> = ({ lang, first, second, onRestart }) => {
       {/* SIGNAL, with a meaning attached. SIGNALFALL is not repeated here —
           PULSEBACK just showed it happening to this participant's own morning,
           and a definition after that would only flatten it back into a slide. */}
-      <div
-        className={`mt-6 transition-opacity duration-[2600ms] ${
-          shown >= 2 && !fadeSignal ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <p className="font-display text-[15px] tracking-[0.36em] text-gray-400">{c.signal}</p>
-        <p className="mx-auto mt-3 max-w-[21rem] text-[14px] leading-relaxed text-gray-500">
+      <Beat show={shown >= 2} className="mt-8">
+        <p className="font-display text-[16px] tracking-[0.36em] text-[#EDE7DA]">{c.signal}</p>
+        <p className="mx-auto mt-3 max-w-[21rem] text-[15px] leading-relaxed text-gray-400">
           {c.signalLine}
         </p>
-      </div>
-
+      </Beat>
 
       {/* The challenge, while they are still standing on "PULSE 01 COMPLETE".
           It used to sit under the TRUTH teaser, which meant the moment to
