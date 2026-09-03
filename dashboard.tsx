@@ -355,7 +355,14 @@ const Room: React.FC = () => {
   const [top2, c2] = topOf(s?.second);
   const pctChanged = n ? Math.round(((changed('1') + changed('2')) / n) * 100) : 0;
   const shareHref = `https://wa.me/?text=${encodeURIComponent(
-    t.shareText(n, SHORT_NAME[top1], c1, SHORT_NAME[top2], c2, pctChanged),
+    t.shareText(n, SHORT_NAME[top1], c1, SHORT_NAME[top2], c2, pctChanged)
+      // A room too small to have a second-look leader would otherwise say
+      // "chosen by 0 of us". Drop any data line whose number is zero.
+      .split('
+')
+      .filter(l => !/(: 0|dipilih 0|pulled 0|— 0)/.test(l))
+      .join('
+'),
   )}`;
 
   const Reading: React.FC<{ i: number }> = ({ i }) =>
