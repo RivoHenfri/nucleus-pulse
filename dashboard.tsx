@@ -270,6 +270,22 @@ const Room: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
+  // The AI's reading of this room, asked for once when the conclusion is
+  // reached. It sees the aggregate and nothing else, and it is written to
+  // notice rather than to judge: no one in the room is right or wrong.
+  const [ai, setAi] = useState<string | null>(null);
+  useEffect(() => {
+    if (stage !== 6 || ai || !code || !key) return;
+    let live = true;
+    void fetchReading(code, key, lang).then(r => {
+      if (live && r) setAi(r);
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, lang]);
+
   // The room is polled, not pushed: forty phones over an evening is nothing,
   // and a screen that refreshes every few seconds is one fewer thing to break.
   useEffect(() => {
@@ -369,22 +385,6 @@ const Room: React.FC = () => {
         {t.reading[i]}
       </p>
     ) : null;
-
-  // The AI's reading of this room, asked for once when the conclusion is
-  // reached. It sees the aggregate and nothing else, and it is written to
-  // notice rather than to judge: no one in the room is right or wrong.
-  const [ai, setAi] = useState<string | null>(null);
-  useEffect(() => {
-    if (stage !== 6 || ai || !code || !key) return;
-    let live = true;
-    void fetchReading(code, key, lang).then(r => {
-      if (live && r) setAi(r);
-    });
-    return () => {
-      live = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, lang]);
 
   return (
     <main className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-10 py-12">
