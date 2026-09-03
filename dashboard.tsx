@@ -58,17 +58,19 @@ const T = {
     aiWait: 'Reading the room…',
     share: 'Share the conclusion',
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
-      `⚛️ NUCLEUS PULSE 01 — SIGNAL
-${n} people · 30 seconds · 8 messages · 2 choices
+      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-First look: ${top1} pulled ${c1} of us.
-With context: ${top2} — ${c2}.
-${pct}% changed at least one choice.
+👥 ${n} of us. ⏱ 30 seconds. ✉️ 8 messages. ✌️ 2 choices.
 
-Same information ≠ same experience.
-Confidence ≠ Context.
-Reality is larger than any one lens.
-`,
+👀 First look → *${top1}* (${c1} of us)
+🔍 With context → *${top2}* (${c2} of us)
+🔄 ${pct}% changed at least one choice
+
+💡 Same information. Different experience.
+💡 Confidence ≠ context.
+💡 Reality is bigger than the lens we look through.
+
+🔗 Try it:`,
     next: 'next  →',
     open: 'Open a room',
     opening: 'Opening…',
@@ -108,17 +110,19 @@ Reality is larger than any one lens.
     aiWait: 'Sebentar, sedang membaca ruangan…',
     share: 'Bagikan ke grup',
     shareText: (n: number, top1: string, c1: number, top2: string, c2: number, pct: number) =>
-      `⚛️ NUCLEUS PULSE 01 — SIGNAL
-${n} orang · 30 detik · 8 pesan · 2 pilihan
+      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-Yang dilihat duluan: ${top1}, dipilih ${c1} dari kita.
-Setelah tahu konteksnya: ${top2}, dipilih ${c2}.
-${pct}% dari kita ganti minimal satu pilihan.
+👥 ${n} orang. ⏱ 30 detik. ✉️ 8 pesan. ✌️ 2 pilihan.
 
-Informasi yang sama, pengalaman yang beda.
-Yakin ≠ tahu konteksnya.
-Kenyataan selalu lebih besar dari kacamata yang kita pakai.
-`,
+👀 Dilihat duluan → *${top1}* (${c1} dari kita)
+🔍 Setelah tahu konteks → *${top2}* (${c2} dari kita)
+🔄 ${pct}% ganti minimal satu pilihan
+
+💡 Informasi sama. Pengalaman beda.
+💡 Yakin ≠ tahu konteksnya.
+💡 Kenyataan lebih besar dari kacamata kita.
+
+🔗 Coba sendiri:`,
     next: 'lanjut  →',
     open: 'Buka ruang',
     opening: 'Membuka…',
@@ -354,16 +358,14 @@ const Room: React.FC = () => {
   const [top1, c1] = topOf(s?.first);
   const [top2, c2] = topOf(s?.second);
   const pctChanged = n ? Math.round(((changed('1') + changed('2')) / n) * 100) : 0;
-  const shareHref = `https://wa.me/?text=${encodeURIComponent(
-    t.shareText(n, SHORT_NAME[top1], c1, SHORT_NAME[top2], c2, pctChanged)
-      // A room too small to have a second-look leader would otherwise say
-      // "chosen by 0 of us". Drop any data line whose number is zero.
-      .split('
-')
-      .filter(l => !/(: 0|dipilih 0|pulled 0|— 0)/.test(l))
-      .join('
-'),
-  )}`;
+  // A room too small to have a second-look leader would otherwise say
+  // "chosen by 0 of us". Any data line whose number is zero is dropped.
+  const shareBody = t
+    .shareText(n, SHORT_NAME[top1], c1, SHORT_NAME[top2], c2, pctChanged)
+    .split(/\r?\n/)
+    .filter(l => !/\b0 (dari kita|of us)\b/.test(l))
+    .join('\n');
+  const shareHref = `https://wa.me/?text=${encodeURIComponent(shareBody + '\n' + link)}`;
 
   const Reading: React.FC<{ i: number }> = ({ i }) =>
     t.reading[i] ? (

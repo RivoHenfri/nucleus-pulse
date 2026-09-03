@@ -200,16 +200,16 @@ const EN = {
     // the question the whole thing opened with.
     share: 'Challenge the group',
     shareText: (first: string, second: string, changed: string) =>
-      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-30 seconds. 8 messages. 2 choices.
+⏱ 30 seconds. ✉️ 8 messages. ✌️ 2 choices.
 
-What pulled my attention first: ${first}
-With more context: ${second}
-${changed}
+👀 What pulled me first → ${first}
+🔍 With context → ${second}
+🔄 ${changed}
 
-What gets YOUR attention?
-`,
+💡 What gets *your* attention?
+🔗 Try it:\n`,
   },
   common: {
     soundOn: 'Sound on',
@@ -404,16 +404,16 @@ const ID: Copy = {
     restart: 'Mulai lagi',
     share: 'Tantang grup',
     shareText: (first: string, second: string, changed: string) =>
-      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+      `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-30 detik. 8 pesan. 2 pilihan.
+⏱ 30 detik. ✉️ 8 pesan. ✌️ 2 pilihan.
 
-Yang narik perhatianku duluan: ${first}
-Setelah lihat konteksnya: ${second}
-${changed}
+👀 Yang narik perhatianku duluan → ${first}
+🔍 Setelah tahu konteksnya → ${second}
+🔄 ${changed}
 
-Apa yang narik perhatian KAMU?
-`,
+💡 Kalau *kamu*, yang mana?
+🔗 Coba sendiri:\n`,
   },
   common: {
     soundOn: 'Suara hidup',
