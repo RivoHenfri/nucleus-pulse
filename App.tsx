@@ -11,7 +11,8 @@
 // There is no login, no identity, no backend and nothing leaves the device.
 
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { arrivalPlan } from './data';
 import { COPY, type Lang } from './i18n';
 import type { InfluenceId, SceneId, SituationId } from './types';
 import {
@@ -83,6 +84,11 @@ const rehearsal = (): { scene?: SceneId; picks?: SituationId[] } => {
 
 const App: React.FC = () => {
   const rehearse = rehearsal();
+  /* Drawn once per run and handed to both rounds. The order and timing of a
+     morning shape attention as much as its content, so the second look has to
+     inherit them rather than draw its own — otherwise the two rounds differ by
+     more than the context and nothing about the change can be read. */
+  const plan = useRef(arrivalPlan()).current;
   const [scene, setScene] = useState<SceneId>(rehearse.scene ?? 'enter');
   const [lang, setLang] = useState<Lang>(() => (load().lang as Lang) ?? 'en');
   const [firstLook, setFirstLook] = useState<SituationId[]>(rehearse.picks ?? []);
@@ -241,6 +247,7 @@ const App: React.FC = () => {
               lang={lang}
               mode="surface"
               seconds={30}
+              plan={plan}
               onComplete={(picks) => {
                 setFirstLook(picks);
                 setScene('freeze');
@@ -279,7 +286,8 @@ const App: React.FC = () => {
               key="round-2"
               lang={lang}
               mode="context"
-              seconds={15}
+              seconds={30}
+              plan={plan}
               onComplete={(picks) => {
                 setSecondLook(picks);
                 setScene('mirror');

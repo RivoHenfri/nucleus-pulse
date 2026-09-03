@@ -37,17 +37,34 @@ interface Props {
  * and greyer type, exactly the way a real client de-emphasises anything it has
  * decided is not urgent.
  */
-export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
+const Field: React.FC<{ label: string; value: string; strong?: boolean }> = ({
+  label,
+  value,
+  strong,
+}) => (
+  <span className="flex gap-3">
+    <span className="w-[92px] shrink-0 pt-[3px] text-[9px] font-semibold tracking-[0.2em] text-gray-600 uppercase">
+      {label}
+    </span>
+    <span className={`text-[13px] leading-snug ${strong ? 'text-gray-200' : 'text-gray-400'}`}>
+      {value}
+    </span>
+  </span>
+);
+
+export const SurfaceCard: React.FC<Props & { stamp: string; withContext?: boolean }> = ({
   id,
   lang,
   selected,
   muted,
   onSelect,
   stamp,
+  withContext,
 }) => {
   const s = situationById(id);
   const c = SITUATION_COPY[lang][id];
   const m = COPY[lang].morning;
+  const f = COPY[lang].context;
   const loud = s.loudness === 'loud';
   const quiet = s.loudness === 'quiet';
 
@@ -117,25 +134,30 @@ export const SurfaceCard: React.FC<Props & { stamp: string }> = ({
             <span className="ml-1 text-[10px] text-gray-500">{m.typing}</span>
           </span>
         )}
+
+        {/* Round 2 is this same row with what sat underneath it opened up.
+            The badge, the red, the unread count, the position: all unchanged,
+            so the only thing that differs between the rounds is what the
+            participant knows. */}
+        {withContext && (
+          <span className="mt-3 block space-y-1.5 border-t border-white/[0.06] pt-3">
+            <Field label={f.owner} value={c.owner} />
+            {c.decision ? (
+              <Field label={f.decision} value={c.decision} strong />
+            ) : (
+              <Field label={f.status} value={c.status ?? ''} />
+            )}
+            {c.by && <Field label={f.by} value={c.by} strong />}
+            {c.consequence && <Field label={f.consequence} value={c.consequence} />}
+            {c.note && (
+              <span className="block pt-1 text-[12px] leading-snug text-gray-500">{c.note}</span>
+            )}
+          </span>
+        )}
       </span>
     </motion.button>
   );
 };
-
-const Field: React.FC<{ label: string; value: string; strong?: boolean }> = ({
-  label,
-  value,
-  strong,
-}) => (
-  <div className="flex gap-3">
-    <span className="w-[92px] shrink-0 pt-[3px] text-[9px] font-semibold tracking-[0.2em] text-gray-600 uppercase">
-      {label}
-    </span>
-    <span className={`text-[13px] leading-snug ${strong ? 'text-gray-200' : 'text-gray-400'}`}>
-      {value}
-    </span>
-  </div>
-);
 
 interface ContextProps extends Props {
   /**

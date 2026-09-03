@@ -27,7 +27,7 @@ The reaction it is built for is **"Oh… I actually did that."** — never
 | 04 | REFLECTION | *What mattered to you here?* Up to two, self-reported. |
 | 05 | TRANSITION | *Now let's add what you couldn't see.* |
 | 06 | CONTEXT REVEAL | The same seven, flattened, peeling open one at a time. |
-| 07 | SECOND LOOK | Same morning, more context, 15s. Choose 2 again. |
+| 07 | SECOND LOOK | The same inbox, the same rows, the same order, the same 30s — with the context opened under each row. Choose 2 again. |
 | 08 | THE MIRROR | First look vs. with more context. Three branches, all valid. *Your experience didn't change. The information available to you did.* |
 | 09 | PULSEBACK | A personal mirror: what they noticed, what mattered to them, what they chose with context. No score, no analysis. |
 | — | END | PULSE 01 complete. SIGNAL and SIGNALFALL, one line each. The experiment named once and quietly, and a teaser for PULSE 02 — TRUTH. |
@@ -44,6 +44,16 @@ The AI PRIORITY card went with them — a confident recommendation built from si
 of eight sources, then a screen unpacking what it could not see. It was the one
 part of the morning nobody could place: too clever to read under pressure, and
 the point it made was about machines rather than about the room.
+
+## One variable
+
+The second look used to be a calmer screen on a shorter clock: no chrome, no
+red, no unread counts, cards reshuffled, fifteen seconds. Three things moved at
+once — the information, the way it was dressed, and how long there was to read
+it — so nothing about a changed choice could be read back. It is now the same
+client, the same rows, the same badges, the same order and the same thirty
+seconds, with the context opened underneath. What the participant knows is the
+only thing that differs between the rounds.
 
 ## What it will not do
 

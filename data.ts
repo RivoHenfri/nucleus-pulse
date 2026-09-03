@@ -96,11 +96,6 @@ export const arrivalPlan = (): Arrival[] => {
   });
 };
 
-/** Round 2 is calm: everything is already there, in a stable, quiet order. */
-export const contextOrder = (): SituationId[] =>
-  [...SITUATION_IDS].sort(() => Math.random() - 0.5);
-
-
 /**
  * The two senders who are people rather than departments.
  *

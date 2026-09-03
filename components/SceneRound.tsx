@@ -1,36 +1,41 @@
-// SCENE 02 — THE MORNING   /   SCENE 08 — SECOND LOOK
+// THE MORNING   /   THE SECOND LOOK
 //
-// The same room, twice — and the two rounds do not look like the same app.
+// The same room, twice, and deliberately the same screen.
 //
-// SURFACE is a mail client on a phone at 09:07. Status bar, unread counter,
-// sync spinner, search box, Focused/Other, banners dropping from the top as
-// things land, timestamps ageing while you read, someone typing in a group.
-// None of that is the experiment; it is the room the experiment happens in.
-// Stripped back to plain cards, the seven situations read as a quiz — and a
-// participant who feels quizzed starts hunting for the right answer instead of
-// behaving like themselves.
+// A mail client on a phone at 09:07: status bar, unread counter, sync spinner,
+// search box, Focused/Other, banners dropping from the top as things land,
+// timestamps ageing while you read, someone typing in a group. None of that is
+// the experiment; it is the room the experiment happens in. Stripped back to
+// plain cards, the seven situations read as a quiz — and a participant who
+// feels quizzed starts hunting for the right answer instead of behaving like
+// themselves.
 //
-// CONTEXT is the same seven situations fifteen seconds later with the client
-// taken away: no status bar, no banners, no unread counts, no typing, nothing
-// arriving mid-thought. The absence of all that chrome is the point.
+// The second look used to be a calmer screen with a shorter clock: no chrome,
+// no red, no unread counts, cards in a fresh order, fifteen seconds. That made
+// several things change at once — the information, the way it was dressed, and
+// how long there was to read it — and left no way to say which of them moved
+// anyone. Now it is the same client, the same rows, the same badges, the same
+// order and the same thirty seconds, with the context opened under each row.
 //
-// Nothing is added between the two. Nothing is taken away.
+// One variable moves between the rounds: what the participant knows.
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { arrivalPlan, contextOrder, RUN_SENDERS, situationById } from '../data';
+import { RUN_SENDERS, situationById, type Arrival } from '../data';
 import { COPY, SITUATION_COPY, type Lang } from '../i18n';
 import type { SituationId } from '../types';
 import { setUrgency, startFocusBed, stopFocusBed } from '../utils/ambience';
 import { hush, narrate } from '../utils/narration';
 import { buzz, lockThunk, ping, pingLoud, tap } from '../utils/sound';
 import { cue } from './atoms';
-import { ContextCard, SurfaceCard } from './SituationCard';
+import { SurfaceCard } from './SituationCard';
 
 interface Props {
   lang: Lang;
   mode: 'surface' | 'context';
   seconds: number;
+  /** Shared by both rounds, so the rows sit in the same order in each. */
+  plan: Arrival[];
   onComplete: (picks: SituationId[]) => void;
 }
 
@@ -59,15 +64,20 @@ const clockLabel = (minsFromMidnight: number): string => {
 /** Spec: freeze the moment the choice is made, and hold the silence. */
 const FREEZE_MS = cue(2000);
 
-const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
+const SceneRound: React.FC<Props> = ({ lang, mode, seconds, plan, onComplete }) => {
   const c = COPY[lang];
   const surface = mode === 'surface';
 
-  const plan = useMemo(() => (surface ? arrivalPlan() : []), [surface]);
-  const calmOrder = useMemo(() => (surface ? [] : contextOrder()), [surface]);
+  /** Round 1 opens with the three already there and prepends each new arrival.
+   *  Round 2 is that same list, already complete, in the order it ended up in. */
+  const settled = useMemo(() => {
+    const opened = plan.filter(a => a.at === 0).map(a => a.id);
+    const landed = plan.filter(a => a.at > 0).map(a => a.id);
+    return [...landed.reverse(), ...opened];
+  }, [plan]);
 
   const [visible, setVisible] = useState<SituationId[]>(() =>
-    surface ? plan.filter(a => a.at === 0).map(a => a.id) : calmOrder,
+    surface ? plan.filter(a => a.at === 0).map(a => a.id) : settled,
   );
   const [picks, setPicks] = useState<SituationId[]>([]);
   const [left, setLeft] = useState(seconds);
@@ -259,8 +269,6 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
         )}
       </AnimatePresence>
 
-      {surface ? (
-        <>
           {/* ---- phone status bar ---- */}
           <div className="flex items-center justify-between px-5 pb-1 pt-3 text-[11px] font-semibold text-gray-400">
             <span>{clockLabel(CLOCK_START_MIN + Math.floor(elapsed / 60))}</span>
@@ -375,6 +383,7 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
                     stamp={stampFor(id)}
                     selected={picks.includes(id)}
                     muted={full}
+                    withContext={!surface}
                     onSelect={() => choose(id)}
                   />
                 </motion.div>
@@ -382,7 +391,7 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
             </AnimatePresence>
 
             {/* The rows that have not arrived yet, still loading. */}
-            {visible.length < 8 && !frozen && (
+            {surface && visible.length < plan.length && !frozen && (
               <div className="flex items-center gap-3 px-4 py-3 opacity-30">
                 <span className="h-10 w-10 rounded-full bg-white/5" />
                 <span className="flex-1">
@@ -403,7 +412,9 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
               />
             </div>
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[12px] leading-snug text-gray-300">{c.morning.instruction}</p>
+              <p className="text-[12px] leading-snug text-gray-300">
+                {surface ? c.morning.instruction : c.second.instruction}
+              </p>
               <span className="flex shrink-0 items-center gap-3">
                 <span className="text-[11px] text-gray-500">
                   {frozen ? c.morning.locked : c.morning.selected(picks.length)}
@@ -412,55 +423,6 @@ const SceneRound: React.FC<Props> = ({ lang, mode, seconds, onComplete }) => {
               </span>
             </div>
           </div>
-        </>
-      ) : (
-        <div className="px-4 pb-16 pt-5">
-          <div className="flex items-baseline justify-between pr-11 sm:pr-0">
-            <span className="font-display text-[19px] tracking-[0.12em] text-[#EDE7DA]">
-              {c.morning.clock}
-            </span>
-            {Countdown}
-          </div>
-
-          <div className="mr-11 mt-1.5 h-px bg-white/10 sm:mr-0">
-            <motion.div
-              className={`h-px ${urgent ? 'bg-rose-400/70' : 'bg-[#EDE7DA]/40'}`}
-              animate={{ width: `${(left / seconds) * 100}%` }}
-              transition={{ duration: 0.3, ease: 'linear' }}
-            />
-          </div>
-
-          <div className="mb-5 mt-5">
-            <p className="text-[16px] text-gray-200">
-              {c.second.same} <span className="text-gray-500">{c.second.more}</span>
-            </p>
-            <p className="mt-1 text-[13px] text-gray-500">{c.morning.seconds(seconds)}</p>
-            <p className="mt-2.5 text-[14px] text-[#EDE7DA]">{c.second.instruction}</p>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.24em] text-gray-600">
-              {frozen ? c.morning.locked : c.morning.selected(picks.length)}
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {visible.map(id => (
-              <motion.div
-                key={id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-              >
-                <ContextCard
-                  id={id}
-                  lang={lang}
-                  selected={picks.includes(id)}
-                  muted={full}
-                  onSelect={() => choose(id)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 };
