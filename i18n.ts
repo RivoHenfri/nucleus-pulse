@@ -202,7 +202,7 @@ const EN = {
     shareText: (first: string, second: string, changed: string) =>
       `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-⏱ 30 seconds. ✉️ 8 messages. ✌️ 2 choices.
+🕒 30 seconds. 📩 8 messages. 🎯 2 choices.
 
 👀 What pulled me first → ${first}
 🔍 With context → ${second}
@@ -406,7 +406,7 @@ const ID: Copy = {
     shareText: (first: string, second: string, changed: string) =>
       `⚛️ *NUCLEUS PULSE 01 — SIGNAL*
 
-⏱ 30 detik. ✉️ 8 pesan. ✌️ 2 pilihan.
+🕒 30 detik. 📩 8 pesan. 🎯 2 pilihan.
 
 👀 Yang narik perhatianku duluan → ${first}
 🔍 Setelah tahu konteksnya → ${second}
