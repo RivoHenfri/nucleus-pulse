@@ -111,7 +111,17 @@ Reality is larger than any one lens.
       `⚛️ NUCLEUS PULSE 01 — SIGNAL
 ${n} orang · 30 detik · 8 pesan · 2 pilihan
 
-Pilihan pertama: ${top1} menarik ${c1} dari kita.
+      `⚛️ NUCLEUS PULSE 01 — SIGNAL
+${n} orang · 30 detik · 8 pesan · 2 pilihan
+
+Yang dilihat duluan: ${top1}, dipilih ${c1} dari kita.
+Setelah tahu konteksnya: ${top2}, dipilih ${c2}.
+${pct}% dari kita ganti minimal satu pilihan.
+
+Informasi yang sama, pengalaman yang beda.
+Yakin ≠ tahu konteksnya.
+Kenyataan selalu lebih besar dari kacamata yang kita pakai.
+`,
 Setelah ada konteks: ${top2} — ${c2}.
 ${pct}% mengubah setidaknya satu pilihan.
 
